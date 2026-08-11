@@ -1,5 +1,5 @@
 import { UserCircle } from "lucide-react";
-import logoUrl from "../assets/logo.svg";
+import logoUrl from "../assets/logo.png";
 
 export function Header({ authorizedUser }) {
   const profileLabel = authorizedUser?.name ?? "Профиль Telegram";
