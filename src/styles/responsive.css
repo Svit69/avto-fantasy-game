@@ -1,0 +1,34 @@
+@media (min-width: 768px) {
+  .app-shell {
+    padding: 28px;
+  }
+
+  .phone-frame {
+    width: min(92vw, 760px);
+    min-height: auto;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+  }
+
+  .lineup-card {
+    margin: 0 24px 24px;
+  }
+
+  .lineup-field {
+    min-height: 500px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .phone-frame {
+    width: min(84vw, 980px);
+  }
+
+  .lineup-field {
+    min-height: 540px;
+  }
+
+  .slot {
+    width: 120px;
+  }
+}

@@ -1,0 +1,33 @@
+.app-shell {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+.phone-frame {
+  width: min(100vw, 430px);
+  min-height: 100dvh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 60% 28%, rgba(209, 8, 47, 0.35), transparent 25%),
+    linear-gradient(180deg, #4a0204 0%, #120102 26%, #060000 100%);
+  box-shadow: var(--shadow-panel);
+}
+
+.icon-button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.telegram-status {
+  margin: 10px 24px 18px;
+  color: var(--color-muted);
+  font-size: 12px;
+  text-align: center;
+}

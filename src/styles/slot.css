@@ -1,0 +1,36 @@
+.slot {
+  position: relative;
+  width: 96px;
+  min-height: 108px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.slot__jersey,
+.slot__empty {
+  width: 86px;
+  height: 86px;
+  display: block;
+  margin: 0 auto;
+}
+
+.slot__empty {
+  border: 2px dashed rgba(255, 255, 255, 0.36);
+  border-radius: 20px 20px 10px 10px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.slot__action {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgba(255, 255, 255, 0.74);
+  border-radius: 50%;
+  background: #0a0a0a;
+  transform: translateX(-50%);
+}
