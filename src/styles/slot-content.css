@@ -6,7 +6,8 @@
 }
 
 .player-card__club-logo {
-  left: 6px;
+  left: 2px;
+  top: 3px;
   width: 38px;
   height: 32px;
   object-fit: contain;
