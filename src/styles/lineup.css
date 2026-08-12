@@ -1,8 +1,7 @@
 .team-dashboard {
-  flex: 1;
-  min-height: 0;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  padding: clamp(12px, 2.2dvh, 22px) 24px calc(82px + env(safe-area-inset-bottom));
-  overflow: hidden;
+  padding: 18px 24px calc(96px + env(safe-area-inset-bottom));
+  overflow: visible;
 }

@@ -1,10 +1,9 @@
 .rink-field {
   position: relative;
   display: grid;
-  flex: 1;
-  min-height: 0;
-  gap: clamp(6px, 1dvh, 14px);
-  padding: 0 0 8px;
+  gap: 18px;
+  min-height: 650px;
+  padding: 4px 0 18px;
   overflow: hidden;
 }
 

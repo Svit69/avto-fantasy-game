@@ -1,7 +1,7 @@
 .player-card {
   position: relative;
-  width: clamp(90px, 27vw, 112px);
-  height: clamp(108px, 16dvh, 142px);
+  width: clamp(102px, 29vw, 122px);
+  height: clamp(140px, 20dvh, 166px);
   padding: 0;
   border: 1px solid rgba(255, 42, 61, 0.9);
   border-radius: 10px;
