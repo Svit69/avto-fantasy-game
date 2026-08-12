@@ -1,13 +1,13 @@
 import { Minus, Plus } from "lucide-react";
-import jerseyUrl from "../assets/jersey.svg";
 
 export function LineupSlot({ slot }) {
   const Icon = slot.isFilled() ? Minus : Plus;
+  const player = slot.getPlayer();
 
   return (
     <button className="slot" type="button" aria-label={slot.getActionLabel()}>
       {slot.isFilled() ? (
-        <img className="slot__jersey" src={jerseyUrl} alt={slot.getPlayer().getName()} />
+        <img className="slot__jersey" src={player.getClub().getJerseyUrl()} alt={player.getName()} />
       ) : (
         <span className="slot__empty" aria-hidden="true" />
       )}

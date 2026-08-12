@@ -1,6 +1,7 @@
 import { Player } from "../models/Player.js";
 import { RosterSlot } from "../models/RosterSlot.js";
 import { TeamRoster } from "../models/TeamRoster.js";
+import { clubs } from "../data/clubs.js";
 
 const positions = {
   goalkeeper: "ВРАТАРЬ",
@@ -24,8 +25,12 @@ export function buildInitialRoster() {
 
 function createStarterPlayers() {
   return [
-    new Player({ id: "gk-1", name: "Основной вратарь", position: positions.goalkeeper, price: 1.8 }),
-    new Player({ id: "df-1", name: "Левый защитник", position: positions.defender, price: 1.9 }),
-    new Player({ id: "fw-1", name: "Центр нападения", position: positions.forward, price: 1.8 }),
+    createPlayer("gk-1", "Основной вратарь", positions.goalkeeper, 1.8, clubs.automobilist),
+    createPlayer("df-1", "Левый защитник", positions.defender, 1.9, clubs.automobilist),
+    createPlayer("fw-1", "Центр нападения", positions.forward, 1.8, clubs.gornyak),
   ];
+}
+
+function createPlayer(id, name, position, price, club) {
+  return new Player({ id, name, position, price, club });
 }
