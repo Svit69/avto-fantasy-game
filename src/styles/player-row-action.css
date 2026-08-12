@@ -1,0 +1,32 @@
+.player-row__identity strong {
+  display: block;
+  margin: 4px 0;
+  font-size: clamp(18px, 5vw, 24px);
+  line-height: 1.05;
+}
+
+.player-row__price strong {
+  display: block;
+  font-size: clamp(24px, 7vw, 34px);
+  line-height: 1;
+}
+
+.player-row__action {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #f01f35, #b60617);
+  color: var(--color-text);
+}
+
+.player-row__action:disabled {
+  background: rgba(0, 0, 0, 0.25);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.player-row__action.selected {
+  border-color: rgba(255, 255, 255, 0.45);
+}

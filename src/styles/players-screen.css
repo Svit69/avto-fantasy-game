@@ -1,0 +1,29 @@
+.players-screen {
+  padding: 28px 24px calc(96px + env(safe-area-inset-bottom));
+}
+
+.players-screen__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.players-screen__header h2 {
+  margin: 0;
+  font-size: clamp(34px, 10vw, 46px);
+  line-height: 1;
+  font-weight: 900;
+}
+
+.players-screen__header div {
+  display: flex;
+  gap: 4px;
+}
+
+.player-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}

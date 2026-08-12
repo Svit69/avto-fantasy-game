@@ -12,4 +12,14 @@ export class PlayerCardMetrics {
 
     return positionMap[player.getPosition()] ?? player.getPosition();
   }
+
+  static getFullPositionName(player) {
+    const positionMap = {
+      ВРАТАРЬ: "ВРАТАРЬ",
+      ЗАЩИТНИКИ: "ЗАЩИТНИК",
+      НАПАДАЮЩИЕ: "НАПАДАЮЩИЙ",
+    };
+
+    return positionMap[player.getPosition()] ?? player.getPosition();
+  }
 }

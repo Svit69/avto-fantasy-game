@@ -11,6 +11,16 @@ export class TeamRoster {
     return this.#slots.filter((slot) => slot.getPosition() === position);
   }
 
+  isPositionFull(position) {
+    const slots = this.getSlotsByPosition(position);
+
+    return slots.every((slot) => slot.isFilled());
+  }
+
+  hasPlayer(player) {
+    return this.#slots.some((slot) => slot.getPlayer()?.getId() === player.getId());
+  }
+
   calculateSpentBudget() {
     return this.#slots.reduce((total, slot) => {
       return total + (slot.getPlayer()?.getPrice() ?? 0);
