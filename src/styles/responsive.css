@@ -10,12 +10,12 @@
     border-radius: 18px;
   }
 
-  .lineup-card {
-    margin: 0 24px 24px;
+  .team-dashboard {
+    padding-inline: 36px;
   }
 
-  .lineup-field {
-    min-height: 500px;
+  .rink-field {
+    min-height: 680px;
   }
 }
 
@@ -24,11 +24,11 @@
     width: min(84vw, 980px);
   }
 
-  .lineup-field {
-    min-height: 540px;
+  .team-dashboard {
+    padding-inline: 56px;
   }
 
-  .slot {
-    width: 120px;
+  .rink-field {
+    min-height: 720px;
   }
 }

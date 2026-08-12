@@ -1,20 +1,25 @@
 import { Info } from "lucide-react";
-import { BudgetSummary } from "./BudgetSummary.jsx";
 import { PositionGroup } from "./PositionGroup.jsx";
+import { RosterMetrics } from "./RosterMetrics.jsx";
+import rinkBackgroundUrl from "../assets/background.png";
 
 const positions = ["ВРАТАРЬ", "ЗАЩИТНИКИ", "НАПАДАЮЩИЕ"];
 
 export function TeamLineup({ roster }) {
   return (
-    <section className="lineup-card">
-      <div className="lineup-card__header">
-        <h2>СОСТАВ</h2>
-        <span>{roster.countFilledSlots()}/5</span>
-        <button className="icon-button" type="button" aria-label="Информация">
-          <Info size={20} />
-        </button>
+    <section className="team-dashboard">
+      <div className="team-dashboard__header">
+        <div>
+          <h2>МОЯ КОМАНДА</h2>
+          <button className="info-chip" type="button" aria-label="Информация">
+            <Info size={17} />
+          </button>
+        </div>
+        <p><strong>{roster.countFilledSlots()}/{roster.countAvailableSlots()}</strong> ИГРОКОВ</p>
       </div>
-      <div className="lineup-field">
+      <RosterMetrics roster={roster} />
+      <div className="rink-field">
+        <img className="rink-field__background" src={rinkBackgroundUrl} alt="" />
         {positions.map((position) => (
           <PositionGroup
             key={position}
@@ -24,7 +29,6 @@ export function TeamLineup({ roster }) {
         ))}
       </div>
       <button className="save-button" type="button">СОХРАНИТЬ СОСТАВ</button>
-      <BudgetSummary roster={roster} />
     </section>
   );
 }

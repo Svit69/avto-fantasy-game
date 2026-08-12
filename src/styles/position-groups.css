@@ -1,0 +1,20 @@
+.position-group {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 8px;
+}
+
+.position-group h3 {
+  margin: 0;
+  color: var(--color-text);
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.position-group__slots {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+}

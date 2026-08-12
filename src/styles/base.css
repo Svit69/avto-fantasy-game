@@ -3,7 +3,9 @@
   --color-panel: #2a0305;
   --color-card: #1b0b0d;
   --color-red: #d9082f;
+  --color-red-bright: #ff2a3d;
   --color-red-soft: #8b0718;
+  --color-green: #26d36d;
   --color-text: #fff4f4;
   --color-muted: #a89494;
   --color-border: rgba(255, 255, 255, 0.12);
@@ -19,7 +21,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100dvh;
-  background: radial-gradient(circle at 50% 0%, #370406, var(--color-bg) 60%);
+  background: radial-gradient(circle at 50% 0%, #310405, var(--color-bg) 64%);
   color: var(--color-text);
 }
 

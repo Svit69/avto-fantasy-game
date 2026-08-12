@@ -8,10 +8,12 @@
 .phone-frame {
   width: min(100vw, 430px);
   min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   background:
-    radial-gradient(circle at 60% 28%, rgba(209, 8, 47, 0.35), transparent 25%),
-    linear-gradient(180deg, #4a0204 0%, #120102 26%, #060000 100%);
+    radial-gradient(circle at 50% 30%, rgba(135, 9, 18, 0.3), transparent 34%),
+    linear-gradient(180deg, #060606 0%, #120202 44%, #050202 100%);
   box-shadow: var(--shadow-panel);
 }
 
@@ -26,7 +28,7 @@
 }
 
 .telegram-status {
-  margin: 10px 24px 18px;
+  margin: 8px 24px 10px;
   color: var(--color-muted);
   font-size: 12px;
   text-align: center;

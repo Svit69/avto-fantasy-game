@@ -1,39 +1,45 @@
-.lineup-card {
-  margin: 0 10px;
-  padding: 18px 14px 14px;
-  border: 1px solid rgba(217, 8, 47, 0.35);
-  border-radius: 8px;
-  background:
-    linear-gradient(rgba(91, 2, 8, 0.9), rgba(36, 0, 3, 0.95)),
-    repeating-linear-gradient(0deg, transparent 0 42px, rgba(255, 255, 255, 0.04) 43px);
+.team-dashboard {
+  flex: 1;
+  padding: 22px 24px 18px;
 }
 
-.lineup-card__header {
-  display: grid;
-  grid-template-columns: 1fr auto 44px;
+.team-dashboard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 16px;
+}
+
+.team-dashboard__header div {
+  display: flex;
   align-items: center;
+  gap: 8px;
 }
 
-.lineup-card h2 {
+.team-dashboard h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: 34px;
   font-weight: 900;
-  text-decoration: underline 3px var(--color-red);
 }
 
-.lineup-field {
-  min-height: 430px;
+.team-dashboard__header p {
+  margin: 0;
+  color: var(--color-muted);
+  text-align: right;
+  font-size: 14px;
+}
+
+.team-dashboard__header strong {
+  display: block;
+  color: var(--color-text);
+  font-size: 31px;
+}
+
+.info-chip {
+  width: 32px;
+  height: 32px;
   display: grid;
-  align-content: space-between;
-  padding: 10px 0 20px;
-}
-
-.save-button {
-  width: 100%;
-  min-height: 44px;
+  place-items: center;
   border: 0;
-  border-radius: 8px;
-  background: linear-gradient(180deg, #f11849, #bd001f);
-  cursor: pointer;
-  font-weight: 900;
+  background: transparent;
 }

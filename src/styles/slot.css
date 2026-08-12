@@ -1,36 +1,37 @@
-.slot {
+.player-card {
   position: relative;
-  width: 96px;
-  min-height: 108px;
-  border: 0;
-  background: transparent;
+  width: 112px;
+  height: 144px;
+  display: grid;
+  place-items: end center;
+  padding: 8px 8px 12px;
+  border: 1px solid rgba(255, 42, 61, 0.78);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(44, 8, 9, 0.72), rgba(5, 5, 5, 0.96));
+  box-shadow: 0 0 20px rgba(255, 42, 61, 0.14);
   cursor: pointer;
+  overflow: hidden;
 }
 
-.slot__jersey,
-.slot__empty {
-  width: 86px;
-  height: 86px;
-  display: block;
-  margin: 0 auto;
-}
-
-.slot__empty {
-  border: 2px dashed rgba(255, 255, 255, 0.36);
-  border-radius: 20px 20px 10px 10px;
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.slot__action {
+.player-card__photo,
+.player-card__fallback {
   position: absolute;
-  left: 50%;
-  bottom: 8px;
-  width: 34px;
-  height: 34px;
+  inset: 7px 7px 44px;
+}
+
+.player-card__photo {
+  z-index: 2;
+  width: calc(100% - 14px);
+  height: calc(100% - 51px);
+  object-fit: cover;
+  object-position: top center;
+}
+
+.player-card__fallback {
   display: grid;
   place-items: center;
-  border: 2px solid rgba(255, 255, 255, 0.74);
-  border-radius: 50%;
-  background: #0a0a0a;
-  transform: translateX(-50%);
+}
+
+.player-card__fallback img {
+  width: 76px;
 }

@@ -1,0 +1,23 @@
+.bottom-nav {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(8, 8, 8, 0.96);
+}
+
+.bottom-nav__item {
+  min-height: 54px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+  color: #9d9d9d;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.bottom-nav__item.active {
+  color: var(--color-red-bright);
+}

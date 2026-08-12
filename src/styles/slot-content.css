@@ -1,0 +1,43 @@
+.player-card__status {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-green);
+}
+
+.player-card small,
+.player-card strong {
+  position: relative;
+  z-index: 4;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.player-card small {
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.player-card strong {
+  font-size: 16px;
+}
+
+.player-card__plus {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 2px solid rgba(255, 255, 255, 0.38);
+  border-radius: 50%;
+}
+
+.player-card__outline {
+  position: absolute;
+  inset: 18px 22px 58px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 20px 20px 6px 6px;
+}
