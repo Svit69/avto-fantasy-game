@@ -1,7 +1,7 @@
 .player-card__info {
   position: relative;
   z-index: 4;
-  height: 42%;
+  height: 39%;
   display: grid;
   grid-template-rows: 1fr auto 1fr;
   align-items: center;

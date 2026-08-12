@@ -1,7 +1,7 @@
 .player-card {
   position: relative;
-  width: clamp(102px, 29vw, 122px);
-  height: clamp(140px, 20dvh, 166px);
+  width: clamp(88px, 25vw, 106px);
+  height: clamp(150px, 22dvh, 178px);
   padding: 0;
   border: 1px solid rgba(255, 42, 61, 0.9);
   border-radius: 10px;
@@ -19,7 +19,7 @@
 
 .player-card__media {
   position: relative;
-  height: 58%;
+  height: 61%;
   overflow: hidden;
 }
 

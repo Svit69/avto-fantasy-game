@@ -16,7 +16,7 @@ function PlayerCardIdentity({ player }) {
   return (
     <section className="player-card__media" aria-label={player.getName()}>
       <img className="player-card__club-logo" src={player.getClub().getLogoUrl()} alt="" />
-      <span className="player-card__remove"><X size={18} strokeWidth={3} /></span>
+      <span className="player-card__remove"><X size={13} strokeWidth={3} /></span>
       <img className="player-card__photo" src={PlayerPhotoService.buildPublicPhotoUrl(player)} alt={player.getName()} onError={showDefaultPhoto} />
     </section>
   );

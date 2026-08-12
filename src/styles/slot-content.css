@@ -6,16 +6,16 @@
 }
 
 .player-card__club-logo {
-  left: 7px;
-  width: 28px;
-  height: 24px;
+  left: 6px;
+  width: 38px;
+  height: 32px;
   object-fit: contain;
 }
 
 .player-card__remove {
-  right: 7px;
-  width: 28px;
-  height: 28px;
+  right: 6px;
+  width: 21px;
+  height: 21px;
   display: grid;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.24);
@@ -26,11 +26,11 @@
 .player-card__score {
   position: absolute;
   left: 0;
-  top: 42%;
+  top: 32%;
   z-index: 5;
-  min-width: 30px;
-  padding: 4px 7px;
+  min-width: 28px;
+  padding: 3px 7px;
   border-radius: 0 8px 8px 0;
   background: linear-gradient(180deg, #ff1e18, #aa0007);
-  font-size: clamp(18px, 5vw, 25px);
+  font-size: clamp(17px, 4.6vw, 23px);
 }
