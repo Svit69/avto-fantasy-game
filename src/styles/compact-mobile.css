@@ -20,6 +20,21 @@
     height: clamp(98px, 15dvh, 122px);
   }
 
+  .player-card__club-logo {
+    width: 22px;
+    height: 20px;
+  }
+
+  .player-card__remove {
+    width: 24px;
+    height: 24px;
+  }
+
+  .player-card__score {
+    min-width: 24px;
+    padding: 3px 6px;
+  }
+
   .save-button {
     min-height: 44px;
   }

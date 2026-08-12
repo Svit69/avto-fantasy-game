@@ -2,36 +2,33 @@
   position: relative;
   width: clamp(90px, 27vw, 112px);
   height: clamp(108px, 16dvh, 142px);
-  display: grid;
-  place-items: end center;
-  padding: 8px 8px 12px;
-  border: 1px solid rgba(255, 42, 61, 0.78);
-  border-radius: 8px;
-  background: linear-gradient(180deg, rgba(44, 8, 9, 0.72), rgba(5, 5, 5, 0.96));
-  box-shadow: 0 0 20px rgba(255, 42, 61, 0.14);
+  padding: 0;
+  border: 1px solid rgba(255, 42, 61, 0.9);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(168, 5, 12, 0.9), rgba(13, 13, 13, 0.98)),
+    repeating-linear-gradient(135deg, transparent 0 18px, rgba(255, 255, 255, 0.06) 19px);
+  box-shadow: 0 0 16px rgba(255, 42, 61, 0.34), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   cursor: pointer;
   overflow: hidden;
 }
 
-.player-card__photo,
-.player-card__fallback {
-  position: absolute;
-  inset: 6px 6px 39px;
+.player-card.selected {
+  border-color: var(--color-red-bright);
+}
+
+.player-card__media {
+  position: relative;
+  height: 58%;
+  overflow: hidden;
 }
 
 .player-card__photo {
+  position: absolute;
+  inset: 5px 4px 0;
   z-index: 2;
-  width: calc(100% - 12px);
-  height: calc(100% - 45px);
+  width: calc(100% - 8px);
+  height: calc(100% - 5px);
   object-fit: cover;
   object-position: top center;
-}
-
-.player-card__fallback {
-  display: grid;
-  place-items: center;
-}
-
-.player-card__fallback img {
-  width: clamp(58px, 17vw, 76px);
 }

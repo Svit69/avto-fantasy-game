@@ -13,6 +13,8 @@ import "./styles/position.css";
 import "./styles/position-groups.css";
 import "./styles/slot.css";
 import "./styles/slot-content.css";
+import "./styles/player-card-info.css";
+import "./styles/player-card-empty.css";
 import "./styles/summary.css";
 import "./styles/save-button.css";
 import "./styles/bottom-nav.css";
