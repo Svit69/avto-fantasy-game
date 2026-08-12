@@ -19,7 +19,7 @@ function FilledSlot({ player }) {
         className="player-card__photo"
         src={PlayerPhotoService.buildPublicPhotoUrl(player)}
         alt={player.getName()}
-        onError={hideUnavailablePhoto}
+        onError={showDefaultPhoto}
       />
       <span className="player-card__fallback" aria-hidden="true">
         <img src={player.getClub().getJerseyUrl()} alt="" />
@@ -30,8 +30,8 @@ function FilledSlot({ player }) {
   );
 }
 
-function hideUnavailablePhoto(event) {
-  event.currentTarget.style.display = "none";
+function showDefaultPhoto(event) {
+  PlayerPhotoService.replaceMissingPhotoWithDefault(event.currentTarget);
 }
 
 function EmptySlot() {
