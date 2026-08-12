@@ -1,36 +1,33 @@
-import { Player } from "../models/Player.js";
 import { RosterSlot } from "../models/RosterSlot.js";
 import { TeamRoster } from "../models/TeamRoster.js";
-import { clubs } from "../data/clubs.js";
-
-const positions = {
-  goalkeeper: "ВРАТАРЬ",
-  defender: "ЗАЩИТНИКИ",
-  forward: "НАПАДАЮЩИЕ",
-};
+import { playerRecords } from "../data/players.js";
+import { playerPositions } from "../data/positions.js";
+import { createPlayersFromRecords } from "./PlayerFactory.js";
 
 export function buildInitialRoster() {
   const players = createStarterPlayers();
   const slots = [
-    new RosterSlot(positions.goalkeeper, players[0]),
-    new RosterSlot(positions.defender, players[1]),
-    new RosterSlot(positions.defender),
-    new RosterSlot(positions.forward, players[2]),
-    new RosterSlot(positions.forward),
-    new RosterSlot(positions.forward),
+    new RosterSlot(playerPositions.goalkeeper, players[0]),
+    new RosterSlot(playerPositions.defender, players[1]),
+    new RosterSlot(playerPositions.defender),
+    new RosterSlot(playerPositions.forward, players[2]),
+    new RosterSlot(playerPositions.forward),
+    new RosterSlot(playerPositions.forward),
   ];
 
   return new TeamRoster(slots, 100);
 }
 
 function createStarterPlayers() {
+  const players = createPlayersFromRecords(playerRecords);
+
   return [
-    createPlayer("gk-1", "Основной вратарь", positions.goalkeeper, 1.8, clubs.automobilist),
-    createPlayer("df-1", "Левый защитник", positions.defender, 1.9, clubs.automobilist),
-    createPlayer("fw-1", "Центр нападения", positions.forward, 1.8, clubs.gornyak),
+    findPlayerByLastName(players, "Аликин"),
+    findPlayerByLastName(players, "Блэкер"),
+    findPlayerByLastName(players, "Голышев"),
   ];
 }
 
-function createPlayer(id, name, position, price, club) {
-  return new Player({ id, name, position, price, club });
+function findPlayerByLastName(players, lastName) {
+  return players.find((player) => player.getLastName() === lastName);
 }

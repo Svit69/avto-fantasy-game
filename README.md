@@ -19,3 +19,8 @@ Output directory: `dist`
 
 Фронтенд читает пользователя из `window.Telegram.WebApp.initDataUnsafe.user`.
 Для боевой авторизации нужно добавить серверную проверку `initData` бота.
+
+## Игроки
+
+Данные игроков лежат в `src/data/`.
+Фото игроков добавляйте в `public/players/` с тем же именем файла.
