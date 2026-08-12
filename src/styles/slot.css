@@ -1,7 +1,7 @@
 .player-card {
   position: relative;
-  width: 112px;
-  height: 144px;
+  width: clamp(90px, 27vw, 112px);
+  height: clamp(108px, 16dvh, 142px);
   display: grid;
   place-items: end center;
   padding: 8px 8px 12px;
@@ -16,13 +16,13 @@
 .player-card__photo,
 .player-card__fallback {
   position: absolute;
-  inset: 7px 7px 44px;
+  inset: 6px 6px 39px;
 }
 
 .player-card__photo {
   z-index: 2;
-  width: calc(100% - 14px);
-  height: calc(100% - 51px);
+  width: calc(100% - 12px);
+  height: calc(100% - 45px);
   object-fit: cover;
   object-position: top center;
 }
@@ -33,5 +33,5 @@
 }
 
 .player-card__fallback img {
-  width: 76px;
+  width: clamp(58px, 17vw, 76px);
 }

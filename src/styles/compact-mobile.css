@@ -1,0 +1,26 @@
+@media (max-height: 860px) {
+  .header {
+    height: 72px;
+  }
+
+  .team-dashboard {
+    padding-top: 10px;
+  }
+
+  .metrics {
+    margin-block: 8px;
+  }
+
+  .metric-card {
+    min-height: 60px;
+    padding: 8px;
+  }
+
+  .player-card {
+    height: clamp(98px, 15dvh, 122px);
+  }
+
+  .save-button {
+    min-height: 44px;
+  }
+}
