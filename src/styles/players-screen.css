@@ -1,5 +1,7 @@
 .players-screen {
-  padding: 28px 24px calc(96px + env(safe-area-inset-bottom));
+  max-width: 100%;
+  padding: 24px 16px calc(96px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
 }
 
 .players-screen__header {
@@ -24,6 +26,6 @@
 
 .player-list {
   display: grid;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 9px;
+  margin-top: 16px;
 }
