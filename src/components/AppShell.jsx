@@ -6,6 +6,7 @@ import { TelegramLoginStatus } from "./TelegramLoginStatus.jsx";
 
 export function AppShell(props) {
   const { roster, activeSection, onSectionChange, onPlayerSelect, onPlayerRemove } = props;
+  const { authorizedUser, isTelegramRuntime } = props;
   const isPlayersSection = activeSection === "Игроки";
 
   return (
@@ -18,8 +19,8 @@ export function AppShell(props) {
           <TeamLineup roster={roster} onAddPlayer={onSectionChange} onPlayerRemove={onPlayerRemove} />
         )}
         <TelegramLoginStatus
-          authorizedUser={props.authorizedUser}
-          isTelegramRuntime={props.isTelegramRuntime}
+          authorizedUser={authorizedUser}
+          isTelegramRuntime={isTelegramRuntime}
         />
         <BottomNavigation activeSection={activeSection} onSectionChange={onSectionChange} />
       </section>
