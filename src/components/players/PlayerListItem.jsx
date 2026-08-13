@@ -2,7 +2,8 @@ import { Minus, Plus } from "lucide-react";
 import { PlayerPhotoService } from "../../services/PlayerPhotoService.js";
 import { PlayerCardMetrics } from "../../services/PlayerCardMetrics.js";
 
-export function PlayerListItem({ player, isSelectable, isSelected, actionLabel }) {
+export function PlayerListItem(props) {
+  const { player, isSelectable, isSelected, actionLabel } = props;
   const Icon = isSelected ? Minus : Plus;
 
   return (
@@ -14,11 +15,20 @@ export function PlayerListItem({ player, isSelectable, isSelected, actionLabel }
         <small>{PlayerCardMetrics.getFullPositionName(player)}</small>
       </div>
       <div className="player-row__price"><strong>{player.getPrice()}M</strong><span>ЦЕНА</span></div>
-      <button className={isSelected ? "player-row__action selected" : "player-row__action"} type="button" disabled={!isSelectable} aria-label={actionLabel}>
+      <button className={isSelected ? "player-row__action selected" : "player-row__action"} type="button" disabled={!isSelectable && !isSelected} aria-label={actionLabel} onClick={() => handlePlayerAction(props)}>
         <Icon size={28} />
       </button>
     </article>
   );
+}
+
+function handlePlayerAction({ player, isSelected, onPlayerSelect, onPlayerRemove }) {
+  if (isSelected) {
+    onPlayerRemove(player.getId());
+    return;
+  }
+
+  onPlayerSelect(player);
 }
 
 function showDefaultPhoto(event) {

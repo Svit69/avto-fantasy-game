@@ -5,7 +5,7 @@ import rinkBackgroundUrl from "../assets/background.png";
 
 const positions = ["ВРАТАРЬ", "ЗАЩИТНИКИ", "НАПАДАЮЩИЕ"];
 
-export function TeamLineup({ roster, onAddPlayer }) {
+export function TeamLineup({ roster, onAddPlayer, onPlayerRemove }) {
   return (
     <section className="team-dashboard">
       <div className="team-dashboard__header">
@@ -26,6 +26,7 @@ export function TeamLineup({ roster, onAddPlayer }) {
             position={position}
             slots={roster.getSlotsByPosition(position)}
             onAddPlayer={onAddPlayer}
+            onPlayerRemove={onPlayerRemove}
           />
         ))}
       </div>

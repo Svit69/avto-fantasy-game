@@ -4,7 +4,8 @@ import { PlayersScreen } from "./players/PlayersScreen.jsx";
 import { TeamLineup } from "./TeamLineup.jsx";
 import { TelegramLoginStatus } from "./TelegramLoginStatus.jsx";
 
-export function AppShell({ roster, activeSection, onSectionChange, authorizedUser, isTelegramRuntime }) {
+export function AppShell(props) {
+  const { roster, activeSection, onSectionChange, onPlayerSelect, onPlayerRemove } = props;
   const isPlayersSection = activeSection === "Игроки";
 
   return (
@@ -12,13 +13,13 @@ export function AppShell({ roster, activeSection, onSectionChange, authorizedUse
       <section className="phone-frame" aria-label="Авто Фэнтези">
         <Header authorizedUser={authorizedUser} />
         {isPlayersSection ? (
-          <PlayersScreen roster={roster} />
+          <PlayersScreen roster={roster} onPlayerSelect={onPlayerSelect} onPlayerRemove={onPlayerRemove} />
         ) : (
-          <TeamLineup roster={roster} onAddPlayer={onSectionChange} />
+          <TeamLineup roster={roster} onAddPlayer={onSectionChange} onPlayerRemove={onPlayerRemove} />
         )}
         <TelegramLoginStatus
-          authorizedUser={authorizedUser}
-          isTelegramRuntime={isTelegramRuntime}
+          authorizedUser={props.authorizedUser}
+          isTelegramRuntime={props.isTelegramRuntime}
         />
         <BottomNavigation activeSection={activeSection} onSectionChange={onSectionChange} />
       </section>

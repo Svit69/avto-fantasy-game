@@ -1,7 +1,7 @@
 import { EmptyPlayerCard } from "./player-card/EmptyPlayerCard.jsx";
 import { FilledPlayerCard } from "./player-card/FilledPlayerCard.jsx";
 
-export function LineupSlot({ slot, onAddPlayer }) {
+export function LineupSlot({ slot, onAddPlayer, onPlayerRemove }) {
   const player = slot.getPlayer();
   const handleSlotClick = () => {
     if (!slot.isFilled()) {
@@ -11,7 +11,7 @@ export function LineupSlot({ slot, onAddPlayer }) {
 
   return (
     <button className={slot.isFilled() ? "player-card selected" : "player-card"} type="button" aria-label={slot.getActionLabel()} onClick={handleSlotClick}>
-      {slot.isFilled() ? <FilledPlayerCard player={player} /> : <EmptyPlayerCard />}
+      {slot.isFilled() ? <FilledPlayerCard player={player} onPlayerRemove={onPlayerRemove} /> : <EmptyPlayerCard />}
     </button>
   );
 }

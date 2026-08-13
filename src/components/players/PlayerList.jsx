@@ -1,7 +1,7 @@
 import { PlayerAvailabilityService } from "../../services/PlayerAvailabilityService.js";
 import { PlayerListItem } from "./PlayerListItem.jsx";
 
-export function PlayerList({ players, roster }) {
+export function PlayerList({ players, roster, onPlayerSelect, onPlayerRemove }) {
   return (
     <section className="player-list" aria-label="Список игроков">
       {players.map((player) => (
@@ -11,6 +11,8 @@ export function PlayerList({ players, roster }) {
           isSelectable={PlayerAvailabilityService.canSelectPlayer(player, roster)}
           isSelected={PlayerAvailabilityService.isPlayerSelected(player, roster)}
           actionLabel={PlayerAvailabilityService.getSelectionLabel(player, roster)}
+          onPlayerSelect={onPlayerSelect}
+          onPlayerRemove={onPlayerRemove}
         />
       ))}
     </section>

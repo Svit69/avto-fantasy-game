@@ -7,7 +7,7 @@ import { PlayerList } from "./PlayerList.jsx";
 
 const players = createPlayersFromRecords(playerRecords);
 
-export function PlayersScreen({ roster }) {
+export function PlayersScreen({ roster, onPlayerSelect, onPlayerRemove }) {
   const [activeFilter, setActiveFilter] = useState("all");
   const visiblePlayers = filterPlayersByPosition(players, activeFilter);
 
@@ -21,7 +21,12 @@ export function PlayersScreen({ roster }) {
         </div>
       </div>
       <PlayerFilterTabs activeFilter={activeFilter} onFilterChange={setActiveFilter} />
-      <PlayerList players={visiblePlayers} roster={roster} />
+      <PlayerList
+        players={visiblePlayers}
+        roster={roster}
+        onPlayerSelect={onPlayerSelect}
+        onPlayerRemove={onPlayerRemove}
+      />
     </section>
   );
 }
