@@ -1,32 +1,49 @@
 import { FantasyEntity } from "./FantasyEntity.js";
 
 export class Player extends FantasyEntity {
-  #firstName;
-  #lastName;
-  #position;
-  #price;
+  #data;
 
   constructor(playerData) {
     super(`${playerData.lastName}-${playerData.position}`);
-    this.#firstName = playerData.firstName;
-    this.#lastName = playerData.lastName;
-    this.#position = playerData.position;
-    this.#price = playerData.price;
+    this.#data = { ...playerData };
   }
 
   getFullName() {
-    return `${this.#firstName} ${this.#lastName}`;
+    return `${this.#data.firstName} ${this.#data.lastName}`;
+  }
+
+  getShortDisplayName() {
+    return `${this.#data.firstName.charAt(0)}. ${this.#data.lastName}`;
   }
 
   getLastName() {
-    return this.#lastName;
+    return this.#data.lastName;
   }
 
   getPosition() {
-    return this.#position;
+    return this.#data.position;
+  }
+
+  getNumber() {
+    return this.#data.number;
+  }
+
+  getCardProps(selected) {
+    return {
+      name: this.#data.firstName,
+      secondName: this.#data.lastName,
+      number: this.#data.number,
+      position: this.#data.position,
+      price: this.#data.price,
+      image: this.#data.image,
+      selected,
+      team: this.#data.team,
+      teamLogo: this.#data.teamLogo,
+      points: this.#data.points,
+    };
   }
 
   getFormattedPrice() {
-    return `${this.#price}M`;
+    return `${this.#data.price}M`;
   }
 }

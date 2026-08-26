@@ -1,0 +1,40 @@
+.card-points {
+  left: 5px;
+  bottom: 8px;
+  padding: 2px 8px;
+  background: var(--accent);
+  font-size: clamp(24px, 7vw, 40px);
+}
+
+.card-position {
+  right: 5px;
+  bottom: 8px;
+  font-size: 12px;
+}
+
+.card-selected-label {
+  padding: 4px 2px;
+  flex: 0 0 auto;
+  background: var(--accent);
+  font-size: 10px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.card-paper-zone {
+  flex: 0 0 auto;
+  padding: 7px 6px 8px;
+  background: linear-gradient(145deg, #f4eee2, #cdbfa9);
+  color: #1D1D1E;
+}
+
+.card-name {
+  font-size: clamp(12px, 3.2vw, 18px);
+  font-weight: 900;
+}
+
+.card-price {
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 900;
+}

@@ -5,9 +5,10 @@ export class RosterFactory {
   createDefaultRoster(players) {
     const slots = [
       new RosterSlot("нападающий", players[0]),
+      new RosterSlot("нападающий"),
       new RosterSlot("нападающий", players[1]),
       new RosterSlot("защитник", players[2]),
-      new RosterSlot("защитник", players[3]),
+      new RosterSlot("защитник"),
       new RosterSlot("вратарь", players[4]),
     ];
 

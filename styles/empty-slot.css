@@ -1,0 +1,31 @@
+.empty-player-slot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  aspect-ratio: 0.66;
+  padding: 10px 4px;
+  color: var(--text-main);
+  background: rgba(29, 29, 30, 0.34);
+  border: 1px dashed rgba(253, 255, 255, 0.54);
+  box-shadow: 0 0 14px rgba(224, 24, 34, 0.18);
+  clip-path: polygon(3% 1%, 100% 0, 98% 98%, 5% 100%, 0 5%);
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.empty-player-slot:hover,
+.empty-player-slot:active {
+  box-shadow: 0 0 24px rgba(224, 24, 34, 0.36);
+  transform: scale(1.03) rotate(0deg);
+}
+
+.empty-slot-plus {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: 32px;
+}

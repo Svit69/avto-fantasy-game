@@ -1,0 +1,30 @@
+.draft-title {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  font-family: "Arial Narrow", "Roboto Condensed", Impact, sans-serif;
+  font-size: clamp(30px, 9.4vw, 72px);
+  font-stretch: condensed;
+  font-weight: 900;
+  line-height: 0.88;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.draft-title {
+  background-image: linear-gradient(var(--text-main), var(--text-main)),
+    repeating-linear-gradient(105deg, transparent 0 5px, #6b0d0c 5px 7px);
+  background-blend-mode: screen;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.26);
+}
+
+.draft-subtitle {
+  margin: 10px 0 0;
+  color: rgba(253, 255, 255, 0.82);
+  font-size: 18px;
+  font-weight: 900;
+  text-transform: uppercase;
+}

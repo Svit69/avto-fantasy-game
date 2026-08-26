@@ -1,8 +1,10 @@
 import { INITIAL_PLAYERS } from "../data/players.js";
 import { DraftFieldView } from "../views/DraftFieldView.js";
+import { DraftLineupView } from "../views/DraftLineupView.js";
+import { EmptyPlayerSlotView } from "../views/EmptyPlayerSlotView.js";
 import { FooterView } from "../views/FooterView.js";
 import { HeaderView } from "../views/HeaderView.js";
-import { SlotView } from "../views/SlotView.js";
+import { PlayerCardView } from "../views/PlayerCardView.js";
 import { PlayerFactory } from "../services/PlayerFactory.js";
 import { RosterFactory } from "../services/RosterFactory.js";
 
@@ -21,7 +23,11 @@ export class AppController {
 
   #renderApplicationLayout(teamRoster) {
     const headerView = new HeaderView();
-    const draftFieldView = new DraftFieldView(new SlotView());
+    const lineupView = new DraftLineupView(
+      new PlayerCardView(),
+      new EmptyPlayerSlotView(),
+    );
+    const draftFieldView = new DraftFieldView(lineupView);
     const footerView = new FooterView();
 
     this.rootElement.innerHTML = `
