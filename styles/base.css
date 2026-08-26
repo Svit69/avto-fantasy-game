@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100%;
+  overflow-x: hidden;
+  background: var(--surface-main);
+  color: var(--text-main);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+select {
+  font: inherit;
+}
+
+.app {
+  min-height: 100dvh;
+  background: var(--surface-main);
+}
+
+.scroll-area {
+  min-height: 100dvh;
+  padding: calc(var(--header-height) + 24px) 16px
+    calc(var(--footer-height) + 24px);
+}

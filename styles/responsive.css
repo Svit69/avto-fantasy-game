@@ -1,0 +1,25 @@
+@media (min-width: 768px) {
+  :root {
+    --header-height: 84px;
+    --footer-height: 120px;
+  }
+
+  .scroll-area {
+    padding-inline: 32px;
+  }
+
+  .line-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    background: #240504;
+  }
+
+  .app {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+}

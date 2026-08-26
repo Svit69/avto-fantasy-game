@@ -1,0 +1,20 @@
+.brand-logo {
+  justify-self: center;
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+}
+
+.brand-fallback {
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  width: 54px;
+  height: 54px;
+  border: 3px solid var(--text-main);
+  border-radius: 50%;
+  color: var(--text-main);
+  background: var(--accent);
+  font-size: 28px;
+  font-weight: 900;
+}

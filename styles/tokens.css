@@ -1,0 +1,13 @@
+:root {
+  --surface-fixed: #1D1D1E;
+  --surface-main: #840F0E;
+  --text-main: #FDFFFF;
+  --text-muted: rgba(253, 255, 255, 0.68);
+  --accent: #E01822;
+  --accent-soft: rgba(224, 24, 34, 0.32);
+  --line: rgba(253, 255, 255, 0.14);
+  --shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
+  --header-height: 76px;
+  --footer-height: 132px;
+  --radius-md: 8px;
+}
