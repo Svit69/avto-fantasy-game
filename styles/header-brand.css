@@ -9,7 +9,7 @@
   justify-self: center;
   width: 62px;
   height: 62px;
-  background-image: url("../assets/avto_logo.png");
+  background-image: url("/assets/avto_logo.png");
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;

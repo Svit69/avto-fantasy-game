@@ -1,6 +1,6 @@
 import { ROSTER_POSITIONS } from "./positions.js";
 
-const teamLogo = "./assets/avto_logo.png";
+const teamLogo = "/assets/avto_logo.png";
 const team = "Автомобилист";
 
 export const INITIAL_PLAYERS = Object.freeze([
