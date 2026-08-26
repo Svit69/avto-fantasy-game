@@ -22,19 +22,16 @@ export class AppController {
   }
 
   #renderApplicationLayout(teamRoster) {
-    const headerView = new HeaderView();
     const lineupView = new DraftLineupView(
       new PlayerCardView(),
       new EmptyPlayerSlotView(),
     );
-    const draftFieldView = new DraftFieldView(lineupView);
-    const footerView = new FooterView();
 
     this.rootElement.innerHTML = `
       <div class="app">
-        ${headerView.render()}
-        ${draftFieldView.render(teamRoster)}
-        ${footerView.render(teamRoster)}
+        ${new HeaderView().render()}
+        ${new DraftFieldView(lineupView).render(teamRoster)}
+        ${new FooterView().render(teamRoster)}
       </div>
     `;
   }
@@ -42,14 +39,15 @@ export class AppController {
   #enableBrandLogoFallback() {
     const logoElement = this.rootElement.querySelector("[data-logo]");
     logoElement.addEventListener("error", () => {
-      logoElement.replaceWith(this.#createTextLogoElement());
+      logoElement.replaceWith(this.#createBrandFallbackElement());
     });
   }
 
-  #createTextLogoElement() {
+  #createBrandFallbackElement() {
     const fallbackElement = document.createElement("div");
     fallbackElement.className = "brand-fallback";
-    fallbackElement.textContent = "А";
+    fallbackElement.setAttribute("role", "img");
+    fallbackElement.setAttribute("aria-label", "Логотип Автомобилиста");
     return fallbackElement;
   }
 }
