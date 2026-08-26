@@ -25,6 +25,6 @@ select {
 
 .scroll-area {
   min-height: 100dvh;
-  padding: calc(var(--header-height) + 24px) 16px
+  padding: calc(var(--header-height) + 24px) clamp(12px, 4vw, 18px)
     calc(var(--footer-height) + 24px);
 }

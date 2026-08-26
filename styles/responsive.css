@@ -4,10 +4,6 @@
     --footer-height: 120px;
   }
 
-  .scroll-area {
-    padding-inline: 32px;
-  }
-
   .lineup-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
