@@ -1,0 +1,8 @@
+.lineup-slot {
+  min-width: 0;
+}
+
+.lineup-slot > .player-card,
+.lineup-slot > .empty-player-slot {
+  width: 100%;
+}

@@ -8,11 +8,12 @@
 .card-selected-label {
   left: 9%;
   bottom: 38%;
-  width: 36%;
+  width: 44%;
   padding: 0 2px;
   background: var(--accent);
   font-size: 9px;
   text-align: center;
+  white-space: nowrap;
 }
 
 .card-info-stack {

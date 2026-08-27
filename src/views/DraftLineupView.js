@@ -31,12 +31,18 @@ export class DraftLineupView {
 
   #renderSlots(slots) {
     return slots.map((slot, index) => {
-      if (slot.isFilled()) {
-        return this.playerCardView.render(slot.getPlayer().getCardProps(true), index, this.#findSlotIndex(slot));
-      }
-
-      return this.emptyPlayerSlotView.render(slot.getPosition(), index);
+      const slotIndex = this.#findSlotIndex(slot);
+      const slotContent = this.#renderSlotContent(slot, index, slotIndex);
+      return `<div class="lineup-slot" data-roster-slot="${slotIndex}" data-slot-order="${index}">${slotContent}</div>`;
     }).join("");
+  }
+
+  #renderSlotContent(slot, index, slotIndex) {
+    if (slot.isFilled()) {
+      return this.playerCardView.render(slot.getPlayer().getCardProps(true), index, slotIndex);
+    }
+
+    return this.emptyPlayerSlotView.render(slot.getPosition(), index);
   }
 
   #formatLineLabel(label, lineIndex) {

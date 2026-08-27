@@ -11,6 +11,10 @@ export class TeamRoster {
     return [...this.#slots];
   }
 
+  getSlotByIndex(slotIndex) {
+    return this.#slots.find((slot) => slot.getIndex() === slotIndex) ?? null;
+  }
+
   getBudgetLimit() {
     return this.#budgetLimit;
   }

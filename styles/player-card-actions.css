@@ -5,7 +5,7 @@
 .card-remove-button {
   position: absolute;
   top: 10%;
-  right: 0;
+  right: 4px;
   z-index: 7;
   display: grid;
   place-items: center;
@@ -16,7 +16,7 @@
   border: 2px solid var(--accent);
   border-radius: 50%;
   box-shadow: 0 0 12px rgba(224, 24, 34, 0.58);
-  transform: translate(50%, -50%);
+  transform: translate(35%, -50%);
   cursor: pointer;
   touch-action: manipulation;
 }
@@ -29,5 +29,5 @@
 }
 
 .card-remove-button:active {
-  transform: translate(50%, -50%) scale(0.94);
+  transform: translate(35%, -50%) scale(0.94);
 }

@@ -20,18 +20,14 @@ export class AppController {
     const teamRoster = new RosterFactory().createDefaultRoster(players);
     const draftFieldView = this.#createDraftFieldView();
     const footerView = new FooterView();
-    const updateRosterSections = () => this.#renderRosterSections(teamRoster, draftFieldView, footerView);
 
     this.#renderApplicationShell();
-    updateRosterSections();
-    new RosterSelectionController(this.rootElement, teamRoster, updateRosterSections).connectRosterActions();
+    this.#renderRosterSections(teamRoster, draftFieldView, footerView);
+    new RosterSelectionController(this.rootElement, teamRoster, new EmptyPlayerSlotView(), footerView).connectRosterActions();
   }
 
   #createDraftFieldView() {
-    const lineupView = new DraftLineupView(
-      new PlayerCardView(),
-      new EmptyPlayerSlotView(),
-    );
+    const lineupView = new DraftLineupView(new PlayerCardView(), new EmptyPlayerSlotView());
     return new DraftFieldView(lineupView);
   }
 

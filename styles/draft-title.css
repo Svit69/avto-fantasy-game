@@ -2,12 +2,14 @@
   width: 100%;
   max-width: 100%;
   margin: 0;
+  padding-top: 4px;
   font-family: "Maratype", "Arial Narrow", Impact, sans-serif;
   font-size: clamp(30px, 9.4vw, 72px);
   font-stretch: condensed;
   font-weight: 900;
   line-height: 0.88;
   text-transform: uppercase;
+  text-align: center;
   white-space: nowrap;
 }
 
@@ -25,5 +27,6 @@
   color: rgba(253, 255, 255, 0.82);
   font-size: 18px;
   font-weight: 900;
+  text-align: center;
   text-transform: uppercase;
 }

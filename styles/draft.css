@@ -4,5 +4,6 @@
 }
 
 .title-block {
-  margin-bottom: 18px;
+  margin: 8px 0 18px;
+  text-align: center;
 }
