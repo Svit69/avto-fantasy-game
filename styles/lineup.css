@@ -38,10 +38,17 @@
 }
 
 .lineup-defender .lineup-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  width: min(72%, 300px);
-  margin-inline: auto;
-  gap: clamp(18px, 8vw, 42px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lineup-defender .lineup-grid > :first-child {
+  grid-column: 1;
+  translate: 28% 0;
+}
+
+.lineup-defender .lineup-grid > :last-child {
+  grid-column: 3;
+  translate: -28% 0;
 }
 
 .lineup-goalkeeper .lineup-grid {
