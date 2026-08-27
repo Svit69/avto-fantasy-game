@@ -28,6 +28,6 @@
 .card-price {
   left: 14%;
   bottom: 7%;
-  color: #241C14;
+  color: var(--accent);
   font-size: 15px;
 }
