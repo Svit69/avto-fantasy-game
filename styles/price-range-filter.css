@@ -34,3 +34,11 @@
   accent-color: var(--accent);
   appearance: none;
 }
+
+.price-range-shell input::-webkit-slider-runnable-track { height: 5px; background: linear-gradient(90deg, var(--accent), #7D1112); border-radius: 999px; }
+
+.price-range-shell input::-webkit-slider-thumb { width: 28px; height: 28px; margin-top: -11px; appearance: none; background: var(--accent); border: 2px solid #FDFFFF; border-radius: 50%; box-shadow: 0 0 16px rgba(224, 24, 34, 0.7); }
+
+.price-range-shell input::-moz-range-track { height: 5px; background: linear-gradient(90deg, var(--accent), #7D1112); border-radius: 999px; }
+
+.price-range-shell input::-moz-range-thumb { width: 28px; height: 28px; background: var(--accent); border: 2px solid #FDFFFF; border-radius: 50%; box-shadow: 0 0 16px rgba(224, 24, 34, 0.7); }

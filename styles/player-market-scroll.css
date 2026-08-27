@@ -13,7 +13,7 @@
 
 .market-stats-scroll {
   display: grid;
-  align-items: end;
+  align-items: center;
   grid-auto-columns: minmax(82px, max-content);
   grid-auto-flow: column;
   gap: 14px;
@@ -36,9 +36,9 @@
   padding-left: 8px;
 }
 
-.market-header .market-stats-scroll span {
-  align-self: end;
-}
+.market-header .market-stats-scroll { align-items: end; }
+
+.market-header .market-stats-scroll span { align-self: end; }
 
 .market-row.is-disabled {
   opacity: 0.4;
