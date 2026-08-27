@@ -24,3 +24,10 @@
   font-display: swap;
   font-weight: 800;
 }
+
+@font-face {
+  font-family: "Heading Now 35 Medium";
+  src: url("/assets/fonts/heading-now-35-medium.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 500;
+}

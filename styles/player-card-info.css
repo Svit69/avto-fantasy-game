@@ -7,17 +7,17 @@
 
 .card-selected-label {
   left: 9%;
-  bottom: 46%;
+  bottom: 43%;
   width: 36%;
   padding: 0 2px;
   background: var(--accent);
-  font-size: 6px;
+  font-size: 7px;
   text-align: center;
 }
 
 .card-info-stack {
   left: 8%;
-  right: 6%;
+  right: 12%;
   bottom: 14.5%;
   display: flex;
   flex-direction: column;
@@ -25,10 +25,10 @@
 }
 
 .card-name {
-  font-family: "Heading Now 26 Bold", "Arial Narrow", Impact, sans-serif;
+  font-family: "Heading Now 35 Medium", "Arial Narrow", Impact, sans-serif;
   color: #241C14;
-  font-size: clamp(20px, 5.4vw, 31px);
-  font-weight: 700;
+  font-size: clamp(18px, 4.85vw, 28px);
+  font-weight: 500;
   line-height: 0.84;
 }
 
