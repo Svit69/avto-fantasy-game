@@ -1,0 +1,19 @@
+.app-header {
+  background-color: var(--surface-fixed);
+  background-image: linear-gradient(
+      rgba(29, 29, 30, 0.12),
+      rgba(29, 29, 30, 0.64)
+    ),
+    url("/assets/header_texture.png");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.app-header::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  background: rgba(0, 0, 0, 0.18);
+}

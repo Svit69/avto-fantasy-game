@@ -2,6 +2,7 @@
   position: fixed;
   inset: 0 0 auto;
   z-index: 20;
+  isolation: isolate;
   height: calc(var(--header-height) + env(safe-area-inset-top));
   padding: env(safe-area-inset-top) 16px 0;
   background: var(--surface-fixed);
