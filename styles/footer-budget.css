@@ -1,7 +1,6 @@
 .budget-value {
   display: flex;
   align-items: baseline;
-  gap: 6px;
   margin-top: 4px;
 }
 
@@ -9,13 +8,6 @@
   color: var(--text-main);
   font-size: 24px;
   font-weight: 900;
-}
-
-.budget-value span {
-  color: var(--text-muted);
-  font-size: 13px;
-  font-weight: 800;
-  text-transform: uppercase;
 }
 
 .budget-value.is-over-budget b {

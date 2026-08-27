@@ -18,7 +18,7 @@ export class FooterView {
           <div class="footer-stats">
             <div>
               <div class="stat-label">Бюджет</div>
-              <div class="budget-value ${budgetState}"><b>${remainingBudget}к</b><span>из ${budgetLimit}к</span></div>
+              <div class="budget-value ${budgetState}"><b>${remainingBudget}к</b></div>
             </div>
             <div>
               <div class="stat-label">Игроков заполнено</div>

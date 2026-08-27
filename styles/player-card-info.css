@@ -17,8 +17,8 @@
 }
 
 .card-info-stack {
-  left: 10%;
-  right: 18%;
+  left: 13%;
+  right: 15%;
   bottom: 9.5%;
   display: flex;
   flex-direction: column;
@@ -34,8 +34,14 @@
 }
 
 .card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
   font-family: "Maratype", "Arial Narrow", Impact, sans-serif;
   color: var(--accent);
-  font-size: 12px;
   line-height: 1;
 }
+
+.card-price span { font-size: 16px; }
+
+.card-price small { font-size: 9px; }

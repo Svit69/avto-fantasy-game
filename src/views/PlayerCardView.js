@@ -20,7 +20,7 @@ export class PlayerCardView {
         <div class="card-selected-label">ВЫБРАН</div>
         <div class="card-info-stack">
           <div class="card-name">${this.#formatShortName(props)}</div>
-          <div class="card-price">${props.price}к</div>
+          <div class="card-price"><span>${props.price}</span><small>к</small></div>
         </div>
       </article>
     `;

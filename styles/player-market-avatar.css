@@ -6,8 +6,8 @@
 }
 
 .market-player-avatar img {
-  width: 66px;
-  height: 66px;
+  width: 89px;
+  height: 89px;
   object-fit: contain;
-  transform: translate(-11px, 7px);
+  transform: translate(-19px, 6px);
 }
