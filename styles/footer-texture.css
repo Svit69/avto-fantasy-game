@@ -1,0 +1,11 @@
+.app-footer {
+  background-color: var(--surface-fixed);
+  background-image: linear-gradient(
+      rgba(29, 29, 30, 0.1),
+      rgba(29, 29, 30, 0.68)
+    ),
+    url("/assets/footer_texture.png");
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
