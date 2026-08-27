@@ -1,0 +1,19 @@
+@font-face {
+  font-family: "Maratype";
+  src: url("/assets/fonts/maratype.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Heading Now 44";
+  src: url("/assets/fonts/heading-now-44-regular.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Heading Now 26 Bold";
+  src: url("/assets/fonts/heading-now-26-bold.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 700;
+}

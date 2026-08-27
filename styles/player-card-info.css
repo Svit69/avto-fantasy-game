@@ -25,8 +25,10 @@
 }
 
 .card-name {
+  font-family: "Heading Now 26 Bold", "Arial Narrow", Impact, sans-serif;
   color: #241C14;
   font-size: clamp(9px, 2.55vw, 15px);
+  font-weight: 700;
   line-height: 1.05;
 }
 
