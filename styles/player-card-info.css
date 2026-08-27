@@ -1,0 +1,33 @@
+.card-selected-label,
+.card-name,
+.card-price {
+  position: absolute;
+  z-index: 5;
+  font-weight: 900;
+}
+
+.card-selected-label {
+  left: 16%;
+  right: 16%;
+  bottom: 25%;
+  padding: 2px;
+  background: var(--accent);
+  font-size: 9px;
+  text-align: center;
+}
+
+.card-name {
+  left: 14%;
+  right: 14%;
+  bottom: 15%;
+  color: #241C14;
+  font-size: clamp(10px, 2.8vw, 16px);
+  line-height: 1.05;
+}
+
+.card-price {
+  left: 14%;
+  bottom: 7%;
+  color: #241C14;
+  font-size: 15px;
+}

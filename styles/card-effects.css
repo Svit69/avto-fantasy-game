@@ -1,4 +1,3 @@
-.player-card::after,
 .empty-player-slot::after {
   position: absolute;
   inset: 0;
