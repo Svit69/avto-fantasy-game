@@ -26,7 +26,7 @@ export class PlayerMarketTableView {
       <button class="market-row ${disabled ? "is-disabled" : ""}" type="button"
         data-select-player="${player.getId()}" ${disabled ? "disabled" : ""}>
         <div class="market-player-cell">
-          <img src="${player.getImage()}" alt="${player.getFullName()}" />
+          <span class="market-player-avatar"><img src="${player.getImage()}" alt="${player.getFullName()}" /></span>
           <span><b>${player.getLastName().toUpperCase()}</b><small>${player.getTeam().toUpperCase()}</small></span>
         </div>
         <div class="market-stats-scroll">

@@ -13,13 +13,16 @@
 
 .market-stats-scroll {
   display: grid;
+  align-items: end;
   grid-auto-columns: minmax(82px, max-content);
   grid-auto-flow: column;
   gap: 14px;
   overflow-x: auto;
+  overflow-y: hidden;
   padding: 0 10px;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
+  touch-action: pan-x;
 }
 
 .market-stats-scroll b {
