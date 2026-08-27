@@ -1,0 +1,16 @@
+export const PLAYER_NUMBERS = Object.freeze({
+  golyshev: 15,
+  sprong: 11,
+  alikin: 18,
+  galkin: 1,
+  tryamkin: 88,
+  clague: 10,
+  denezhkin: 24,
+  busygin: 7,
+  slepyshev: 72,
+  barabanov: 17,
+  vorobyev: 55,
+  ruzicka: 21,
+  chernikov: 19,
+  yudin: 44,
+});
