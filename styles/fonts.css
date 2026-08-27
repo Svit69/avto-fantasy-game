@@ -17,3 +17,10 @@
   font-display: swap;
   font-weight: 700;
 }
+
+@font-face {
+  font-family: "Heading Now 27 Extrabold";
+  src: url("/assets/fonts/heading-now-27-extrabold.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 800;
+}

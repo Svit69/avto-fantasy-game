@@ -33,7 +33,8 @@
 }
 
 .card-price {
+  font-family: "Maratype", "Arial Narrow", Impact, sans-serif;
   color: var(--accent);
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1;
 }
