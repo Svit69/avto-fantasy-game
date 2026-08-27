@@ -1,0 +1,23 @@
+.tactical-board {
+  position: relative;
+  isolation: isolate;
+}
+
+.tactical-board::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  background-image: url("/assets/content_rink_overlay.png");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: min(100%, 620px) auto;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .tactical-board::before {
+    background-size: min(760px, 100%) auto;
+  }
+}

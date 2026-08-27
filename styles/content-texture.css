@@ -1,19 +1,17 @@
 .scroll-area {
   background-color: var(--surface-main);
-  background-image: url("/assets/content_rink_overlay.png"),
-    linear-gradient(
+  background-image: linear-gradient(
       rgba(132, 15, 14, 0.08),
       rgba(57, 5, 5, 0.18)
     ),
     url("/assets/content_texture.png");
-  background-position: center top, center top, center top;
-  background-repeat: no-repeat, repeat-y, repeat-y;
-  background-size: min(100%, 620px) auto, 100% auto, 100% auto;
+  background-position: center top, center top;
+  background-repeat: repeat-y, repeat-y;
+  background-size: 100% auto, 100% auto;
 }
 
 @media (min-width: 768px) {
   .scroll-area {
-    background-size: min(760px, 100%) auto, min(900px, 100%) auto,
-      min(900px, 100%) auto;
+    background-size: min(900px, 100%) auto, min(900px, 100%) auto;
   }
 }
