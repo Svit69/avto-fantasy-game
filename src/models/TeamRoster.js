@@ -27,7 +27,16 @@ export class TeamRoster {
     return this.#slots.length;
   }
 
+  getSelectedPlayerIds() {
+    return this.#slots.filter((slot) => slot.isFilled())
+      .map((slot) => slot.getPlayer().getId());
+  }
+
+  assignPlayerSelectionAt(slotIndex, player) {
+    this.getSlotByIndex(slotIndex)?.assignPlayerSelection(player);
+  }
+
   clearPlayerSelectionAt(slotIndex) {
-    this.#slots[slotIndex]?.clearPlayerSelection();
+    this.getSlotByIndex(slotIndex)?.clearPlayerSelection();
   }
 }

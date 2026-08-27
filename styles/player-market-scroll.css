@@ -1,0 +1,34 @@
+.market-player-cell b {
+  overflow: hidden;
+  font-size: 15px;
+  text-overflow: ellipsis;
+}
+
+.market-player-cell small,
+.market-stats-scroll small {
+  color: var(--text-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.market-stats-scroll {
+  display: grid;
+  grid-auto-columns: minmax(82px, max-content);
+  grid-auto-flow: column;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 0 10px;
+  scrollbar-width: none;
+}
+
+.market-stats-scroll b {
+  font-size: 17px;
+}
+
+.market-row.is-disabled {
+  opacity: 0.4;
+}
+
+.market-row:active:not(.is-disabled) {
+  background: rgba(224, 24, 34, 0.28);
+}

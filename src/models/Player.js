@@ -8,25 +8,23 @@ export class Player extends FantasyEntity {
     this.#data = { ...playerData };
   }
 
-  getFullName() {
-    return `${this.#data.firstName} ${this.#data.lastName}`;
-  }
+  getFullName() { return `${this.#data.firstName} ${this.#data.lastName}`; }
 
-  getShortDisplayName() {
-    return `${this.#data.firstName.charAt(0)}. ${this.#data.lastName}`;
-  }
+  getShortDisplayName() { return `${this.#data.firstName.charAt(0)}. ${this.#data.lastName}`; }
 
-  getLastName() {
-    return this.#data.lastName;
-  }
+  getLastName() { return this.#data.lastName; }
 
-  getPosition() {
-    return this.#data.position;
-  }
+  getTeam() { return this.#data.team; }
 
-  getNumber() {
-    return this.#data.number;
-  }
+  getPosition() { return this.#data.position; }
+
+  getPrice() { return this.#data.price; }
+
+  getImage() { return this.#data.image; }
+
+  getPoints() { return this.#data.points; }
+
+  getNumber() { return this.#data.number; }
 
   getCardProps(selected) {
     return {
@@ -43,7 +41,5 @@ export class Player extends FantasyEntity {
     };
   }
 
-  getFormattedPrice() {
-    return `${this.#data.price}M`;
-  }
+  getFormattedPrice() { return `${this.#data.price}M`; }
 }

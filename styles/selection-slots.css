@@ -1,0 +1,51 @@
+.selection-slot-strip {
+  display: grid;
+  grid-auto-columns: minmax(112px, 1fr);
+  grid-auto-flow: column;
+  gap: 8px;
+  margin: 8px 0 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.selection-slot {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: center;
+  min-height: 54px;
+  padding: 8px 28px 8px 8px;
+  background: rgba(253, 255, 255, 0.08);
+  border: 1px solid rgba(253, 255, 255, 0.18);
+  clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 96%);
+}
+
+.selection-slot.is-empty {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  color: var(--text-muted);
+  border-style: dashed;
+}
+
+.selection-slot img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.selection-slot span {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+}
+
+.selection-slot button {
+  position: absolute;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+}

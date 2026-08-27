@@ -1,13 +1,11 @@
 import { INITIAL_PLAYERS } from "../data/players.js";
 import { AppShellView } from "../views/AppShellView.js";
-import { DraftFieldView } from "../views/DraftFieldView.js";
-import { DraftLineupView } from "../views/DraftLineupView.js";
-import { EmptyPlayerSlotView } from "../views/EmptyPlayerSlotView.js";
-import { FooterView } from "../views/FooterView.js";
 import { HeaderView } from "../views/HeaderView.js";
-import { PlayerCardView } from "../views/PlayerCardView.js";
+import { PlayerSelectionState } from "../models/PlayerSelectionState.js";
+import { ApplicationViewFactory } from "../services/ApplicationViewFactory.js";
 import { PlayerFactory } from "../services/PlayerFactory.js";
 import { RosterFactory } from "../services/RosterFactory.js";
+import { PlayerSelectionController } from "./PlayerSelectionController.js";
 import { RosterSelectionController } from "./RosterSelectionController.js";
 
 export class AppController {
@@ -18,27 +16,25 @@ export class AppController {
   initializeApplication() {
     const players = new PlayerFactory().createPlayersFromCatalog(INITIAL_PLAYERS);
     const teamRoster = new RosterFactory().createDefaultRoster(players);
-    const draftFieldView = this.#createDraftFieldView();
-    const footerView = new FooterView();
+    const viewFactory = new ApplicationViewFactory();
+    const rosterDomRenderer = viewFactory.createRosterDomRenderer(this.rootElement, teamRoster);
 
     this.#renderApplicationShell();
-    this.#renderRosterSections(teamRoster, draftFieldView, footerView);
-    new RosterSelectionController(this.rootElement, teamRoster, new EmptyPlayerSlotView(), footerView).connectRosterActions();
+    rosterDomRenderer.renderRosterSections();
+    new RosterSelectionController(this.rootElement, teamRoster, rosterDomRenderer).connectRosterActions();
+    this.#connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory);
   }
 
-  #createDraftFieldView() {
-    const lineupView = new DraftLineupView(new PlayerCardView(), new EmptyPlayerSlotView());
-    return new DraftFieldView(lineupView);
+  #connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory) {
+    const drawerView = viewFactory.createPlayerSelectionDrawerView();
+    new PlayerSelectionController(
+      this.rootElement, teamRoster, players, rosterDomRenderer, drawerView, new PlayerSelectionState(),
+    ).connectPlayerSelectionActions();
   }
 
   #renderApplicationShell() {
     this.rootElement.innerHTML = new AppShellView(new HeaderView()).render();
     this.#enableBrandLogoFallback();
-  }
-
-  #renderRosterSections(teamRoster, draftFieldView, footerView) {
-    this.rootElement.querySelector("[data-draft-field]").innerHTML = draftFieldView.render(teamRoster);
-    this.rootElement.querySelector("[data-roster-footer]").innerHTML = footerView.render(teamRoster);
   }
 
   #enableBrandLogoFallback() {

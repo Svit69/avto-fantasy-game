@@ -1,9 +1,8 @@
 import { POSITION_LABELS, ROSTER_POSITIONS } from "../data/positions.js";
 
 export class DraftLineupView {
-  constructor(playerCardView, emptyPlayerSlotView) {
-    this.playerCardView = playerCardView;
-    this.emptyPlayerSlotView = emptyPlayerSlotView;
+  constructor(rosterSlotDomRenderer) {
+    this.rosterSlotDomRenderer = rosterSlotDomRenderer;
   }
 
   render(teamRoster) {
@@ -38,11 +37,7 @@ export class DraftLineupView {
   }
 
   #renderSlotContent(slot, index, slotIndex) {
-    if (slot.isFilled()) {
-      return this.playerCardView.render(slot.getPlayer().getCardProps(true), index, slotIndex);
-    }
-
-    return this.emptyPlayerSlotView.render(slot.getPosition(), index);
+    return this.rosterSlotDomRenderer.renderSlotContent(slot, index);
   }
 
   #formatLineLabel(label, lineIndex) {

@@ -28,6 +28,10 @@ export class RosterSlot {
     this.#player = null;
   }
 
+  assignPlayerSelection(player) {
+    this.#player = player;
+  }
+
   isFilled() {
     return Boolean(this.#player);
   }

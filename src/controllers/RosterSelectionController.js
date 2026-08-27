@@ -1,9 +1,8 @@
 export class RosterSelectionController {
-  constructor(rootElement, teamRoster, emptyPlayerSlotView, footerView) {
+  constructor(rootElement, teamRoster, rosterDomRenderer) {
     this.rootElement = rootElement;
     this.teamRoster = teamRoster;
-    this.emptyPlayerSlotView = emptyPlayerSlotView;
-    this.footerView = footerView;
+    this.rosterDomRenderer = rosterDomRenderer;
   }
 
   connectRosterActions() {
@@ -24,20 +23,7 @@ export class RosterSelectionController {
     if (!slotElement) return;
 
     this.teamRoster.clearPlayerSelectionAt(slotIndex);
-    this.#renderClearedSlot(slotIndex, slotElement);
-    this.#renderUpdatedFooter();
-  }
-
-  #renderClearedSlot(slotIndex, slotElement) {
-    const slot = this.teamRoster.getSlotByIndex(slotIndex);
-    if (!slot) return;
-
-    const orderIndex = Number(slotElement.dataset.slotOrder);
-    slotElement.innerHTML = this.emptyPlayerSlotView.render(slot.getPosition(), orderIndex);
-  }
-
-  #renderUpdatedFooter() {
-    this.rootElement.querySelector("[data-roster-footer]").innerHTML =
-      this.footerView.render(this.teamRoster);
+    this.rosterDomRenderer.renderSlotByIndex(slotIndex);
+    this.rosterDomRenderer.renderFooter();
   }
 }

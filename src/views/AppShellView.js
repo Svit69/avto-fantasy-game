@@ -9,6 +9,7 @@ export class AppShellView {
         ${this.headerView.render()}
         <div data-draft-field></div>
         <div data-roster-footer></div>
+        <div data-player-selection-root></div>
       </div>
     `;
   }
