@@ -9,11 +9,9 @@
 .line-label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: 0 0 8px;
-  font-family: "Heading Now 27 Extrabold", "Arial Narrow", Impact, sans-serif;
-  font-size: 22px;
-  font-weight: 800;
+  gap: 6px;
+  margin: 0 0 6px;
+  font: 800 clamp(36px, 10vw, 44px) / 0.78 "Heading Now 27 Extrabold", "Arial Narrow", Impact, sans-serif;
   text-transform: uppercase;
 }
 
