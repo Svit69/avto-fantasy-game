@@ -1,14 +1,23 @@
+.brand-anchor {
+  position: absolute;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: clamp(74px, 22vw, 116px);
+  height: var(--header-height);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
 .brand-logo {
-  justify-self: center;
-  width: 62px;
-  height: 62px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
 .brand-fallback {
-  justify-self: center;
-  width: 62px;
-  height: 62px;
+  width: clamp(74px, 22vw, 116px);
+  height: var(--header-height);
   background-image: url("/assets/avto_logo.png");
   background-position: center;
   background-repeat: no-repeat;

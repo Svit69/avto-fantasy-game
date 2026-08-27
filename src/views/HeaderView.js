@@ -10,8 +10,10 @@ export class HeaderView {
               <path d="M4 7h16M4 12h16M4 17h16" />
             </svg>
           </button>
-          <img class="brand-logo" src="/assets/avto_logo.png"
-            alt="Логотип Автомобилиста" data-logo />
+          <div class="brand-anchor">
+            <img class="brand-logo" src="/assets/avto_logo.png"
+              alt="Логотип Автомобилиста" data-logo />
+          </div>
           <select class="month-select" aria-label="Выбрать месяц">
             ${this.#renderMonthOptions()}
           </select>
