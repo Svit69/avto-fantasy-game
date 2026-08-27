@@ -1,4 +1,5 @@
 import { INITIAL_PLAYERS } from "../data/players.js";
+import { AppShellView } from "../views/AppShellView.js";
 import { DraftFieldView } from "../views/DraftFieldView.js";
 import { DraftLineupView } from "../views/DraftLineupView.js";
 import { EmptyPlayerSlotView } from "../views/EmptyPlayerSlotView.js";
@@ -13,28 +14,35 @@ export class AppController {
   constructor(rootElement) {
     this.rootElement = rootElement;
   }
+
   initializeApplication() {
     const players = new PlayerFactory().createPlayersFromCatalog(INITIAL_PLAYERS);
     const teamRoster = new RosterFactory().createDefaultRoster(players);
+    const draftFieldView = this.#createDraftFieldView();
+    const footerView = new FooterView();
+    const updateRosterSections = () => this.#renderRosterSections(teamRoster, draftFieldView, footerView);
 
-    this.#renderApplicationLayout(teamRoster);
-    new RosterSelectionController(this.rootElement, teamRoster, () => this.#renderApplicationLayout(teamRoster)).connectRosterActions();
+    this.#renderApplicationShell();
+    updateRosterSections();
+    new RosterSelectionController(this.rootElement, teamRoster, updateRosterSections).connectRosterActions();
   }
 
-  #renderApplicationLayout(teamRoster) {
+  #createDraftFieldView() {
     const lineupView = new DraftLineupView(
       new PlayerCardView(),
       new EmptyPlayerSlotView(),
     );
+    return new DraftFieldView(lineupView);
+  }
 
-    this.rootElement.innerHTML = `
-      <div class="app">
-        ${new HeaderView().render()}
-        ${new DraftFieldView(lineupView).render(teamRoster)}
-        ${new FooterView().render(teamRoster)}
-      </div>
-    `;
+  #renderApplicationShell() {
+    this.rootElement.innerHTML = new AppShellView(new HeaderView()).render();
     this.#enableBrandLogoFallback();
+  }
+
+  #renderRosterSections(teamRoster, draftFieldView, footerView) {
+    this.rootElement.querySelector("[data-draft-field]").innerHTML = draftFieldView.render(teamRoster);
+    this.rootElement.querySelector("[data-roster-footer]").innerHTML = footerView.render(teamRoster);
   }
 
   #enableBrandLogoFallback() {

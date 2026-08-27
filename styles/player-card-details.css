@@ -2,7 +2,7 @@
   position: absolute;
   top: 10%;
   left: 9%;
-  z-index: 5;
+  z-index: 3;
   min-width: 40px;
   overflow: hidden;
   background: var(--accent);
