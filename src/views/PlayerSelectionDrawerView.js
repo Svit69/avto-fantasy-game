@@ -30,7 +30,7 @@ export class PlayerSelectionDrawerView {
     return `
       ${this.#renderFilter("position", "Позиция", this.#formatPosition(filters.position))}
       ${this.#renderFilter("team", "Команда", filters.team)}
-      ${this.#renderFilter("price", "Цена", `до ${filters.maxPrice}M`)}
+      ${this.#renderFilter("price", "Цена", `до ${filters.maxPrice}к`)}
     `;
   }
 

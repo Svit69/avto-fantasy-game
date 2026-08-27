@@ -41,5 +41,5 @@ export class Player extends FantasyEntity {
     };
   }
 
-  getFormattedPrice() { return `${this.#data.price}M`; }
+  getFormattedPrice() { return `${this.#data.price}к`; }
 }

@@ -3,6 +3,9 @@ export class FooterView {
     const filledCount = teamRoster.calculateFilledPlayersCount();
     const totalCount = teamRoster.calculateTotalSlotsCount();
     const spentBudget = teamRoster.calculateSelectedPlayersPrice();
+    const budgetLimit = teamRoster.getBudgetLimit();
+    const remainingBudget = budgetLimit - spentBudget;
+    const budgetState = remainingBudget < 0 ? "is-over-budget" : "";
     const isComplete = filledCount === totalCount;
     const actionText = isComplete ? "ПОДТВЕРДИТЬ СОСТАВ" : "ИСКАТЬ ИГРОКОВ";
     const actionClass = isComplete ? "is-confirm-action" : "is-search-action";
@@ -15,7 +18,7 @@ export class FooterView {
           <div class="footer-stats">
             <div>
               <div class="stat-label">Бюджет</div>
-              <div class="stat-value">${spentBudget}/${teamRoster.getBudgetLimit()}M</div>
+              <div class="budget-value ${budgetState}"><b>${remainingBudget}к</b><span>из ${budgetLimit}к</span></div>
             </div>
             <div>
               <div class="stat-label">Игроков заполнено</div>

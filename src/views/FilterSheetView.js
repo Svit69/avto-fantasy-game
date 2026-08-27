@@ -31,7 +31,7 @@ export class FilterSheetView {
 
   #renderPriceOptions(filters) {
     return [4, 6, 8, 10, 13]
-      .map((price) => this.#renderOption("price", price, `до ${price}M`, filters.maxPrice === price))
+      .map((price) => this.#renderOption("price", price, `до ${price}к`, filters.maxPrice === price))
       .join("");
   }
 
