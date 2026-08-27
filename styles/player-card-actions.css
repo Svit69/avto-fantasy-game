@@ -4,13 +4,13 @@
 
 .card-remove-button {
   position: absolute;
-  top: 24%;
+  top: 14%;
   right: 0;
   z-index: 7;
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: 30px;
+  height: 30px;
   color: var(--text-main);
   background: radial-gradient(circle, #151515 0 56%, #050505 57% 100%);
   border: 2px solid var(--accent);
@@ -23,7 +23,7 @@
 
 .card-remove-button span {
   margin-top: -2px;
-  font-size: 31px;
+  font-size: 21px;
   font-weight: 900;
   line-height: 1;
 }
