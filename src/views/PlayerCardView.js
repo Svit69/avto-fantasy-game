@@ -7,10 +7,11 @@ export class PlayerCardView {
       <article class="player-card ${tiltClass}${selectedClass}">
         <img class="card-layer card-bottom-layer" src="/assets/card_bottom_layer.png" alt="" />
         <div class="card-live-layer">
-          <img class="card-team-logo" src="${props.teamLogo}" alt="${props.team}" />
-          <div class="card-points">${props.points}</div>
+          <div class="card-score-block">
+            <div class="card-points">${props.points}</div>
+            <div class="card-position">${this.#formatPosition(props.position)}</div>
+          </div>
           <img class="card-player-image" src="${props.image}" alt="${props.name} ${props.secondName}" onerror="this.remove()" />
-          <div class="card-position">${this.#formatPosition(props.position)}</div>
         </div>
         <img class="card-layer card-top-layer" src="/assets/card_top_layer.png" alt="" />
         <div class="card-selected-label">ВЫБРАН</div>

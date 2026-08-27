@@ -1,29 +1,27 @@
-.card-team-logo {
+.card-score-block {
   position: absolute;
   top: 4px;
   left: 4px;
   z-index: 3;
-  width: 28%;
-  max-width: 34px;
-}
-
-.card-points,
-.card-position {
-  position: absolute;
-  z-index: 3;
-  font-weight: 900;
+  min-width: 34px;
+  overflow: hidden;
+  background: var(--accent);
+  color: var(--text-main);
+  text-align: center;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.28);
 }
 
 .card-points {
-  left: 0;
-  bottom: 16%;
-  padding: 2px 7px;
-  background: var(--accent);
+  padding: 1px 6px 0;
   font-size: clamp(22px, 6vw, 38px);
+  font-weight: 900;
+  line-height: 0.95;
 }
 
 .card-position {
-  right: 4px;
-  bottom: 18%;
-  font-size: 11px;
+  padding: 0 4px 3px;
+  background: rgba(0, 0, 0, 0.24);
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
 }
