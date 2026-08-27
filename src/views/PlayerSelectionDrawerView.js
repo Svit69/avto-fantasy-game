@@ -43,7 +43,7 @@ export class PlayerSelectionDrawerView {
   }
 
   #formatPosition(position) {
-    const labels = { нападающий: "Нападающие", защитник: "Защитники", вратарь: "Вратари" };
+    const labels = { Все: "Все", нападающий: "Нападающие", защитник: "Защитники", вратарь: "Вратари" };
     return labels[position] ?? position;
   }
 }

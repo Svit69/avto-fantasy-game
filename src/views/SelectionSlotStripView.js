@@ -14,7 +14,7 @@ export class SelectionSlotStripView {
 
     const player = slot.getPlayer();
     return `
-      <div class="selection-slot" data-roster-slot="${slot.getIndex()}">
+      <div class="selection-slot is-filled" data-roster-slot="${slot.getIndex()}">
         <img src="/assets/avto_logo.png" alt="" />
         <span>${player.getLastName().toUpperCase()}</span>
         <button type="button" data-remove-slot="${slot.getIndex()}" aria-label="Удалить игрока">×</button>

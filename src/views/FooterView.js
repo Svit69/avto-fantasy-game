@@ -3,7 +3,11 @@ export class FooterView {
     const filledCount = teamRoster.calculateFilledPlayersCount();
     const totalCount = teamRoster.calculateTotalSlotsCount();
     const spentBudget = teamRoster.calculateSelectedPlayersPrice();
-    const confirmDisabled = teamRoster.canConfirmRoster() ? "" : "disabled";
+    const isComplete = filledCount === totalCount;
+    const actionText = isComplete ? "ПОДТВЕРДИТЬ СОСТАВ" : "ИСКАТЬ ИГРОКОВ";
+    const actionClass = isComplete ? "is-confirm-action" : "is-search-action";
+    const actionData = isComplete ? "" : "data-open-player-panel";
+    const disabled = isComplete && !teamRoster.canConfirmRoster() ? "disabled" : "";
 
     return `
       <footer class="app-footer">
@@ -18,7 +22,7 @@ export class FooterView {
               <div class="stat-value">${filledCount}/${totalCount}</div>
             </div>
           </div>
-          <button class="confirm-button" ${confirmDisabled}>ПОДТВЕРДИТЬ СОСТАВ</button>
+          <button class="confirm-button ${actionClass}" type="button" ${actionData} ${disabled}>${actionText}</button>
         </div>
       </footer>
     `;

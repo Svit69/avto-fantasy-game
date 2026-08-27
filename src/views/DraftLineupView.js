@@ -30,23 +30,15 @@ export class DraftLineupView {
 
   #renderSlots(slots) {
     return slots.map((slot, index) => {
-      const slotIndex = this.#findSlotIndex(slot);
-      const slotContent = this.#renderSlotContent(slot, index, slotIndex);
+      const slotIndex = slot.getIndex();
+      const slotContent = this.rosterSlotDomRenderer.renderSlotContent(slot, index);
       return `<div class="lineup-slot" data-roster-slot="${slotIndex}" data-slot-order="${index}">${slotContent}</div>`;
     }).join("");
-  }
-
-  #renderSlotContent(slot, index, slotIndex) {
-    return this.rosterSlotDomRenderer.renderSlotContent(slot, index);
   }
 
   #formatLineLabel(label, lineIndex) {
     const starts = ["‹‹", "‹‹‹", "‹‹"];
     const ends = ["››", "›››", "››"];
     return `${starts[lineIndex]} ${label.toUpperCase()} ${ends[lineIndex]}`;
-  }
-
-  #findSlotIndex(slot) {
-    return slot.getIndex();
   }
 }

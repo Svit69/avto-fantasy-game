@@ -1,17 +1,14 @@
 .app-footer {
-  position: fixed;
   inset: auto 0 0;
-  z-index: 20;
   min-height: calc(var(--footer-height) + env(safe-area-inset-bottom));
   padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
   background: var(--surface-fixed);
   border-top: 1px solid var(--line);
+  position: fixed;
+  z-index: 20;
 }
 
-.footer-content {
-  max-width: 720px;
-  margin: 0 auto;
-}
+.footer-content { max-width: 720px; margin: 0 auto; }
 
 .footer-stats {
   display: grid;
@@ -27,11 +24,7 @@
   text-transform: uppercase;
 }
 
-.stat-value {
-  margin-top: 4px;
-  font-size: 22px;
-  font-weight: 900;
-}
+.stat-value { margin-top: 4px; font-size: 22px; font-weight: 900; }
 
 .confirm-button {
   width: 100%;
@@ -44,12 +37,8 @@
   touch-action: manipulation;
 }
 
-.confirm-button:active,
-.icon-button:active {
+.confirm-button:active, .icon-button:active {
   opacity: 0.76;
 }
 
-.confirm-button:disabled {
-  opacity: 0.42;
-  cursor: not-allowed;
-}
+.confirm-button:disabled { opacity: 0.42; cursor: not-allowed; }

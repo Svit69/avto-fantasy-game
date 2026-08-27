@@ -1,10 +1,6 @@
-.tactical-board {
-  padding: 14px 0 4px;
-}
+.tactical-board { padding: 14px 0 4px; }
 
-.lineup-section {
-  margin-top: 18px;
-}
+.lineup-section { margin-top: 18px; }
 
 .line-label {
   display: flex;
@@ -17,8 +13,7 @@
   text-transform: uppercase;
 }
 
-.line-label::before,
-.line-label::after {
+.line-label::before, .line-label::after {
   content: "";
   flex: 1;
   border-top: 1px dashed rgba(253, 255, 255, 0.3);
@@ -31,30 +26,22 @@
 }
 
 .lineup-grid {
-  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: center;
+  display: grid;
   gap: 8px;
 }
 
-.lineup-defender .lineup-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
+.lineup-defender .lineup-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
 .lineup-defender .lineup-grid > :first-child {
-  grid-column: 1;
-  translate: 28% 0;
+  grid-column: 1; translate: 28% 0;
 }
 
 .lineup-defender .lineup-grid > :last-child {
-  grid-column: 3;
-  translate: -28% 0;
+  grid-column: 3; translate: -28% 0;
 }
 
-.lineup-goalkeeper .lineup-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
+.lineup-goalkeeper .lineup-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
-.lineup-goalkeeper .lineup-grid > :first-child {
-  grid-column: 2;
-}
+.lineup-goalkeeper .lineup-grid > :first-child { grid-column: 2; }

@@ -20,21 +20,19 @@ export class FilterSheetView {
   }
 
   #renderPositionOptions(filters) {
-    return Object.values(ROSTER_POSITIONS).map((position) => {
-      return this.#renderOption("position", position, this.#formatPosition(position), filters.position === position);
-    }).join("");
+    return ["Все", ...Object.values(ROSTER_POSITIONS)]
+      .map((position) => this.#renderOption("position", position, this.#formatPosition(position), filters.position === position))
+      .join("");
   }
 
   #renderTeamOptions(filters, teams) {
-    return ["Все", ...teams].map((team) => {
-      return this.#renderOption("team", team, team, filters.team === team);
-    }).join("");
+    return ["Все", ...teams].map((team) => this.#renderOption("team", team, team, filters.team === team)).join("");
   }
 
   #renderPriceOptions(filters) {
-    return [4, 6, 8, 10, 13].map((price) => {
-      return this.#renderOption("price", price, `до ${price}M`, filters.maxPrice === price);
-    }).join("");
+    return [4, 6, 8, 10, 13]
+      .map((price) => this.#renderOption("price", price, `до ${price}M`, filters.maxPrice === price))
+      .join("");
   }
 
   #renderOption(kind, value, label, selected) {
@@ -46,7 +44,7 @@ export class FilterSheetView {
   }
 
   #formatPosition(position) {
-    const labels = { нападающий: "Нападающие", защитник: "Защитники", вратарь: "Вратари" };
+    const labels = { Все: "Все", нападающий: "Нападающие", защитник: "Защитники", вратарь: "Вратари" };
     return labels[position] ?? position;
   }
 }

@@ -4,7 +4,7 @@ export class PlayerMarketTableView {
     return `
       <div class="player-market">
         ${this.#renderHeader()}
-        ${this.#filterPlayers(players, filters).map((player) => this.#renderRow(player, selectedIds)).join("")}
+        ${this.#filterPlayers(players, filters).map((player) => this.#renderRow(player, selectedIds, teamRoster)).join("")}
       </div>
     `;
   }
@@ -20,11 +20,11 @@ export class PlayerMarketTableView {
     `;
   }
 
-  #renderRow(player, selectedIds) {
-    const selected = selectedIds.includes(player.getId());
+  #renderRow(player, selectedIds, teamRoster) {
+    const disabled = selectedIds.includes(player.getId()) || !teamRoster.findAvailableSlotForPlayer(null, player);
     return `
-      <button class="market-row ${selected ? "is-disabled" : ""}" type="button"
-        data-select-player="${player.getId()}" ${selected ? "disabled" : ""}>
+      <button class="market-row ${disabled ? "is-disabled" : ""}" type="button"
+        data-select-player="${player.getId()}" ${disabled ? "disabled" : ""}>
         <div class="market-player-cell">
           <img src="${player.getImage()}" alt="${player.getFullName()}" />
           <span><b>${player.getLastName().toUpperCase()}</b><small>${player.getTeam().toUpperCase()}</small></span>
@@ -38,7 +38,7 @@ export class PlayerMarketTableView {
   }
 
   #filterPlayers(players, filters) {
-    return players.filter((player) => player.getPosition() === filters.position)
+    return players.filter((player) => filters.position === "Все" || player.getPosition() === filters.position)
       .filter((player) => filters.team === "Все" || player.getTeam() === filters.team)
       .filter((player) => player.getPrice() <= filters.maxPrice);
   }
