@@ -15,8 +15,10 @@ export class PlayerCardView {
         </div>
         <img class="card-layer card-top-layer" src="/assets/card_top_layer.png" alt="" />
         <div class="card-selected-label">ВЫБРАН</div>
-        <div class="card-name">${this.#formatShortName(props)}</div>
-        <div class="card-price">${props.price}M</div>
+        <div class="card-info-stack">
+          <div class="card-name">${this.#formatShortName(props)}</div>
+          <div class="card-price">${props.price}M</div>
+        </div>
       </article>
     `;
   }
