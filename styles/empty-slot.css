@@ -3,7 +3,7 @@
   display: grid;
   place-items: center;
   min-width: 0;
-  aspect-ratio: 0.74;
+  aspect-ratio: 0.72;
   padding: 10px 4px;
   color: var(--text-main);
   background: rgba(29, 29, 30, 0.34);

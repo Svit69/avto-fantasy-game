@@ -1,10 +1,12 @@
 .player-card {
   position: relative;
   min-width: 0;
-  aspect-ratio: 1086 / 1448;
+  aspect-ratio: 0.72;
   overflow: visible;
   color: var(--text-main);
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.34));
+  scale: 1 1.06;
+  transform-origin: center;
 }
 
 .card-layer {
