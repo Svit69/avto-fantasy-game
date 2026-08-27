@@ -29,6 +29,16 @@
   font-size: 17px;
 }
 
+.market-header .market-player-cell {
+  padding-left: 8px;
+}
+
+.market-header .market-stats-scroll span {
+  justify-items: center;
+  align-self: end;
+  text-align: center;
+}
+
 .market-row.is-disabled {
   opacity: 0.4;
 }

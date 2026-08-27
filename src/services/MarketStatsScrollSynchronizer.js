@@ -10,15 +10,21 @@ export class MarketStatsScrollSynchronizer {
         this.#syncScrollLeft(scrollContainers, container.scrollLeft);
       }, { passive: true });
     });
+    this.#togglePinnedColumnShadow(scrollContainers[0], 0);
   }
 
   #syncScrollLeft(scrollContainers, scrollLeft) {
     this.#syncing = true;
+    this.#togglePinnedColumnShadow(scrollContainers[0], scrollLeft);
     scrollContainers.forEach((container) => {
       if (container.scrollLeft !== scrollLeft) {
         container.scrollLeft = scrollLeft;
       }
     });
     requestAnimationFrame(() => { this.#syncing = false; });
+  }
+
+  #togglePinnedColumnShadow(container, scrollLeft) {
+    container?.closest(".player-market")?.classList.toggle("is-stats-scrolled", scrollLeft > 1);
   }
 }

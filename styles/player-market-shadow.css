@@ -1,0 +1,18 @@
+.market-player-cell {
+  position: relative;
+}
+
+.market-player-cell::after {
+  position: absolute;
+  inset: -8px -10px -8px auto;
+  width: 12px;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.38), transparent);
+  opacity: 0;
+  transition: opacity 180ms ease-out;
+}
+
+.player-market.is-stats-scrolled .market-player-cell::after {
+  opacity: 1;
+}
