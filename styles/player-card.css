@@ -26,7 +26,7 @@
 
 .card-live-layer {
   position: absolute;
-  inset: 7% 8% 32%;
+  inset: 7% 0 32%;
   z-index: 2;
   overflow: hidden;
 }
