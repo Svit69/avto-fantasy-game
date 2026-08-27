@@ -1,8 +1,8 @@
 .card-score-block {
   position: absolute;
-  top: 4px;
-  left: 4px;
-  z-index: 3;
+  top: 10%;
+  left: 9%;
+  z-index: 5;
   min-width: 34px;
   overflow: hidden;
   background: var(--accent);
