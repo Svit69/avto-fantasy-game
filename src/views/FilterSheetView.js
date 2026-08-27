@@ -1,22 +1,23 @@
 import { ROSTER_POSITIONS } from "../data/positions.js";
+import { PriceRangeFilterView } from "./PriceRangeFilterView.js";
 
 export class FilterSheetView {
-  render(kind, filters, teams) {
+  render(kind, filters, teams, priceRange) {
     if (!kind) return "";
 
     return `
       <div class="filter-scrim" data-close-filter></div>
       <section class="filter-sheet">
         <header><h3>${this.#formatTitle(kind)}</h3><button type="button" data-close-filter>Применить</button></header>
-        <div class="filter-options">${this.#renderOptions(kind, filters, teams)}</div>
+        <div class="filter-options">${this.#renderOptions(kind, filters, teams, priceRange)}</div>
       </section>
     `;
   }
 
-  #renderOptions(kind, filters, teams) {
+  #renderOptions(kind, filters, teams, priceRange) {
     if (kind === "position") return this.#renderPositionOptions(filters);
     if (kind === "team") return this.#renderTeamOptions(filters, teams);
-    return this.#renderPriceOptions(filters);
+    return new PriceRangeFilterView().render(filters, priceRange);
   }
 
   #renderPositionOptions(filters) {
@@ -27,12 +28,6 @@ export class FilterSheetView {
 
   #renderTeamOptions(filters, teams) {
     return ["Все", ...teams].map((team) => this.#renderOption("team", team, team, filters.team === team)).join("");
-  }
-
-  #renderPriceOptions(filters) {
-    return [4, 6, 8, 10, 13]
-      .map((price) => this.#renderOption("price", price, `до ${price}к`, filters.maxPrice === price))
-      .join("");
   }
 
   #renderOption(kind, value, label, selected) {

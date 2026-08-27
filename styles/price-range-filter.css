@@ -1,0 +1,29 @@
+.price-range-shell {
+  display: grid;
+  gap: 22px;
+  padding: 8px 0 16px;
+}
+
+.price-range-summary {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: baseline;
+  color: rgba(29, 29, 30, 0.7);
+  font-weight: 800;
+}
+
+.price-range-summary output {
+  color: #1D1D1E;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.price-range-summary strong {
+  justify-self: end;
+  color: #1D1D1E;
+}
+
+.price-range-shell input {
+  width: 100%;
+  accent-color: var(--accent);
+}

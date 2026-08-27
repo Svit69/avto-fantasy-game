@@ -1,8 +1,6 @@
 export class PlayerSelectionDrawerView {
   constructor(slotStripView, marketTableView, filterSheetView) {
-    this.slotStripView = slotStripView;
-    this.marketTableView = marketTableView;
-    this.filterSheetView = filterSheetView;
+    Object.assign(this, { slotStripView, marketTableView, filterSheetView });
   }
 
   render(context) {
@@ -22,7 +20,7 @@ export class PlayerSelectionDrawerView {
         <div class="selection-filters">${this.#renderFilters(filters)}</div>
         ${this.marketTableView.render(players, teamRoster, filters)}
       </aside>
-      ${this.filterSheetView.render(activeFilter, filters, this.#selectTeams(players))}
+      ${this.filterSheetView.render(activeFilter, filters, this.#selectTeams(players), this.#selectPriceRange(players))}
     `;
   }
 
@@ -38,8 +36,10 @@ export class PlayerSelectionDrawerView {
     return `<button type="button" data-open-filter="${kind}"><span>${label}</span><b>${value}</b></button>`;
   }
 
-  #selectTeams(players) {
-    return [...new Set(players.map((player) => player.getTeam()))];
+  #selectTeams(players) { return [...new Set(players.map((player) => player.getTeam()))]; }
+
+  #selectPriceRange(players) {
+    const prices = players.map((player) => player.getPrice()); return { min: Math.floor(Math.min(...prices)), max: Math.ceil(Math.max(...prices)) };
   }
 
   #formatPosition(position) {
