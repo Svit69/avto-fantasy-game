@@ -48,3 +48,8 @@
 .icon-button:active {
   opacity: 0.76;
 }
+
+.confirm-button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}

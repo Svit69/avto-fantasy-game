@@ -1,6 +1,7 @@
 .player-market {
   min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   border-top: 1px solid rgba(253, 255, 255, 0.12);
 }
 
@@ -26,18 +27,19 @@
 
 .market-player-cell {
   display: grid;
-  grid-template-columns: 46px 1fr;
-  align-items: center;
-  gap: 10px;
-  padding-left: 4px;
+  grid-template-columns: 54px 1fr;
+  align-items: end;
+  gap: 8px;
+  padding-left: 0;
   min-width: 0;
 }
 
 .market-player-cell img {
-  width: 42px;
-  height: 42px;
+  width: 52px;
+  height: 52px;
   object-fit: cover;
   border-radius: 50%;
+  transform: translate(-4px, 4px);
 }
 
 .market-player-cell span,

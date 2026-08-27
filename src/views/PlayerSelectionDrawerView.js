@@ -6,13 +6,13 @@ export class PlayerSelectionDrawerView {
   }
 
   render(context) {
-    const { teamRoster, players, filters, activeFilter } = context;
+    const { teamRoster, players, filters, activeFilter, shouldAnimate } = context;
     const filled = teamRoster.calculateFilledPlayersCount();
     const total = teamRoster.calculateTotalSlotsCount();
 
     return `
       <div class="drawer-backdrop" data-close-player-panel></div>
-      <aside class="player-selection-drawer">
+      <aside class="player-selection-drawer ${shouldAnimate ? "is-entering" : ""}">
         <header class="selection-header">
           <button type="button" data-close-player-panel aria-label="Закрыть">‹</button>
           <strong>${filled}/${total}</strong>

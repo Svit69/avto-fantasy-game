@@ -2,12 +2,14 @@ export class PlayerSelectionState {
   constructor() {
     this.activeSlotIndex = null;
     this.activeFilter = null;
+    this.shouldAnimateDrawer = false;
     this.filters = { position: "нападающий", team: "Все", maxPrice: 13 };
   }
 
   openForSlot(slot) {
     this.activeSlotIndex = slot.getIndex();
     this.activeFilter = null;
+    this.shouldAnimateDrawer = true;
     this.filters.position = slot.getPosition();
   }
 
@@ -30,5 +32,11 @@ export class PlayerSelectionState {
 
   isOpen() {
     return this.activeSlotIndex !== null;
+  }
+
+  consumeDrawerAnimationFlag() {
+    const shouldAnimate = this.shouldAnimateDrawer;
+    this.shouldAnimateDrawer = false;
+    return shouldAnimate;
   }
 }

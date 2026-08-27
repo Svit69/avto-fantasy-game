@@ -3,6 +3,7 @@ import { AppShellView } from "../views/AppShellView.js";
 import { HeaderView } from "../views/HeaderView.js";
 import { PlayerSelectionState } from "../models/PlayerSelectionState.js";
 import { ApplicationViewFactory } from "../services/ApplicationViewFactory.js";
+import { MarketStatsScrollSynchronizer } from "../services/MarketStatsScrollSynchronizer.js";
 import { PlayerFactory } from "../services/PlayerFactory.js";
 import { RosterFactory } from "../services/RosterFactory.js";
 import { PlayerSelectionController } from "./PlayerSelectionController.js";
@@ -28,7 +29,8 @@ export class AppController {
   #connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory) {
     const drawerView = viewFactory.createPlayerSelectionDrawerView();
     new PlayerSelectionController(
-      this.rootElement, teamRoster, players, rosterDomRenderer, drawerView, new PlayerSelectionState(),
+      this.rootElement, teamRoster, players, rosterDomRenderer, drawerView,
+      new PlayerSelectionState(), new MarketStatsScrollSynchronizer(),
     ).connectPlayerSelectionActions();
   }
 

@@ -27,6 +27,17 @@ export class TeamRoster {
     return this.#slots.length;
   }
 
+  calculateSelectedPlayersPrice() {
+    return this.#slots.reduce((sum, slot) => {
+      return slot.isFilled() ? sum + slot.getPlayer().getPrice() : sum;
+    }, 0);
+  }
+
+  canConfirmRoster() {
+    return this.calculateFilledPlayersCount() === this.calculateTotalSlotsCount()
+      && this.calculateSelectedPlayersPrice() <= this.#budgetLimit;
+  }
+
   getSelectedPlayerIds() {
     return this.#slots.filter((slot) => slot.isFilled())
       .map((slot) => slot.getPlayer().getId());
