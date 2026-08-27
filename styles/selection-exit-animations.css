@@ -1,0 +1,44 @@
+.drawer-backdrop,
+.filter-scrim {
+  animation: backdrop-enter 160ms ease-out both;
+}
+
+.is-leaving {
+  pointer-events: none;
+}
+
+.drawer-backdrop.is-leaving {
+  animation: backdrop-exit 160ms ease-in both;
+}
+
+.player-selection-drawer.is-leaving {
+  animation: drawer-exit 160ms ease-in both;
+}
+
+.filter-scrim.is-leaving {
+  animation: backdrop-exit 130ms ease-in both;
+}
+
+.filter-sheet.is-leaving {
+  animation: sheet-exit 130ms ease-in both;
+}
+
+@keyframes drawer-exit {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+@keyframes sheet-exit {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+@keyframes backdrop-exit {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes backdrop-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -3,7 +3,6 @@ export class PlayerSelectionController {
     Object.assign(this, { rootElement, teamRoster, players, rosterDomRenderer, drawerView, state, scrollSynchronizer });
   }
   connectPlayerSelectionActions() { this.rootElement.addEventListener("click", (event) => this.#handleSelectionAction(event)); }
-
   #handleSelectionAction(event) {
     if (event.target.closest("[data-remove-slot]")) return this.#renderDrawer();
     if (event.target.closest("[data-open-player-panel]")) return this.#openPlayerSearch();
@@ -15,14 +14,13 @@ export class PlayerSelectionController {
     if (event.target.closest("[data-select-player]")) return this.#selectPlayer(event);
   }
   #openDrawer(event) {
-    const slotIndex = Number(event.target.closest("[data-roster-slot]").dataset.rosterSlot);
-    this.state.openForSlot(this.teamRoster.getSlotByIndex(slotIndex));
-    this.#renderDrawer();
+    const slot = this.teamRoster.getSlotByIndex(Number(event.target.closest("[data-roster-slot]").dataset.rosterSlot));
+    this.state.openForSlot(slot); this.#renderDrawer();
   }
   #openPlayerSearch() { this.state.openForPlayerSearch(); this.#renderDrawer(); }
-  #closeDrawer() { this.state.closeDrawer(); this.#renderDrawer(); }
+  #closeDrawer() { this.#animateExit(".player-selection-drawer, .drawer-backdrop", () => { this.state.closeDrawer(); this.#renderDrawer(); }); }
   #openFilter(event) { this.state.openFilter(event.target.closest("[data-open-filter]").dataset.openFilter); this.#renderDrawer(); }
-  #closeFilter() { this.state.closeFilter(); this.#renderDrawer(); }
+  #closeFilter() { this.#animateExit(".filter-sheet, .filter-scrim", () => { this.state.closeFilter(); this.#renderDrawer(); }, 130); }
   #applyFilter(event) {
     const option = event.target.closest("[data-filter-value]");
     this.state.applyFilter(option.dataset.filterKind, option.dataset.filterValue);
@@ -40,8 +38,10 @@ export class PlayerSelectionController {
   }
   #renderDrawer() {
     const root = this.rootElement.querySelector("[data-player-selection-root]");
-    root.innerHTML = this.state.isOpen() ? this.drawerView.render(this.#createContext()) : "";
-    this.scrollSynchronizer.connectSynchronizedStatsScroll(root);
+    root.innerHTML = this.state.isOpen() ? this.drawerView.render(this.#createContext()) : ""; this.scrollSynchronizer.connectSynchronizedStatsScroll(root);
+  }
+  #animateExit(selector, afterClose, duration = 160) {
+    this.rootElement.querySelectorAll(selector).forEach((element) => element.classList.add("is-leaving")); setTimeout(afterClose, duration);
   }
   #createContext() {
     return { teamRoster: this.teamRoster, players: this.players, filters: this.state.filters,
