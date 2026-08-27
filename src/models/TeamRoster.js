@@ -22,4 +22,8 @@ export class TeamRoster {
   calculateTotalSlotsCount() {
     return this.#slots.length;
   }
+
+  clearPlayerSelectionAt(slotIndex) {
+    this.#slots[slotIndex]?.clearPlayerSelection();
+  }
 }

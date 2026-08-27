@@ -9,18 +9,18 @@
 .line-label {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  margin: 0 0 6px;
-  font: 800 clamp(38px, 10.5vw, 48px) / 0.82 "Heading Now 27 Extrabold", "Arial Narrow", Impact, sans-serif;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-family: "Heading Now 44", "Arial Narrow", Impact, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
   text-transform: uppercase;
-  white-space: nowrap;
 }
 
 .line-label::before,
 .line-label::after {
   content: "";
-  flex: 0 1 18px;
+  flex: 1;
   border-top: 1px dashed rgba(253, 255, 255, 0.3);
 }
 

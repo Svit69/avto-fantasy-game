@@ -1,17 +1,20 @@
 export class PlayerCardView {
-  render(props, orderIndex) {
+  render(props, orderIndex, slotIndex) {
     const tiltClass = this.#selectTiltClass(orderIndex);
     const selectedClass = props.selected ? " is-selected" : "";
 
     return `
       <article class="player-card ${tiltClass}${selectedClass}">
+        <button class="card-remove-button" type="button" data-remove-slot="${slotIndex}" aria-label="Удалить игрока">
+          <span aria-hidden="true">×</span>
+        </button>
         <img class="card-layer card-bottom-layer" src="/assets/card_bottom_layer.png" alt="" />
         <div class="card-live-layer">
           <div class="card-score-block">
             <div class="card-points">${props.points}</div>
             <div class="card-position">${this.#formatPosition(props.position)}</div>
           </div>
-          <img class="card-player-image" src="${props.image}" alt="${props.name} ${props.secondName}" onerror="this.remove()" />
+          <img class="card-player-image" src="${props.image}" alt="${props.name} ${props.secondName}" draggable="false" onerror="this.remove()" />
         </div>
         <img class="card-layer card-top-layer" src="/assets/card_top_layer.png" alt="" />
         <div class="card-selected-label">ВЫБРАН</div>

@@ -32,7 +32,7 @@ export class DraftLineupView {
   #renderSlots(slots) {
     return slots.map((slot, index) => {
       if (slot.isFilled()) {
-        return this.playerCardView.render(slot.getPlayer().getCardProps(true), index);
+        return this.playerCardView.render(slot.getPlayer().getCardProps(true), index, this.#findSlotIndex(slot));
       }
 
       return this.emptyPlayerSlotView.render(slot.getPosition(), index);
@@ -43,5 +43,9 @@ export class DraftLineupView {
     const starts = ["‹‹", "‹‹‹", "‹‹"];
     const ends = ["››", "›››", "››"];
     return `${starts[lineIndex]} ${label.toUpperCase()} ${ends[lineIndex]}`;
+  }
+
+  #findSlotIndex(slot) {
+    return slot.getIndex();
   }
 }

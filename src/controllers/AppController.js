@@ -7,18 +7,18 @@ import { HeaderView } from "../views/HeaderView.js";
 import { PlayerCardView } from "../views/PlayerCardView.js";
 import { PlayerFactory } from "../services/PlayerFactory.js";
 import { RosterFactory } from "../services/RosterFactory.js";
+import { RosterSelectionController } from "./RosterSelectionController.js";
 
 export class AppController {
   constructor(rootElement) {
     this.rootElement = rootElement;
   }
-
   initializeApplication() {
     const players = new PlayerFactory().createPlayersFromCatalog(INITIAL_PLAYERS);
     const teamRoster = new RosterFactory().createDefaultRoster(players);
 
     this.#renderApplicationLayout(teamRoster);
-    this.#enableBrandLogoFallback();
+    new RosterSelectionController(this.rootElement, teamRoster, () => this.#renderApplicationLayout(teamRoster)).connectRosterActions();
   }
 
   #renderApplicationLayout(teamRoster) {
@@ -34,20 +34,15 @@ export class AppController {
         ${new FooterView().render(teamRoster)}
       </div>
     `;
+    this.#enableBrandLogoFallback();
   }
 
   #enableBrandLogoFallback() {
     const logoElement = this.rootElement.querySelector("[data-logo]");
-    logoElement.addEventListener("error", () => {
-      logoElement.replaceWith(this.#createBrandFallbackElement());
-    });
-  }
+    if (!logoElement) return;
 
-  #createBrandFallbackElement() {
-    const fallbackElement = document.createElement("div");
-    fallbackElement.className = "brand-fallback";
-    fallbackElement.setAttribute("role", "img");
-    fallbackElement.setAttribute("aria-label", "Логотип Автомобилиста");
-    return fallbackElement;
+    logoElement.addEventListener("error", () => {
+      logoElement.outerHTML = `<div class="brand-fallback" role="img" aria-label="Логотип Автомобилиста"></div>`;
+    });
   }
 }
