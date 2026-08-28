@@ -16,6 +16,8 @@ export class Player extends FantasyEntity {
 
   getTeam() { return this.#data.team; }
 
+  getTeamLogo() { return this.#data.teamLogo; }
+
   getPosition() { return this.#data.position; }
 
   getPrice() { return this.#data.price; }
@@ -37,6 +39,7 @@ export class Player extends FantasyEntity {
       selected,
       team: this.#data.team,
       teamLogo: this.#data.teamLogo,
+      leagueLogo: this.#data.leagueLogo,
       points: this.#data.points,
     };
   }

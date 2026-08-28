@@ -17,6 +17,7 @@ export class PlayerCardView {
           <img class="card-player-image" src="${props.image}" alt="${props.name} ${props.secondName}" draggable="false" onerror="this.remove()" />
         </div>
         <img class="card-layer card-top-layer" src="/assets/card_top_layer.png" alt="" />
+        ${this.#renderLeagueLogo(props.leagueLogo)}
         <div class="card-selected-label">ВЫБРАН</div>
         <div class="card-info-stack">
           <div class="card-name">${this.#formatShortName(props)}</div>
@@ -33,6 +34,10 @@ export class PlayerCardView {
 
   #formatShortName(props) {
     return `${props.name.charAt(0)}. ${props.secondName}`.toUpperCase();
+  }
+
+  #renderLeagueLogo(leagueLogo) {
+    return leagueLogo ? `<img class="card-league-logo" src="${leagueLogo}" alt="Лига игрока" />` : "";
   }
 
   #selectTiltClass(orderIndex) {
