@@ -2,9 +2,10 @@ import { PLAYER_NUMBERS } from "./playerNumbers.js";
 import { ROSTER_POSITIONS } from "./positions.js";
 
 const teamLogo = "/assets/avto_logo.png";
-const team = "Автомобилист";
+const avtoTeam = "Автомобилист";
+const gornyakTeam = "Горняк-УГМК";
 
-function createPlayer(firstName, lastName, key, position, price, imageName) {
+function createPlayer(firstName, lastName, key, position, price, imageName, team = avtoTeam) {
   return { firstName, lastName, number: PLAYER_NUMBERS[key],
     position, price, points: 0, team, teamLogo, image: `/assets/players/${imageName}.png` };
 }
@@ -23,7 +24,9 @@ export const INITIAL_PLAYERS = Object.freeze([
   createPlayer("Александр", "Шаров", "sharov", ROSTER_POSITIONS.forward, 14, "alexander_sharov"),
   createPlayer("Роман", "Горбунов", "gorbunov", ROSTER_POSITIONS.forward, 17, "roman_gorbunov"),
   createPlayer("Никита", "Шашков", "shashkov", ROSTER_POSITIONS.forward, 14, "nikita_shashkov"),
-  createPlayer("Егор", "Черников", "chernikov", ROSTER_POSITIONS.forward, 5, "egor_chernikov"),
+  createPlayer("Егор", "Черников", "chernikov", ROSTER_POSITIONS.forward, 11, "egor_chernikov"),
+  createPlayer("Егор", "Алексеев", "alekseev", ROSTER_POSITIONS.forward, 8, "egor_alekseev", gornyakTeam),
+  createPlayer("Степан", "Борисов", "borisov", ROSTER_POSITIONS.forward, 7, "stepan_borisov", gornyakTeam),
   createPlayer("Никита", "Трямкин", "tryamkin", ROSTER_POSITIONS.defender, 17, "nikita_tryamkin"),
   createPlayer("Джордан", "Гросс", "gross", ROSTER_POSITIONS.defender, 17, "jordan_gross"),
   createPlayer("Илья", "Карпухин", "karpukhin", ROSTER_POSITIONS.defender, 16, "ilya_karpukhin"),
@@ -32,6 +35,7 @@ export const INITIAL_PLAYERS = Object.freeze([
   createPlayer("Кирилл", "Воробьев", "vorobyev", ROSTER_POSITIONS.defender, 14, "kirill_vorobyev"),
   createPlayer("Ярослав", "Бусыгин", "busygin", ROSTER_POSITIONS.defender, 15, "yaroslav_busygin"),
   createPlayer("Дмитрий", "Юдин", "yudin", ROSTER_POSITIONS.defender, 14, "dmitry_yudin"),
-  createPlayer("Евгений", "Аликин", "alikin", ROSTER_POSITIONS.goalkeeper, 10, "evgeny_alikin"),
-  createPlayer("Владимир", "Галкин", "galkin", ROSTER_POSITIONS.goalkeeper, 10, "vladimir_galkin"),
+  createPlayer("Дмитрий", "Бойков", "boykov", ROSTER_POSITIONS.defender, 6, "dmitry_boykov", gornyakTeam),
+  createPlayer("Евгений", "Аликин", "alikin", ROSTER_POSITIONS.goalkeeper, 20, "evgeny_alikin"),
+  createPlayer("Владимир", "Галкин", "galkin", ROSTER_POSITIONS.goalkeeper, 20, "vladimir_galkin"),
 ]);

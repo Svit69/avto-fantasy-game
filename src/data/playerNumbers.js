@@ -23,4 +23,7 @@ export const PLAYER_NUMBERS = Object.freeze({
   karpukhin: 89,
   blacker: 9,
   shashkov: 99,
+  alekseev: 70,
+  boykov: 54,
+  borisov: 32,
 });
