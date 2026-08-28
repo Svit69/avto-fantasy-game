@@ -32,4 +32,8 @@ export const PLAYER_NUMBERS = Object.freeze({
   demidovich: 80,
   dumchenko: 95,
   epishev: 25,
+  zaytsev: 13,
+  zhuravlev: 85,
+  zinaddin: 50,
+  isaev: 63,
 });
