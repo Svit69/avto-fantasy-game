@@ -9,7 +9,7 @@
 7. Call `POST https://your-domain/api/telegram-set-webhook` once.
 8. Keep `storage/users.json` persistent between deployments.
 9. Check `GET https://your-domain/api/telegram-webhook-info` if the bot does not answer.
-10. Check `pm2 logs avto-fantasy-game --lines 100` for Telegram webhook events.
+10. Check `pm2 logs avto-fantasy --lines 100` for Telegram webhook events.
 11. Check `GET https://your-domain/api/health` to confirm nginx reaches Node.js.
 12. Check `GET https://your-domain/api/telegram-bot-info` to confirm the token points to the expected bot.
 

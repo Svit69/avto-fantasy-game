@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "avto-fantasy-game",
+      name: "avto-fantasy",
       script: "server/server.js",
       env: {
         NODE_ENV: "production",
