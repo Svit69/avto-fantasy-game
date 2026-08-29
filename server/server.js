@@ -14,6 +14,7 @@ import { TelegramUserMapper } from "./TelegramUserMapper.js";
 import { TelegramWebhookController } from "./TelegramWebhookController.js";
 import { TelegramWebhookInstaller } from "./TelegramWebhookInstaller.js";
 import { TelegramWebhookInfoController } from "./TelegramWebhookInfoController.js";
+import { TelegramWebhookReplyFactory } from "./TelegramWebhookReplyFactory.js";
 import { TelegramUpdateSummarizer } from "./TelegramUpdateSummarizer.js";
 import { UserRepository } from "./UserRepository.js";
 
@@ -34,7 +35,7 @@ const application = new HttpApplication({
   authController: new TelegramAuthController({ bodyParser, jsonResponder, initDataVerifier: new TelegramInitDataVerifier(process.env.TELEGRAM_BOT_TOKEN), userMapper, userRepository }),
   webhookController: new TelegramWebhookController({
     bodyParser, jsonResponder, botClient, appUrl, userMapper, userRepository,
-    logger, summarizer: new TelegramUpdateSummarizer(),
+    logger, summarizer: new TelegramUpdateSummarizer(), replyFactory: new TelegramWebhookReplyFactory(),
   }),
   webhookInstaller: new TelegramWebhookInstaller({ jsonResponder, botClient, webhookUrl: process.env.TELEGRAM_WEBHOOK_URL, logger }),
   webhookInfo: new TelegramWebhookInfoController({ jsonResponder, botClient }),

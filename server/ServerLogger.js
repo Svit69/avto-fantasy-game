@@ -12,7 +12,7 @@ export class ServerLogger {
   }
 
   #writeLog(level, message, details) {
-    const payload = { level, message, time: new Date().toISOString(), ...details };
+    const payload = { level, time: new Date().toISOString(), ...details, message };
     console[level === "error" ? "error" : "log"](JSON.stringify(payload));
   }
 }
