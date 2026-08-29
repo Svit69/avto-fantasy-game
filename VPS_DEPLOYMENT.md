@@ -10,6 +10,7 @@
 8. Keep `storage/users.json` persistent between deployments.
 9. Check `GET https://your-domain/api/telegram-webhook-info` if the bot does not answer.
 10. Check `pm2 logs avto-fantasy-game --lines 100` for Telegram webhook events.
+11. Check `GET https://your-domain/api/health` to confirm nginx reaches Node.js.
 
 If Telegram reports `Connection timed out`, make sure nginx proxies
 `/api/telegram-webhook` to Node.js and restart PM2 after pulling changes.

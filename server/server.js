@@ -2,7 +2,9 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { EnvironmentFileLoader } from "./EnvironmentFileLoader.js";
+import { HealthController } from "./HealthController.js";
 import { HttpApplication } from "./HttpApplication.js";
+import { HttpRequestLogger } from "./HttpRequestLogger.js";
 import { JsonResponder } from "./JsonResponder.js";
 import { RequestBodyParser } from "./RequestBodyParser.js";
 import { ServerLogger } from "./ServerLogger.js";
@@ -39,6 +41,8 @@ const application = new HttpApplication({
   }),
   webhookInstaller: new TelegramWebhookInstaller({ jsonResponder, botClient, webhookUrl: process.env.TELEGRAM_WEBHOOK_URL, logger }),
   webhookInfo: new TelegramWebhookInfoController({ jsonResponder, botClient }),
+  requestLogger: new HttpRequestLogger(logger),
+  healthController: new HealthController({ jsonResponder, botClient, webhookUrl: process.env.TELEGRAM_WEBHOOK_URL }),
 });
 
 http.createServer((request, response) => application.handleRequest(request, response)).listen(port, () => {
