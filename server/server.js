@@ -20,7 +20,6 @@ import { TelegramWebhookInfoController } from "./TelegramWebhookInfoController.j
 import { TelegramWebhookReplyFactory } from "./TelegramWebhookReplyFactory.js";
 import { TelegramUpdateSummarizer } from "./TelegramUpdateSummarizer.js";
 import { UserRepository } from "./UserRepository.js";
-
 const rootDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 new EnvironmentFileLoader().loadEnvironmentFile(path.join(rootDirectory, ".env"));
 
@@ -43,6 +42,7 @@ const application = new HttpApplication({
   requestLogger: new HttpRequestLogger(logger),
   healthController: new HealthController({ jsonResponder, botClient, webhookUrl: process.env.TELEGRAM_WEBHOOK_URL }),
   botInfo: new TelegramBotInfoController({ jsonResponder, botClient }),
+  logger,
 });
 
 http.createServer((request, response) => application.handleRequest(request, response)).listen(port, () => {

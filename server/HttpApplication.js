@@ -1,5 +1,5 @@
 export class HttpApplication {
-  constructor({ staticFileServer, jsonResponder, authController, webhookController, webhookInstaller, webhookInfo, requestLogger, healthController, botInfo }) {
+  constructor({ staticFileServer, jsonResponder, authController, webhookController, webhookInstaller, webhookInfo, requestLogger, healthController, botInfo, logger }) {
     this.staticFileServer = staticFileServer;
     this.jsonResponder = jsonResponder;
     this.authController = authController;
@@ -9,13 +9,14 @@ export class HttpApplication {
     this.requestLogger = requestLogger;
     this.healthController = healthController;
     this.botInfo = botInfo;
+    this.logger = logger;
   }
 
   async handleRequest(request, response) {
     try {
       await this.#routeRequest(request, response);
     } catch (error) {
-      console.error(error);
+      this.logger.error("http_request_failed", { method: request.method, url: request.url, errorName: error.name, errorMessage: error.message });
       this.jsonResponder.sendJson(response, 500, { error: "internal_server_error" });
     }
   }
