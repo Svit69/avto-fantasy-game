@@ -21,13 +21,10 @@ export class PlayerProfileModalView {
           ${this.#renderStat("Цена", player.getFormattedPrice())}
         </div>
         <div class="profile-body">${this.#renderStageBlock()}${this.#renderSeasonBlock(player)}</div>
-      </section>
-    `;
+      </section>`;
   }
 
-  #renderStat(label, value) {
-    return `<div><small>${label}</small><strong>${value}</strong></div>`;
-  }
+  #renderStat(label, value) { return `<div><small>${label}</small><strong>${value}</strong></div>`; }
 
   #renderStageBlock() {
     return `<article class="profile-panel"><h3>Общий этап</h3><p>Календарь и игровые туры появятся после старта месяца.</p><a href="#">Как начисляются очки</a></article>`;
