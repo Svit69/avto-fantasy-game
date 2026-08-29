@@ -4,7 +4,7 @@ export class PlayerProfileModalView {
       <div class="player-profile-scrim" data-close-player-profile></div>
       <section class="player-profile-modal" role="dialog" aria-modal="true" aria-label="${player.getFullName()}">
         <header class="profile-hero">
-          <img class="profile-avatar" src="${player.getImage()}" alt="${player.getFullName()}" />
+          <span class="profile-avatar"><img src="${player.getImage()}" alt="${player.getFullName()}" /></span>
           <div class="profile-heading">
             <h2>${player.getLastName()}</h2>
             <p>${player.getTeam()} · ${this.#formatPosition(player.getPosition())}</p>

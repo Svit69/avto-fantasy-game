@@ -1,0 +1,7 @@
+.profile-avatar img {
+  width: 112%;
+  height: 112%;
+  object-fit: cover;
+  object-position: 42% 62%;
+  transform: translate(-5px, 6px);
+}

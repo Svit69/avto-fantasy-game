@@ -31,7 +31,7 @@
   background: radial-gradient(circle at 88% 24%, rgba(253, 255, 255, 0.16), transparent 38%), linear-gradient(135deg, #6f0908, #e01822 58%, #230405);
 }
 .profile-avatar {
-  width: 82px; height: 82px; object-fit: cover;
+  width: 82px; height: 82px; overflow: hidden;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
