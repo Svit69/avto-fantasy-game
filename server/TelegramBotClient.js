@@ -1,14 +1,14 @@
 export class TelegramBotClient {
-  constructor(token, logger) {
+  constructor(token, logger, timeoutMs = 15000) {
     this.token = token;
     this.logger = logger;
+    this.timeoutMs = timeoutMs;
   }
 
   hasToken() { return Boolean(this.token); }
-
   async callMethod(method, payload) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 7000);
+    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
     try {
       const response = await fetch(`https://api.telegram.org/bot${this.token}/${method}`, {
         method: "POST",
@@ -19,7 +19,7 @@ export class TelegramBotClient {
       await this.#logTelegramResponse(method, response);
       return response;
     } catch (error) {
-      this.logger.warn("telegram_api_request_failed", { method, errorMessage: error.message });
+      this.logger.warn("telegram_api_request_failed", this.createFailurePayload(method, error));
       throw error;
     } finally {
       clearTimeout(timeout);
@@ -36,5 +36,9 @@ export class TelegramBotClient {
       errorCode: body.error_code,
       description: body.description,
     });
+  }
+
+  createFailurePayload(method, error) {
+    return { method, errorName: error.name, errorMessage: error.message, causeCode: error.cause?.code, timeoutMs: this.timeoutMs };
   }
 }

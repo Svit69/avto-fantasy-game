@@ -27,7 +27,8 @@ new EnvironmentFileLoader().loadEnvironmentFile(path.join(rootDirectory, ".env")
 const logger = new ServerLogger();
 const bodyParser = new RequestBodyParser();
 const jsonResponder = new JsonResponder();
-const botClient = new TelegramBotClient(process.env.TELEGRAM_BOT_TOKEN, logger);
+const telegramApiTimeoutMs = Number(process.env.TELEGRAM_API_TIMEOUT_MS || 15000);
+const botClient = new TelegramBotClient(process.env.TELEGRAM_BOT_TOKEN, logger, telegramApiTimeoutMs);
 const port = Number(process.env.PORT || 3000);
 const appUrl = process.env.TELEGRAM_WEB_APP_URL || `http://localhost:${port}`;
 const userMapper = new TelegramUserMapper();

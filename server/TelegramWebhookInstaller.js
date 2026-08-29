@@ -14,7 +14,7 @@ export class TelegramWebhookInstaller {
       const telegramResponse = await this.botClient.callMethod("setWebhook", { url: this.webhookUrl, drop_pending_updates: true });
       return this.jsonResponder.sendJson(response, telegramResponse.ok ? 200 : 502, await telegramResponse.json());
     } catch (error) {
-      return this.jsonResponder.sendJson(response, 502, { error: "telegram_api_unreachable", errorMessage: error.message });
+      return this.jsonResponder.sendJson(response, 502, { error: "telegram_api_unreachable", ...this.botClient.createFailurePayload("setWebhook", error) });
     }
   }
 }
