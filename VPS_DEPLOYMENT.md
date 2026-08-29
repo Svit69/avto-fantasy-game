@@ -8,6 +8,7 @@
 6. Enable HTTPS for the public domain.
 7. Call `POST https://your-domain/api/telegram-set-webhook` once.
 8. Keep `storage/users.json` persistent between deployments.
+9. Check `GET https://your-domain/api/telegram-webhook-info` if the bot does not answer.
 
 Required environment variables:
 

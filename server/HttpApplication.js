@@ -1,10 +1,11 @@
 export class HttpApplication {
-  constructor({ staticFileServer, jsonResponder, authController, webhookController, webhookInstaller }) {
+  constructor({ staticFileServer, jsonResponder, authController, webhookController, webhookInstaller, webhookInfo }) {
     this.staticFileServer = staticFileServer;
     this.jsonResponder = jsonResponder;
     this.authController = authController;
     this.webhookController = webhookController;
     this.webhookInstaller = webhookInstaller;
+    this.webhookInfo = webhookInfo;
   }
 
   async handleRequest(request, response) {
@@ -21,6 +22,7 @@ export class HttpApplication {
     if (url.pathname === "/api/telegram-auth") return this.authController.handleRequest(request, response);
     if (url.pathname === "/api/telegram-webhook") return this.webhookController.handleRequest(request, response);
     if (url.pathname === "/api/telegram-set-webhook") return this.webhookInstaller.handleRequest(request, response);
+    if (url.pathname === "/api/telegram-webhook-info") return this.webhookInfo.handleRequest(request, response);
     return this.staticFileServer.serveFile(url.pathname, response);
   }
 }

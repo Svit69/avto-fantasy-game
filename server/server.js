@@ -12,6 +12,7 @@ import { TelegramInitDataVerifier } from "./TelegramInitDataVerifier.js";
 import { TelegramUserMapper } from "./TelegramUserMapper.js";
 import { TelegramWebhookController } from "./TelegramWebhookController.js";
 import { TelegramWebhookInstaller } from "./TelegramWebhookInstaller.js";
+import { TelegramWebhookInfoController } from "./TelegramWebhookInfoController.js";
 import { UserRepository } from "./UserRepository.js";
 
 const rootDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -30,6 +31,7 @@ const application = new HttpApplication({
   authController: new TelegramAuthController({ bodyParser, jsonResponder, initDataVerifier: new TelegramInitDataVerifier(process.env.TELEGRAM_BOT_TOKEN), userMapper, userRepository }),
   webhookController: new TelegramWebhookController({ bodyParser, jsonResponder, botClient, appUrl, userMapper, userRepository }),
   webhookInstaller: new TelegramWebhookInstaller({ jsonResponder, botClient, webhookUrl: process.env.TELEGRAM_WEBHOOK_URL }),
+  webhookInfo: new TelegramWebhookInfoController({ jsonResponder, botClient }),
 });
 
 http.createServer((request, response) => application.handleRequest(request, response)).listen(port, () => {

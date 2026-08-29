@@ -13,7 +13,11 @@ export class TelegramWebhookController {
   async #processTelegramUpdate(update) {
     if (update.callback_query) return this.#acceptAgreement(update.callback_query);
     if (update.message?.contact) return this.#completeRegistration(update.message);
-    if (update.message?.text === "/start") return this.#sendAgreement(update.message.chat.id);
+    if (this.#isStartCommand(update.message?.text)) return this.#sendAgreement(update.message.chat.id);
+  }
+
+  #isStartCommand(text = "") {
+    return /^\/start(?:@\w+)?(?:\s|$)/.test(text.trim());
   }
 
   async #completeRegistration(message) {
