@@ -22,16 +22,16 @@
   top: 0;
   z-index: 2;
   display: grid;
-  grid-template-columns: 82px 1fr 44px;
+  grid-template-columns: 123px 1fr 44px;
   align-items: center;
   gap: 14px;
-  min-height: 142px;
+  min-height: 174px;
   padding: 22px 20px;
   color: var(--text-main);
   background: radial-gradient(circle at 88% 24%, rgba(253, 255, 255, 0.16), transparent 38%), linear-gradient(135deg, #6f0908, #e01822 58%, #230405);
 }
 .profile-avatar {
-  width: 82px; height: 82px; overflow: hidden;
+  width: 123px; height: 123px; overflow: hidden;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
