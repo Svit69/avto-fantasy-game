@@ -11,6 +11,7 @@ import { ServerLogger } from "./ServerLogger.js";
 import { StaticFileServer } from "./StaticFileServer.js";
 import { TelegramAuthController } from "./TelegramAuthController.js";
 import { TelegramBotClient } from "./TelegramBotClient.js";
+import { TelegramBotInfoController } from "./TelegramBotInfoController.js";
 import { TelegramInitDataVerifier } from "./TelegramInitDataVerifier.js";
 import { TelegramUserMapper } from "./TelegramUserMapper.js";
 import { TelegramWebhookController } from "./TelegramWebhookController.js";
@@ -35,14 +36,12 @@ const application = new HttpApplication({
   jsonResponder,
   staticFileServer: new StaticFileServer(rootDirectory),
   authController: new TelegramAuthController({ bodyParser, jsonResponder, initDataVerifier: new TelegramInitDataVerifier(process.env.TELEGRAM_BOT_TOKEN), userMapper, userRepository }),
-  webhookController: new TelegramWebhookController({
-    bodyParser, jsonResponder, botClient, appUrl, userMapper, userRepository,
-    logger, summarizer: new TelegramUpdateSummarizer(), replyFactory: new TelegramWebhookReplyFactory(),
-  }),
+  webhookController: new TelegramWebhookController({ bodyParser, jsonResponder, botClient, appUrl, userMapper, userRepository, logger, summarizer: new TelegramUpdateSummarizer(), replyFactory: new TelegramWebhookReplyFactory() }),
   webhookInstaller: new TelegramWebhookInstaller({ jsonResponder, botClient, webhookUrl: process.env.TELEGRAM_WEBHOOK_URL, logger }),
   webhookInfo: new TelegramWebhookInfoController({ jsonResponder, botClient }),
   requestLogger: new HttpRequestLogger(logger),
   healthController: new HealthController({ jsonResponder, botClient, webhookUrl: process.env.TELEGRAM_WEBHOOK_URL }),
+  botInfo: new TelegramBotInfoController({ jsonResponder, botClient }),
 });
 
 http.createServer((request, response) => application.handleRequest(request, response)).listen(port, () => {

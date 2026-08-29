@@ -1,5 +1,5 @@
 export class HttpApplication {
-  constructor({ staticFileServer, jsonResponder, authController, webhookController, webhookInstaller, webhookInfo, requestLogger, healthController }) {
+  constructor({ staticFileServer, jsonResponder, authController, webhookController, webhookInstaller, webhookInfo, requestLogger, healthController, botInfo }) {
     this.staticFileServer = staticFileServer;
     this.jsonResponder = jsonResponder;
     this.authController = authController;
@@ -8,6 +8,7 @@ export class HttpApplication {
     this.webhookInfo = webhookInfo;
     this.requestLogger = requestLogger;
     this.healthController = healthController;
+    this.botInfo = botInfo;
   }
 
   async handleRequest(request, response) {
@@ -26,6 +27,7 @@ export class HttpApplication {
     if (url.pathname === "/api/telegram-webhook") return this.webhookController.handleRequest(request, response);
     if (url.pathname === "/api/telegram-set-webhook") return this.webhookInstaller.handleRequest(request, response);
     if (url.pathname === "/api/telegram-webhook-info") return this.webhookInfo.handleRequest(request, response);
+    if (url.pathname === "/api/telegram-bot-info") return this.botInfo.handleRequest(request, response);
     if (url.pathname === "/api/health") return this.healthController.handleRequest(request, response);
     return this.staticFileServer.serveFile(url.pathname, response);
   }
