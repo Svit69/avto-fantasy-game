@@ -1,8 +1,6 @@
 export class TelegramAuthController {
-  constructor({ bodyParser, jsonResponder, initDataVerifier }) {
-    this.bodyParser = bodyParser;
-    this.jsonResponder = jsonResponder;
-    this.initDataVerifier = initDataVerifier;
+  constructor({ bodyParser, jsonResponder, initDataVerifier, userMapper, userRepository }) {
+    Object.assign(this, { bodyParser, jsonResponder, initDataVerifier, userMapper, userRepository });
   }
 
   async handleRequest(request, response) {
@@ -10,11 +8,8 @@ export class TelegramAuthController {
     if (!this.initDataVerifier.hasToken()) return this.jsonResponder.sendJson(response, 503, { error: "telegram_token_missing" });
     const params = new URLSearchParams(await this.bodyParser.readText(request));
     if (!this.initDataVerifier.verifyInitData(params)) return this.jsonResponder.sendJson(response, 401, { error: "invalid_init_data" });
-    const user = JSON.parse(params.get("user") || "{}");
-    return this.jsonResponder.sendJson(response, 200, { managerName: this.#createManagerName(user), monthlyPlace: "—" });
-  }
-
-  #createManagerName(user) {
-    return [user.first_name, user.last_name].filter(Boolean).join(" ") || user.username || "Менеджер";
+    const profile = JSON.parse(params.get("user") || "{}");
+    const user = await this.userRepository.upsertUser(this.userMapper.createUserFromTelegramProfile(profile));
+    return this.jsonResponder.sendJson(response, 200, { managerName: user.name, monthlyPlace: "—" });
   }
 }

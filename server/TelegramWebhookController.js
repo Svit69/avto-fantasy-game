@@ -1,23 +1,24 @@
 export class TelegramWebhookController {
-  constructor({ bodyParser, jsonResponder, botClient, appUrl }) {
-    this.bodyParser = bodyParser;
-    this.jsonResponder = jsonResponder;
-    this.botClient = botClient;
-    this.appUrl = appUrl;
+  constructor({ bodyParser, jsonResponder, botClient, appUrl, userMapper, userRepository }) {
+    Object.assign(this, { bodyParser, jsonResponder, botClient, appUrl, userMapper, userRepository });
   }
 
   async handleRequest(request, response) {
     if (request.method !== "POST") return this.jsonResponder.sendJson(response, 405, { error: "method_not_allowed" });
     if (!this.botClient.hasToken()) return this.jsonResponder.sendJson(response, 503, { error: "telegram_token_missing" });
-    const update = await this.bodyParser.readJson(request);
-    await this.#processTelegramUpdate(update);
+    await this.#processTelegramUpdate(await this.bodyParser.readJson(request));
     return this.jsonResponder.sendJson(response, 200, { ok: true });
   }
 
   async #processTelegramUpdate(update) {
     if (update.callback_query) return this.#acceptAgreement(update.callback_query);
-    if (update.message?.contact) return this.#sendMiniAppButton(update.message.chat.id);
+    if (update.message?.contact) return this.#completeRegistration(update.message);
     if (update.message?.text === "/start") return this.#sendAgreement(update.message.chat.id);
+  }
+
+  async #completeRegistration(message) {
+    await this.userRepository.upsertUser(this.userMapper.createUserFromTelegramMessage(message));
+    return this.#sendMiniAppButton(message.chat.id);
   }
 
   async #acceptAgreement(callback) {

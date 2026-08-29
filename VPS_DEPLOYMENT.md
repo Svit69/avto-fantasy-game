@@ -7,6 +7,7 @@
 5. Put nginx in front of `http://127.0.0.1:3000`.
 6. Enable HTTPS for the public domain.
 7. Call `POST https://your-domain/api/telegram-set-webhook` once.
+8. Keep `storage/users.json` persistent between deployments.
 
 Required environment variables:
 
@@ -14,5 +15,6 @@ Required environment variables:
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_WEB_APP_URL=https://your-domain
 TELEGRAM_WEBHOOK_URL=https://your-domain/api/telegram-webhook
+USER_DATABASE_PATH=storage/users.json
 PORT=3000
 ```
