@@ -5,7 +5,7 @@ export class HeaderView {
     return `
       <header class="app-header">
         <div class="header-content">
-          <button class="icon-button" aria-label="Открыть меню">
+          <button class="icon-button" data-open-manager-menu aria-label="Открыть меню">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 7h16M4 12h16M4 17h16" />
             </svg>

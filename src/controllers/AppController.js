@@ -7,12 +7,11 @@ import { MarketStatsScrollSynchronizer } from "../services/MarketStatsScrollSync
 import { PlayerFactory } from "../services/PlayerFactory.js";
 import { RosterFactory } from "../services/RosterFactory.js";
 import { PlayerSelectionController } from "./PlayerSelectionController.js";
+import { ManagerMenuController } from "./ManagerMenuController.js";
 import { RosterSelectionController } from "./RosterSelectionController.js";
 
 export class AppController {
-  constructor(rootElement) {
-    this.rootElement = rootElement;
-  }
+  constructor(rootElement) { this.rootElement = rootElement; }
 
   initializeApplication() {
     const players = new PlayerFactory().createPlayersFromCatalog(INITIAL_PLAYERS);
@@ -22,6 +21,7 @@ export class AppController {
 
     this.#renderApplicationShell();
     rosterDomRenderer.renderRosterSections();
+    new ManagerMenuController(this.rootElement).connectManagerMenuActions();
     new RosterSelectionController(this.rootElement, teamRoster, rosterDomRenderer).connectRosterActions();
     this.#connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory);
   }
@@ -43,8 +43,6 @@ export class AppController {
     const logoElement = this.rootElement.querySelector("[data-logo]");
     if (!logoElement) return;
 
-    logoElement.addEventListener("error", () => {
-      logoElement.outerHTML = `<div class="brand-fallback" role="img" aria-label="Логотип Автомобилиста"></div>`;
-    });
+    logoElement.addEventListener("error", () => { logoElement.outerHTML = `<div class="brand-fallback" role="img" aria-label="Логотип Автомобилиста"></div>`; });
   }
 }

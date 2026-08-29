@@ -10,6 +10,7 @@ export class AppShellView {
         <div data-draft-field></div>
         <div data-roster-footer></div>
         <div data-player-selection-root></div>
+        <div data-manager-menu-root></div>
       </div>
     `;
   }
