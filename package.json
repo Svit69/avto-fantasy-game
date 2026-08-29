@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "npx serve .",
-    "check": "node --check src/main.js"
+    "start": "node server/server.js",
+    "check": "node --check src/main.js && node --check server/server.js"
   }
 }
