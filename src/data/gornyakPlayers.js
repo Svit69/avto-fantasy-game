@@ -20,6 +20,7 @@ export function createGornyakPlayers(factory) {
     factory.createGornyakPlayer("Владислав", "Раздьяконов", "razdyakonov", ROSTER_POSITIONS.forward, 8, "vladislav_razdyakonov"),
     factory.createGornyakPlayer("Вадим", "Сущев", "sushchev", ROSTER_POSITIONS.forward, 9, "vadim_sushchev"),
     factory.createGornyakPlayer("Владимир", "Сычев", "sychev", ROSTER_POSITIONS.forward, 7, "vladimir_sychev"),
+    factory.createGornyakPlayer("Егор", "Щукин", "shchukin", ROSTER_POSITIONS.forward, 6, "egor_shchukin"),
     factory.createGornyakPlayer("Дмитрий", "Бойков", "boykov", ROSTER_POSITIONS.defender, 6, "dmitry_boykov"),
     factory.createGornyakPlayer("Михаил", "Гамзаков", "gamzakov", ROSTER_POSITIONS.defender, 10, "mikhail_gamzakov"),
     factory.createGornyakPlayer("Николай", "Думченко", "dumchenko", ROSTER_POSITIONS.defender, 6, "nikolay_dumchenko"),
@@ -30,7 +31,9 @@ export function createGornyakPlayers(factory) {
     factory.createGornyakPlayer("Даниил", "Молодцов", "molodtsov", ROSTER_POSITIONS.defender, 6, "daniil_molodtsov"),
     factory.createGornyakPlayer("Валерий", "Ситников", "sitnikov", ROSTER_POSITIONS.defender, 6, "valery_sitnikov"),
     factory.createGornyakPlayer("Ярослав", "Трофимов", "trofimov", ROSTER_POSITIONS.defender, 9, "yaroslav_trofimov"),
+    factory.createGornyakPlayer("Артем", "Щучинов", "shchuchinov", ROSTER_POSITIONS.defender, 12, "artem_shchuchinov"),
     factory.createGornyakPlayer("Лоренс", "Зинаддин", "zinaddin", ROSTER_POSITIONS.goalkeeper, 11, "lorens_zinaddin"),
     factory.createGornyakPlayer("Павел", "Ромашкин", "romashkin", ROSTER_POSITIONS.goalkeeper, 7, "pavel_romashkin"),
+    factory.createGornyakPlayer("Никита", "Тулинов", "tulinov", ROSTER_POSITIONS.goalkeeper, 6, "nikita_tulinov"),
   ];
 }
