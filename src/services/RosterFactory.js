@@ -9,7 +9,7 @@ export class RosterFactory {
       new RosterSlot("нападающий", this.#findPlayerByLastName(players, "Спронг")),
       new RosterSlot("защитник", this.#findPlayerByLastName(players, "Трямкин")),
       new RosterSlot("защитник"),
-      new RosterSlot("вратарь", this.#findPlayerByLastName(players, "Аликин")),
+      new RosterSlot("вратарь"),
     ];
 
     return new TeamRoster(100, slots);

@@ -1,11 +1,10 @@
 export class TeamRoster {
+  static CLUB_PLAYER_LIMIT = 3;
+
   #budgetLimit;
   #slots;
 
-  constructor(budgetLimit, slots) {
-    this.#budgetLimit = budgetLimit;
-    this.#slots = slots;
-  }
+  constructor(budgetLimit, slots) { this.#budgetLimit = budgetLimit; this.#slots = slots; }
 
   getSlots() { return [...this.#slots]; }
 
@@ -17,30 +16,33 @@ export class TeamRoster {
 
   calculateTotalSlotsCount() { return this.#slots.length; }
 
-  calculateSelectedPlayersPrice() {
-    return this.#slots.reduce((sum, slot) => {
-      return slot.isFilled() ? sum + slot.getPlayer().getPrice() : sum;
-    }, 0);
-  }
+  calculateSelectedPlayersPrice() { return this.#slots.reduce((sum, slot) => sum + (slot.isFilled() ? slot.getPlayer().getPrice() : 0), 0); }
 
   canConfirmRoster() {
     return this.calculateFilledPlayersCount() === this.calculateTotalSlotsCount()
-      && this.calculateSelectedPlayersPrice() <= this.#budgetLimit;
+      && this.calculateSelectedPlayersPrice() <= this.#budgetLimit && this.hasValidClubLimits();
   }
 
   findAvailableSlotForPlayer(activeSlotIndex, player) {
+    if (!this.canSelectPlayerFromClub(activeSlotIndex, player)) return null;
     const activeSlot = this.getSlotByIndex(activeSlotIndex);
     if (activeSlot) return activeSlot.getPosition() === player.getPosition() ? activeSlot : null;
 
     return this.#slots.find((slot) => !slot.isFilled() && slot.getPosition() === player.getPosition()) ?? null;
   }
 
-  getSelectedPlayerIds() {
-    return this.#slots.filter((slot) => slot.isFilled())
-      .map((slot) => slot.getPlayer().getId());
+  canSelectPlayerFromClub(activeSlotIndex, player) { return this.countSelectedPlayersByTeam(player.getTeam(), activeSlotIndex) < TeamRoster.CLUB_PLAYER_LIMIT; }
+
+  countSelectedPlayersByTeam(team, ignoredSlotIndex = null) {
+    return this.#slots.filter((slot) => slot.isFilled() && slot.getIndex() !== ignoredSlotIndex)
+      .filter((slot) => slot.getPlayer().getTeam() === team).length;
   }
 
-  assignPlayerSelectionAt(slotIndex, player) { this.getSlotByIndex(slotIndex)?.assignPlayerSelection(player); }
+  hasValidClubLimits() { return this.#slots.every((slot) => !slot.isFilled() || this.countSelectedPlayersByTeam(slot.getPlayer().getTeam(), slot.getIndex()) < TeamRoster.CLUB_PLAYER_LIMIT); }
+
+  getSelectedPlayerIds() { return this.#slots.filter((slot) => slot.isFilled()).map((slot) => slot.getPlayer().getId()); }
+
+  assignPlayerSelectionAt(slotIndex, player) { if (this.canSelectPlayerFromClub(slotIndex, player)) this.getSlotByIndex(slotIndex)?.assignPlayerSelection(player); }
 
   clearPlayerSelectionAt(slotIndex) { this.getSlotByIndex(slotIndex)?.clearPlayerSelection(); }
 }

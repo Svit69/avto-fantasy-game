@@ -1,4 +1,5 @@
 .market-player-avatar {
+  position: relative;
   width: 52px;
   height: 52px;
   overflow: hidden;
@@ -10,4 +11,20 @@
   height: 89px;
   object-fit: contain;
   transform: translate(-19px, 6px);
+}
+
+.market-player-avatar i {
+  position: absolute;
+  right: 1px;
+  bottom: 3px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  background: #151515;
+  border: 2px solid #FDFFFF;
+  border-radius: 50%;
+  color: #FDFFFF;
+  font-size: 12px;
+  font-style: normal;
 }

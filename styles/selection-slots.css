@@ -35,6 +35,8 @@
   object-fit: contain;
 }
 
+.selection-slot img[src$="gornyak_logo.png"] { width: 26px; height: 26px; }
+
 .selection-slot span {
   max-width: 100%;
   overflow: hidden;

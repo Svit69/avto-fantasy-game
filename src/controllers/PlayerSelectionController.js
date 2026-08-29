@@ -1,7 +1,7 @@
+import { RosterLimitToastController } from "./RosterLimitToastController.js";
+
 export class PlayerSelectionController {
-  constructor(rootElement, teamRoster, players, rosterDomRenderer, drawerView, state, scrollSynchronizer) {
-    Object.assign(this, { rootElement, teamRoster, players, rosterDomRenderer, drawerView, state, scrollSynchronizer });
-  }
+  constructor(rootElement, teamRoster, players, rosterDomRenderer, drawerView, state, scrollSynchronizer) { Object.assign(this, { rootElement, teamRoster, players, rosterDomRenderer, drawerView, state, scrollSynchronizer }); this.toastController = new RosterLimitToastController(rootElement); }
   connectPlayerSelectionActions() { this.rootElement.addEventListener("click", (event) => this.#handleSelectionAction(event)); this.rootElement.addEventListener("input", (event) => this.#handleRangeInput(event)); }
   #handleSelectionAction(event) {
     if (event.target.closest("[data-remove-slot]")) return this.#renderDrawer();
@@ -9,6 +9,7 @@ export class PlayerSelectionController {
     if (event.target.closest(".empty-player-slot")) return this.#openDrawer(event);
     if (event.target.closest("[data-close-player-panel]")) return this.#closeDrawer();
     if (event.target.closest("[data-close-filter]")) return this.#closeFilter();
+    if (event.target.closest("[data-close-toast]")) return this.toastController.closeNotification();
     if (event.target.closest("[data-open-filter]")) return this.#openFilter(event);
     if (event.target.closest("[data-filter-value]")) return this.#applyFilter(event);
     if (event.target.closest("[data-select-player]")) return this.#selectPlayer(event);
@@ -22,14 +23,12 @@ export class PlayerSelectionController {
   #openFilter(event) { this.state.openFilter(event.target.closest("[data-open-filter]").dataset.openFilter); this.#renderDrawer(); }
   #closeFilter() { this.#animateExit(".filter-sheet, .filter-scrim", () => { this.state.closeFilter(); this.#renderDrawer(); }, 130); }
   #handleRangeInput(event) { if (!event.target.matches("[data-price-filter-range]")) return;
-    this.state.applyFilter("price", event.target.value); event.target.previousElementSibling.querySelector("output").value = `до ${event.target.value}к`; }
-  #applyFilter(event) {
-    const option = event.target.closest("[data-filter-value]");
-    this.state.applyFilter(option.dataset.filterKind, option.dataset.filterValue);
-    this.#closeFilter();
-  }
+    this.state.applyFilter("price", event.target.value); this.#updatePriceRangeUi(event.target); }
+  #applyFilter(event) { const option = event.target.closest("[data-filter-value]"); this.state.applyFilter(option.dataset.filterKind, option.dataset.filterValue); this.#closeFilter(); }
   #selectPlayer(event) {
-    const playerId = event.target.closest("[data-select-player]").dataset.selectPlayer;
+    const button = event.target.closest("[data-select-player]");
+    if (button.dataset.clubLimitTeam) return this.toastController.showClubLimitNotification(button.dataset.clubLimitTeam);
+    const playerId = button.dataset.selectPlayer;
     const player = this.players.find((candidate) => candidate.getId() === playerId);
     const slot = player ? this.teamRoster.findAvailableSlotForPlayer(this.state.activeSlotIndex, player) : null;
     if (!slot) return;
@@ -42,8 +41,6 @@ export class PlayerSelectionController {
     root.innerHTML = this.state.isOpen() ? this.drawerView.render(this.#createContext()) : ""; this.scrollSynchronizer.connectSynchronizedStatsScroll(root);
   }
   #animateExit(selector, afterClose, duration = 160) { this.rootElement.querySelectorAll(selector).forEach((element) => element.classList.add("is-leaving")); setTimeout(afterClose, duration); }
-  #createContext() {
-    return { teamRoster: this.teamRoster, players: this.players, filters: this.state.filters,
-      activeFilter: this.state.activeFilter, shouldAnimate: this.state.consumeDrawerAnimationFlag() };
-  }
+  #updatePriceRangeUi(input) { input.style.setProperty("--price-progress", `${((input.value - input.min) / (input.max - input.min)) * 100}%`); input.previousElementSibling.querySelector("output").value = `до ${input.value}к`; }
+  #createContext() { return { teamRoster: this.teamRoster, players: this.players, filters: this.state.filters, activeFilter: this.state.activeFilter, shouldAnimate: this.state.consumeDrawerAnimationFlag() }; }
 }

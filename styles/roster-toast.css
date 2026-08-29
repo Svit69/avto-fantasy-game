@@ -1,0 +1,37 @@
+.roster-toast {
+  position: fixed;
+  right: 14px;
+  bottom: calc(var(--footer-height) + env(safe-area-inset-bottom) + 12px);
+  left: 14px;
+  z-index: 60;
+  display: grid;
+  grid-template-columns: 42px 1fr 34px;
+  align-items: center;
+  gap: 10px;
+  min-height: 74px;
+  padding: 12px;
+  color: #1D1D1E;
+  background: #F5F2ED;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.42);
+  animation: toast-lifecycle 3200ms ease both;
+}
+
+.roster-toast img { width: 38px; max-height: 38px; object-fit: contain; }
+
+.roster-toast p { margin: 0; font-size: 15px; font-weight: 800; line-height: 1.2; }
+
+.roster-toast button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  color: rgba(29, 29, 30, 0.66);
+  background: transparent;
+  font-size: 30px;
+  line-height: 1;
+}
+
+@keyframes toast-lifecycle {
+  0% { transform: translateY(120%); opacity: 0; }
+  8%, 88% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(120%); opacity: 0; }
+}
