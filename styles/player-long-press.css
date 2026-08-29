@@ -1,0 +1,8 @@
+[data-player-profile] {
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+[data-player-profile] img {
+  -webkit-user-drag: none;
+}

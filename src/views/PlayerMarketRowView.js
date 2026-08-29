@@ -6,7 +6,8 @@ export class PlayerMarketRowView {
     const disabled = selected || (slotMissing && !clubLocked);
     const classes = this.#createClassName(selected, !selected && (disabled || clubLocked));
     return `<button class="${classes}" type="button" data-select-player="${player.getId()}"
-      ${clubLocked ? `data-club-limit-team="${player.getTeam()}"` : ""} ${disabled ? "disabled" : ""}>
+      data-player-profile="${player.getId()}" ${clubLocked ? `data-club-limit-team="${player.getTeam()}"` : ""}
+      ${disabled ? `aria-disabled="true"` : ""}>
       <div class="market-player-cell">
         <span class="market-player-avatar"><img src="${player.getImage()}" alt="${player.getFullName()}" />${selected ? "<i>✓</i>" : ""}</span>
         <span><b>${player.getLastName().toUpperCase()}</b><small>${player.getTeam().toUpperCase()}</small></span>

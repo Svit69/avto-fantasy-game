@@ -4,7 +4,7 @@ export class PlayerCardView {
     const selectedClass = props.selected ? " is-selected" : "";
 
     return `
-      <article class="player-card ${tiltClass}${selectedClass}">
+      <article class="player-card ${tiltClass}${selectedClass}" data-player-profile="${props.id}">
         <button class="card-remove-button" type="button" data-remove-slot="${slotIndex}" aria-label="Удалить игрока">
           <span aria-hidden="true">×</span>
         </button>

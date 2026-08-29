@@ -11,6 +11,7 @@ export class AppShellView {
         <div data-roster-footer></div>
         <div data-player-selection-root></div>
         <div data-manager-menu-root></div>
+        <div data-player-profile-root></div>
       </div>
     `;
   }
