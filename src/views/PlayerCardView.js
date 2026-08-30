@@ -32,9 +32,7 @@ export class PlayerCardView {
     return codes[position] ?? position;
   }
 
-  #formatShortName(props) {
-    return `${props.name.charAt(0)}. ${props.secondName}`.toUpperCase();
-  }
+  #formatShortName(props) { return `${props.name.charAt(0)}. ${props.secondName}`.toUpperCase(); }
 
   #renderLeagueLogo(leagueLogo) {
     return leagueLogo ? `<img class="card-league-logo" src="${leagueLogo}" alt="Лига игрока" />` : "";

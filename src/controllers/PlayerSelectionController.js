@@ -1,7 +1,8 @@
 import { RosterLimitToastController } from "./RosterLimitToastController.js";
-
 export class PlayerSelectionController {
-  constructor(rootElement, teamRoster, players, rosterDomRenderer, drawerView, state, scrollSynchronizer) { Object.assign(this, { rootElement, teamRoster, players, rosterDomRenderer, drawerView, state, scrollSynchronizer }); this.toastController = new RosterLimitToastController(rootElement); }
+  constructor(rootElement, teamRoster, players, rosterDomRenderer, drawerView, state, scrollSynchronizer) {
+    Object.assign(this, { rootElement, teamRoster, players, rosterDomRenderer, drawerView, state, scrollSynchronizer }); this.toastController = new RosterLimitToastController(rootElement);
+  }
   connectPlayerSelectionActions() { this.rootElement.addEventListener("click", (event) => this.#handleSelectionAction(event)); this.rootElement.addEventListener("input", (event) => this.#handleRangeInput(event)); }
   #handleSelectionAction(event) {
     if (event.target.closest("[data-remove-slot]")) return this.#renderDrawer();
@@ -19,26 +20,28 @@ export class PlayerSelectionController {
     this.state.openForSlot(slot); this.#renderDrawer();
   }
   #openPlayerSearch() { this.state.openForPlayerSearch(); this.#renderDrawer(); }
-  #closeDrawer() { this.#animateExit(".player-selection-drawer, .drawer-backdrop", () => { this.state.closeDrawer(); this.#renderDrawer(); }); }
   #openFilter(event) { this.state.openFilter(event.target.closest("[data-open-filter]").dataset.openFilter); this.#renderDrawer(); }
   #closeFilter() { this.#animateExit(".filter-sheet, .filter-scrim", () => { this.state.closeFilter(); this.#renderDrawer(); }, 130); }
-  #handleRangeInput(event) { if (!event.target.matches("[data-price-filter-range]")) return;
-    this.state.applyFilter("price", event.target.value); this.#updatePriceRangeUi(event.target); }
-  #applyFilter(event) { const option = event.target.closest("[data-filter-value]"); this.state.applyFilter(option.dataset.filterKind, option.dataset.filterValue); this.#closeFilter(); }
+  #closeDrawer() { this.#animateExit(".player-selection-drawer, .drawer-backdrop", () => { this.state.closeDrawer(); this.#renderDrawer(); }); }
+  #handleRangeInput(event) {
+    if (event.target.matches("[data-price-filter-range]")) { this.state.applyFilter("price", event.target.value); this.#updatePriceRangeUi(event.target); }
+  }
+  #applyFilter(event) {
+    const option = event.target.closest("[data-filter-value]");
+    this.state.applyFilter(option.dataset.filterKind, option.dataset.filterValue); this.#closeFilter();
+  }
   #selectPlayer(event) {
     const button = event.target.closest("[data-select-player]");
     if (button.dataset.clubLimitTeam) return this.toastController.showClubLimitNotification(button.dataset.clubLimitTeam);
-    const playerId = button.dataset.selectPlayer;
-    const player = this.players.find((candidate) => candidate.getId() === playerId);
+    const player = this.players.find((candidate) => candidate.getId() === button.dataset.selectPlayer);
     const slot = player ? this.teamRoster.findAvailableSlotForPlayer(this.state.activeSlotIndex, player) : null;
-    if (!slot) return;
-    this.teamRoster.assignPlayerSelectionAt(slot.getIndex(), player);
-    this.rosterDomRenderer.renderSlotByIndex(slot.getIndex());
-    this.rosterDomRenderer.renderFooter(); this.#closeDrawer();
+    if (slot) this.#assignSelectedPlayer(slot, player);
   }
+  #assignSelectedPlayer(slot, player) { this.teamRoster.assignPlayerSelectionAt(slot.getIndex(), player); this.rosterDomRenderer.renderSlotByIndex(slot.getIndex()); this.rosterDomRenderer.renderFooter(); this.#closeDrawer(); }
   #renderDrawer() {
-    const root = this.rootElement.querySelector("[data-player-selection-root]"); document.body.classList.toggle("is-drawer-open", this.state.isOpen());
-    root.innerHTML = this.state.isOpen() ? this.drawerView.render(this.#createContext()) : ""; this.scrollSynchronizer.connectSynchronizedStatsScroll(root);
+    const root = this.rootElement.querySelector("[data-player-selection-root]");
+    document.body.classList.toggle("is-drawer-open", this.state.isOpen()); root.innerHTML = this.state.isOpen() ? this.drawerView.render(this.#createContext()) : "";
+    this.scrollSynchronizer.connectSynchronizedStatsScroll(root);
   }
   #animateExit(selector, afterClose, duration = 160) { this.rootElement.querySelectorAll(selector).forEach((element) => element.classList.add("is-leaving")); setTimeout(afterClose, duration); }
   #updatePriceRangeUi(input) { input.style.setProperty("--price-progress", `${((input.value - input.min) / (input.max - input.min)) * 100}%`); input.previousElementSibling.querySelector("output").value = `до ${input.value}к`; }

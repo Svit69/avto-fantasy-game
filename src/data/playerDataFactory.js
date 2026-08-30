@@ -14,7 +14,7 @@ export class PlayerDataFactory {
   }
 
   #createPlayer(firstName, lastName, key, position, price, imageName, team, teamLogo, leagueLogo) {
-    return { firstName, lastName, number: PLAYER_NUMBERS[key],
-      position, price, points: 0, team, teamLogo, leagueLogo, image: `/assets/players/${imageName}.png` };
+    return { key, id: key, firstName, lastName, number: PLAYER_NUMBERS[key], position,
+      price, points: 0, team, teamLogo, leagueLogo, image: `/assets/players/${imageName}.png` };
   }
 }

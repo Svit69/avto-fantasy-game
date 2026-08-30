@@ -7,7 +7,6 @@ export class PlayerSelectionDrawerView {
     const { teamRoster, players, filters, activeFilter, shouldAnimate } = context;
     const filled = teamRoster.calculateFilledPlayersCount();
     const total = teamRoster.calculateTotalSlotsCount();
-
     return `
       <div class="drawer-backdrop" data-close-player-panel></div>
       <aside class="player-selection-drawer ${shouldAnimate ? "is-entering" : ""}">
@@ -39,7 +38,8 @@ export class PlayerSelectionDrawerView {
   #selectTeams(players) { return [...new Set(players.map((player) => player.getTeam()))]; }
 
   #selectPriceRange(players) {
-    const prices = players.map((player) => player.getPrice()); return { min: Math.floor(Math.min(...prices)), max: Math.ceil(Math.max(...prices)) };
+    const prices = players.map((player) => player.getPrice());
+    return { min: Math.floor(Math.min(...prices)), max: Math.ceil(Math.max(...prices)) };
   }
 
   #formatPosition(position) {

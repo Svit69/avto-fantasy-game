@@ -35,4 +35,12 @@ export class RosterSlot {
   isFilled() {
     return Boolean(this.#player);
   }
+
+  toServerPayload() {
+    return {
+      slotIndex: this.#index,
+      position: this.#position,
+      playerId: this.#player?.getId() || null,
+    };
+  }
 }

@@ -23,11 +23,7 @@ export class PlayerSelectionState {
     this.filters.position = "Все";
   }
 
-  closeDrawer() {
-    this.activeSlotIndex = null;
-    this.activeFilter = null;
-    this.drawerOpen = false;
-  }
+  closeDrawer() { this.activeSlotIndex = null; this.activeFilter = null; this.drawerOpen = false; }
 
   openFilter(kind) { this.activeFilter = kind; }
 

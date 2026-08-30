@@ -4,7 +4,6 @@ import { PriceRangeFilterView } from "./PriceRangeFilterView.js";
 export class FilterSheetView {
   render(kind, filters, teams, priceRange) {
     if (!kind) return "";
-
     return `
       <div class="filter-scrim" data-close-filter></div>
       <section class="filter-sheet">

@@ -42,6 +42,8 @@ export class TeamRoster {
 
   getSelectedPlayerIds() { return this.#slots.filter((slot) => slot.isFilled()).map((slot) => slot.getPlayer().getId()); }
 
+  createServerPayload() { return this.#slots.map((slot) => slot.toServerPayload()); }
+
   assignPlayerSelectionAt(slotIndex, player) { if (this.canSelectPlayerFromClub(slotIndex, player)) this.getSlotByIndex(slotIndex)?.assignPlayerSelection(player); }
 
   clearPlayerSelectionAt(slotIndex) { this.getSlotByIndex(slotIndex)?.clearPlayerSelection(); }

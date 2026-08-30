@@ -21,6 +21,10 @@ export class UserRepository {
     return (await this.#readUsers()).find((user) => user.id === String(id)) || null;
   }
 
+  async listUsers() {
+    return this.#readUsers();
+  }
+
   async #readUsers() {
     try {
       const payload = JSON.parse(await fs.readFile(this.filePath, "utf8"));

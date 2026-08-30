@@ -2,14 +2,12 @@ export class FooterView {
   render(teamRoster) {
     const filledCount = teamRoster.calculateFilledPlayersCount();
     const totalCount = teamRoster.calculateTotalSlotsCount();
-    const spentBudget = teamRoster.calculateSelectedPlayersPrice();
-    const budgetLimit = teamRoster.getBudgetLimit();
-    const remainingBudget = budgetLimit - spentBudget;
+    const remainingBudget = teamRoster.getBudgetLimit() - teamRoster.calculateSelectedPlayersPrice();
     const budgetState = remainingBudget < 0 ? "is-over-budget" : "";
     const isComplete = filledCount === totalCount;
     const actionText = isComplete ? "ПОДТВЕРДИТЬ СОСТАВ" : "ИСКАТЬ ИГРОКОВ";
     const actionClass = isComplete ? "is-confirm-action" : "is-search-action";
-    const actionData = isComplete ? "" : "data-open-player-panel";
+    const actionData = isComplete ? "data-confirm-roster" : "data-open-player-panel";
     const disabled = isComplete && !teamRoster.canConfirmRoster() ? "disabled" : "";
 
     return `
