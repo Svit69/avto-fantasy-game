@@ -15,7 +15,7 @@ export class StaticFileServer {
     if (!filePath) return this.#sendNotFound(response);
     try {
       const content = await fs.readFile(filePath);
-      response.writeHead(200, { "Content-Type": this.#getContentType(filePath), "Cache-Control": "public, max-age=3600" });
+      response.writeHead(200, { "Content-Type": this.#getContentType(filePath), "Cache-Control": this.#getCacheControl(filePath) });
       response.end(content);
     } catch {
       this.#sendNotFound(response);
@@ -36,6 +36,11 @@ export class StaticFileServer {
 
   #getContentType(filePath) {
     return `${this.contentTypes.get(path.extname(filePath).toLowerCase()) || "application/octet-stream"}; charset=utf-8`;
+  }
+
+  #getCacheControl(filePath) {
+    const extension = path.extname(filePath).toLowerCase();
+    return [".html", ".js"].includes(extension) ? "no-store" : "public, max-age=3600";
   }
 
   #sendNotFound(response) {
