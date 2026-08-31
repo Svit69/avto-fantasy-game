@@ -10,7 +10,7 @@ export class UserEntity {
   }
 
   mergeProfile(profile) {
-    const mergedName = this.#isDefaultManagerName(this.name) ? profile.name : profile.name || this.name;
+    const mergedName = this.#shouldReplaceStoredName(this.name) ? profile.name : profile.name || this.name;
     return new UserEntity({
       id: this.id,
       name: mergedName,
@@ -27,7 +27,7 @@ export class UserEntity {
     return { id, name, phone, email, avatar, created_at, status };
   }
 
-  #isDefaultManagerName(name) {
-    return name === "Менеджер";
+  #shouldReplaceStoredName(name) {
+    return name === "Менеджер" || name.startsWith("Р");
   }
 }

@@ -8,12 +8,12 @@ export class AuthGateController {
 
   async verifyApplicationAuthorization() {
     const status = await this.authService.verifyAuthorization();
-    if (!status.authorized) this.#showAuthorizationModal();
+    if (!status.authorized) this.#showAuthorizationModal(status);
     return status;
   }
 
-  #showAuthorizationModal() {
+  #showAuthorizationModal(status) {
     const root = this.rootElement.querySelector("[data-auth-root]");
-    if (root) root.innerHTML = this.modalView.render();
+    if (root) root.innerHTML = this.modalView.render(status);
   }
 }

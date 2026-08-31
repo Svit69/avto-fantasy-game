@@ -9,6 +9,10 @@ export class TelegramProfileFormatter {
     return { managerName: "Менеджер", monthlyPlace: "—" };
   }
 
+  isFallbackProfile(profile) {
+    return !profile || profile.managerName === "Менеджер";
+  }
+
   #formatUsername(username) {
     return username ? `@${username}` : "";
   }

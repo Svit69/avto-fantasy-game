@@ -10,7 +10,7 @@ export class TelegramWebhookReplyFactory {
   }
 
   createMiniAppMessage(chatId, appUrl) {
-    return { method: "sendMessage", chat_id: chatId, text: "Регистрация завершена. Откройте Авто Фэнтези.",
-      reply_markup: { keyboard: [[{ text: "Открыть приложение", web_app: { url: appUrl } }]], resize_keyboard: true } };
+    return { method: "sendMessage", chat_id: chatId, text: "Регистрация завершена. Запустите мини-приложение кнопкой ниже.",
+      reply_markup: { inline_keyboard: [[{ text: "Открыть Авто Фэнтези", web_app: { url: appUrl } }]] } };
   }
 }
