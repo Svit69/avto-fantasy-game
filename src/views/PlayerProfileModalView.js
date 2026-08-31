@@ -1,5 +1,11 @@
+import { PlayerMatchCalendarView } from "./PlayerMatchCalendarView.js";
+
 export class PlayerProfileModalView {
-  render(player, selected) {
+  constructor(calendarView = new PlayerMatchCalendarView()) {
+    this.calendarView = calendarView;
+  }
+
+  render(player, selected, calendar, selectedMonth) {
     return `
       <div class="player-profile-scrim" data-close-player-profile></div>
       <section class="player-profile-modal" role="dialog" aria-modal="true" aria-label="${player.getFullName()}">
@@ -20,15 +26,11 @@ export class PlayerProfileModalView {
           ${this.#renderStat("Очки", `${player.getPoints()} оч.`)}
           ${this.#renderStat("Цена", player.getFormattedPrice())}
         </div>
-        <div class="profile-body">${this.#renderStageBlock()}${this.#renderSeasonBlock(player)}</div>
+        <div class="profile-body">${this.calendarView.render(player, calendar, selectedMonth)}${this.#renderSeasonBlock(player)}</div>
       </section>`;
   }
 
   #renderStat(label, value) { return `<div><small>${label}</small><strong>${value}</strong></div>`; }
-
-  #renderStageBlock() {
-    return `<article class="profile-panel"><h3>Общий этап</h3><p>Календарь и игровые туры появятся после старта месяца.</p><a href="#">Как начисляются очки</a></article>`;
-  }
 
   #renderSeasonBlock(player) {
     return `<article class="profile-panel"><h3>Прошлый сезон</h3>${this.#renderSeasonRows(player)}<footer><b>Итого</b><strong>${player.getPoints()} оч.</strong></footer></article>`;

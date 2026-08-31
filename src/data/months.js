@@ -4,4 +4,7 @@ export const AVAILABLE_MONTHS = Object.freeze([
   "Октябрь",
   "Ноябрь",
   "Декабрь",
+  "Январь",
+  "Февраль",
+  "Март",
 ]);

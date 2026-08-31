@@ -1,0 +1,29 @@
+.profile-match-details {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px minmax(74px, auto) 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 18px 14px;
+  font-size: 16px;
+}
+
+.profile-match-details img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.profile-match-details span {
+  min-width: 0;
+  font-weight: 600;
+}
+
+.profile-match-details span:first-child {
+  text-align: right;
+}
+
+.profile-match-details time {
+  color: rgba(19, 32, 36, 0.76);
+  font-size: 14px;
+  text-align: center;
+}

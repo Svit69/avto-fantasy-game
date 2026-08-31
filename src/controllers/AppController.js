@@ -1,9 +1,9 @@
 import { INITIAL_PLAYERS } from "../data/players.js";
 import { PlayerSelectionState } from "../models/PlayerSelectionState.js";
-import { ApplicationViewFactory } from "../services/ApplicationViewFactory.js";
+import { ApplicationViewFactory } from "../services/ApplicationViewFactory.js"; import { FantasyCalendarApiClient } from "../services/FantasyCalendarApiClient.js";
 import { MarketStatsScrollSynchronizer } from "../services/MarketStatsScrollSynchronizer.js";
 import { PlayerCatalogApiClient } from "../services/PlayerCatalogApiClient.js";
-import { PlayerFactory } from "../services/PlayerFactory.js";
+import { PlayerFactory } from "../services/PlayerFactory.js"; import { PlayerProfileCalendarPresenter } from "../services/PlayerProfileCalendarPresenter.js";
 import { RosterFactory } from "../services/RosterFactory.js";
 import { RosterSubmissionApiClient } from "../services/RosterSubmissionApiClient.js";
 import { AppShellView } from "../views/AppShellView.js";
@@ -38,13 +38,13 @@ export class AppController {
       new PlayerSelectionState(), new MarketStatsScrollSynchronizer()).connectPlayerSelectionActions();
   }
   #connectPlayerProfiles(players, teamRoster) {
-    new PlayerLongPressController(this.rootElement, players, teamRoster, new PlayerProfileModalView()).connectPlayerProfileActions();
+    const getSelectedMonth = () => this.rootElement.querySelector(".month-select")?.value || "Сентябрь";
+    const calendarPresenter = new PlayerProfileCalendarPresenter(new FantasyCalendarApiClient(), getSelectedMonth);
+    new PlayerLongPressController(this.rootElement, players, teamRoster, new PlayerProfileModalView(), calendarPresenter).connectPlayerProfileActions();
   }
   #renderApplicationShell() {
     this.rootElement.innerHTML = new AppShellView(new HeaderView()).render();
     const logoElement = this.rootElement.querySelector("[data-logo]");
-    logoElement?.addEventListener("error", () => {
-      logoElement.outerHTML = `<div class="brand-fallback" role="img" aria-label="Логотип Автомобилиста"></div>`;
-    });
+    logoElement?.addEventListener("error", () => { logoElement.outerHTML = `<div class="brand-fallback" role="img" aria-label="Логотип Автомобилиста"></div>`; });
   }
 }
