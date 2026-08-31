@@ -1,21 +1,22 @@
 .profile-match-details {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 28px minmax(74px, auto) 28px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 26px minmax(58px, auto) 26px minmax(0, 1fr);
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   padding: 18px 14px;
-  font-size: 16px;
+  font-size: 13px;
 }
 
 .profile-match-details img {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   object-fit: contain;
 }
 
 .profile-match-details span {
   min-width: 0;
-  font-weight: 600;
+  font-weight: 400;
+  line-height: 1.15;
 }
 
 .profile-match-details span:first-child {
@@ -23,7 +24,13 @@
 }
 
 .profile-match-details time {
+  display: grid;
+  gap: 3px;
   color: rgba(19, 32, 36, 0.76);
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
+}
+
+.profile-match-details time b {
+  font-weight: 400;
 }

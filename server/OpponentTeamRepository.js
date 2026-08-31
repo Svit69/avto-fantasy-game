@@ -9,7 +9,7 @@ export class OpponentTeamRepository {
   async listTeams() {
     const storedTeams = await this.#readStoredTeams();
     const teams = this.#mergeTeams(this.seedTeams, storedTeams);
-    if (teams.length !== storedTeams.length) await this.#writeTeams(teams);
+    if (JSON.stringify(teams) !== JSON.stringify(storedTeams)) await this.#writeTeams(teams);
     return teams;
   }
 
@@ -27,7 +27,8 @@ export class OpponentTeamRepository {
   }
 
   #mergeTeams(seedTeams, storedTeams) {
-    return [...new Map([...seedTeams, ...storedTeams].map((team) => [team.id, team])).values()];
+    const seedIds = new Set(seedTeams.map((team) => team.id));
+    return [...seedTeams, ...storedTeams.filter((team) => !seedIds.has(team.id))];
   }
 
   async #writeTeams(teams) {

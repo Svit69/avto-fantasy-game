@@ -33,7 +33,7 @@ export class PlayerMatchCalendarView {
 
   renderMatchDetails(player, match) {
     const home = this.#getTeamDetails(match, match.homeTeam, player); const away = this.#getTeamDetails(match, match.awayTeam, player);
-    return `<span>${match.homeTeam}</span><img src="${home.logoPath}" alt="${match.homeTeam}" /><time>${this.dateTimeFormatter.formatMatchDateTime(match.startsAt)}</time><img src="${away.logoPath}" alt="${match.awayTeam}" /><span>${match.awayTeam}</span>`;
+    return `<span>${match.homeTeam}</span><img src="${home.logoPath}" alt="${match.homeTeam}" /><time><b>${this.dateTimeFormatter.formatMatchDate(match.startsAt)}</b><b>${this.dateTimeFormatter.formatMatchTime(match.startsAt)}</b></time><img src="${away.logoPath}" alt="${match.awayTeam}" /><span>${match.awayTeam}</span>`;
   }
 
   #getOpponentForPlayer(player, match) { return match.homeTeam === player.getTeam() ? match.awayTeam : match.homeTeam; }
