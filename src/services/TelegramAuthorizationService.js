@@ -18,17 +18,17 @@ export class TelegramAuthorizationService {
     try {
       const response = await fetch(`/api/telegram-auth?stamp=${Date.now()}`, { method: "POST", body: initData });
       if (!response.ok) return { authorized: false, profile: telegramProfile };
-      const profile = this.#mergeProfiles(await response.json(), telegramProfile);
-      this.profileCache.saveProfile(profile);
-      return { authorized: true, profile };
+      const profile = this.#selectDisplayProfile(await response.json(), telegramProfile);
+      this.profileCache.saveProfile(profile); return { authorized: true, profile };
     } catch {
       return { authorized: false, profile: telegramProfile };
     }
   }
 
-  #mergeProfiles(verifiedProfile, telegramProfile) {
+  #selectDisplayProfile(verifiedProfile, telegramProfile) {
     const telegramName = telegramProfile.managerName;
-    return { managerName: telegramName === "Менеджер" ? verifiedProfile.managerName : telegramName,
+    const verifiedName = verifiedProfile.managerName || "Менеджер";
+    return { managerName: telegramName === "Менеджер" ? verifiedName : telegramName,
       monthlyPlace: verifiedProfile.monthlyPlace || telegramProfile.monthlyPlace };
   }
 }

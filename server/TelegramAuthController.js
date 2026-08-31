@@ -8,8 +8,12 @@ export class TelegramAuthController {
     if (!this.initDataVerifier.hasToken()) return this.jsonResponder.sendJson(response, 503, { error: "telegram_token_missing" });
     const params = new URLSearchParams(await this.bodyParser.readText(request));
     if (!this.initDataVerifier.verifyInitData(params)) return this.jsonResponder.sendJson(response, 401, { error: "invalid_init_data" });
+    const user = await this.#upsertTelegramUser(params);
+    return this.jsonResponder.sendJson(response, 200, { managerName: user.name, monthlyPlace: "—", userId: user.id, nameSource: "telegram" });
+  }
+
+  async #upsertTelegramUser(params) {
     const profile = JSON.parse(params.get("user") || "{}");
-    const user = await this.userRepository.upsertUser(this.userMapper.createUserFromTelegramProfile(profile));
-    return this.jsonResponder.sendJson(response, 200, { managerName: user.name, monthlyPlace: "—" });
+    return this.userRepository.upsertUser(this.userMapper.createUserFromTelegramProfile(profile));
   }
 }
