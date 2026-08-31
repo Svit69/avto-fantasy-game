@@ -12,7 +12,7 @@ export class RosterFactory {
       new RosterSlot("вратарь"),
     ];
 
-    return new TeamRoster(100, slots);
+    return new TeamRoster(80, slots);
   }
 
   #findPlayerByLastName(players, lastName) {
