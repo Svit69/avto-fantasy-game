@@ -1,16 +1,17 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { PlayerCatalogMerger } from "./PlayerCatalogMerger.js";
 
 export class PlayerCatalogRepository {
   constructor(filePath, seedPlayers, teamBrandResolver) {
-    Object.assign(this, { filePath, seedPlayers, teamBrandResolver });
+    Object.assign(this, { filePath, seedPlayers, teamBrandResolver, merger: new PlayerCatalogMerger() });
   }
 
   async listPlayers() {
     const storedPlayers = await this.#readStoredPlayers();
-    if (storedPlayers.length) return storedPlayers;
-    await this.#writePlayers(this.seedPlayers);
-    return this.seedPlayers;
+    const players = this.merger.mergeStoredPlayersWithSeedPlayers(storedPlayers, this.seedPlayers);
+    if (this.merger.shouldPersistMergedPlayers(storedPlayers, players)) await this.#writePlayers(players);
+    return players;
   }
 
   async findPlayerById(playerId) {

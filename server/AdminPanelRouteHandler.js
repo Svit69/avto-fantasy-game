@@ -44,6 +44,6 @@ export class AdminPanelRouteHandler {
   }
 
   #resolveTeamName(teamCode) {
-    return { avto: "Автомобилист", gornyak: "Горняк-УГМК" }[teamCode] || teamCode;
+    return { avto: "Автомобилист", gornyak: "Горняк-УГМК", mhk_auto: "МХК Авто" }[teamCode] || teamCode;
   }
 }

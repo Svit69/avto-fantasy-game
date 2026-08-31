@@ -3,6 +3,7 @@ import { PLAYER_NUMBERS } from "./playerNumbers.js";
 const avtoLogo = "/assets/avto_logo.png";
 const gornyakLogo = "/assets/gornyak_logo.png";
 const vhlLogo = "/assets/vhl_logo.svg";
+const mhlLogo = "/assets/mhl_logo.svg";
 
 export class PlayerDataFactory {
   createAvtomobilistPlayer(firstName, lastName, key, position, price, imageName) {
@@ -11,6 +12,10 @@ export class PlayerDataFactory {
 
   createGornyakPlayer(firstName, lastName, key, position, price, imageName) {
     return this.#createPlayer(firstName, lastName, key, position, price, imageName, "Горняк-УГМК", gornyakLogo, vhlLogo);
+  }
+
+  createMhkAutoPlayer(firstName, lastName, key, position, price, imageName) {
+    return this.#createPlayer(firstName, lastName, key, position, price, imageName, "МХК Авто", avtoLogo, mhlLogo);
   }
 
   #createPlayer(firstName, lastName, key, position, price, imageName, team, teamLogo, leagueLogo) {

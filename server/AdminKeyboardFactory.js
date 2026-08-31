@@ -21,6 +21,7 @@ export class AdminKeyboardFactory {
   createTeamKeyboard(playerId) {
     return [[{ text: "Автомобилист", callback_data: `admin:set_team:${playerId}:avto` }],
       [{ text: "Горняк-УГМК", callback_data: `admin:set_team:${playerId}:gornyak` }],
+      [{ text: "МХК Авто", callback_data: `admin:set_team:${playerId}:mhk_auto` }],
       [{ text: "Ввести другую команду", callback_data: `admin:custom_team:${playerId}` }]];
   }
 
