@@ -1,11 +1,10 @@
 import path from "node:path";
-import { CALENDAR_MATCHES, CALENDAR_TOURS } from "../src/data/calendarSeed.js";
 import { INITIAL_PLAYERS } from "../src/data/players.js";
 import { AdminAccessPolicy } from "./AdminAccessPolicy.js"; import { AdminConversationStateStore } from "./AdminConversationStateStore.js"; import { AdminKeyboardFactory } from "./AdminKeyboardFactory.js";
 import { AdminPanelRouteHandler } from "./AdminPanelRouteHandler.js"; import { AdminPanelView } from "./AdminPanelView.js"; import { AdminPlayerMutationService } from "./AdminPlayerMutationService.js"; import { AdminRouteParser } from "./AdminRouteParser.js";
-import { FantasyCalendarController } from "./FantasyCalendarController.js"; import { FantasyCalendarRepository } from "./FantasyCalendarRepository.js";
+import { CalendarStorageFactory } from "./CalendarStorageFactory.js"; import { FantasyCalendarController } from "./FantasyCalendarController.js";
 import { HealthController } from "./HealthController.js"; import { HttpApplication } from "./HttpApplication.js"; import { HttpRequestLogger } from "./HttpRequestLogger.js"; import { JsonResponder } from "./JsonResponder.js";
-import { PlayerCatalogController } from "./PlayerCatalogController.js"; import { PlayerCatalogRepository } from "./PlayerCatalogRepository.js"; import { RequestBodyParser } from "./RequestBodyParser.js";
+import { OpponentTeamController } from "./OpponentTeamController.js"; import { PlayerCatalogController } from "./PlayerCatalogController.js"; import { PlayerCatalogRepository } from "./PlayerCatalogRepository.js"; import { RequestBodyParser } from "./RequestBodyParser.js";
 import { RosterController } from "./RosterController.js"; import { RosterRepository } from "./RosterRepository.js"; import { RosterSlotPriceLocker } from "./RosterSlotPriceLocker.js";
 import { StaticFileServer } from "./StaticFileServer.js"; import { TelegramAdminPanelController } from "./TelegramAdminPanelController.js"; import { TelegramAuthController } from "./TelegramAuthController.js";
 import { TelegramBotClient } from "./TelegramBotClient.js"; import { TelegramBotInfoController } from "./TelegramBotInfoController.js"; import { TelegramInitDataVerifier } from "./TelegramInitDataVerifier.js";
@@ -25,9 +24,9 @@ export class ServerApplicationFactory {
   #createStorageDependencies(base) {
     const userRepository = new UserRepository(this.#resolveStoragePath(process.env.USER_DATABASE_PATH || "storage/users.json"));
     const playerCatalogRepository = new PlayerCatalogRepository(this.#resolveStoragePath(process.env.PLAYER_DATABASE_PATH || "storage/players.json"), INITIAL_PLAYERS, new TeamBrandResolver());
-    const calendarRepository = new FantasyCalendarRepository(this.#resolveStoragePath(process.env.CALENDAR_DATABASE_PATH || "storage/calendar.json"), CALENDAR_TOURS, CALENDAR_MATCHES);
+    const calendarStorage = new CalendarStorageFactory((filePath) => this.#resolveStoragePath(filePath)); const calendarRepository = calendarStorage.createCalendarRepository(); const opponentTeamRepository = calendarStorage.createOpponentTeamRepository();
     const rosterRepository = new RosterRepository(this.#resolveStoragePath(process.env.ROSTER_DATABASE_PATH || "storage/rosters.json"));
-    return { userMapper: new TelegramUserMapper(), userRepository, playerCatalogRepository, calendarRepository, rosterRepository, priceLocker: new RosterSlotPriceLocker(playerCatalogRepository), adminPanel: this.#createAdminPanel(base.botClient, userRepository, playerCatalogRepository) };
+    return { userMapper: new TelegramUserMapper(), userRepository, playerCatalogRepository, calendarRepository, opponentTeamRepository, rosterRepository, priceLocker: new RosterSlotPriceLocker(playerCatalogRepository), adminPanel: this.#createAdminPanel(base.botClient, userRepository, playerCatalogRepository) };
   }
   #createControllers(base, storage) {
     return { jsonResponder: base.jsonResponder, logger: this.logger, staticFileServer: new StaticFileServer(this.rootDirectory),
@@ -36,7 +35,8 @@ export class ServerApplicationFactory {
       webhookInstaller: new TelegramWebhookInstaller({ jsonResponder: base.jsonResponder, botClient: base.botClient, webhookUrl: process.env.TELEGRAM_WEBHOOK_URL, logger: this.logger }),
       webhookInfo: new TelegramWebhookInfoController({ jsonResponder: base.jsonResponder, botClient: base.botClient }), botInfo: new TelegramBotInfoController({ jsonResponder: base.jsonResponder, botClient: base.botClient }),
       healthController: new HealthController({ jsonResponder: base.jsonResponder, botClient: base.botClient, webhookUrl: process.env.TELEGRAM_WEBHOOK_URL }),
-      calendarController: new FantasyCalendarController({ jsonResponder: base.jsonResponder, calendarRepository: storage.calendarRepository }),
+      calendarController: new FantasyCalendarController({ jsonResponder: base.jsonResponder, calendarRepository: storage.calendarRepository, opponentTeamRepository: storage.opponentTeamRepository }),
+      opponentTeamController: new OpponentTeamController({ jsonResponder: base.jsonResponder, opponentTeamRepository: storage.opponentTeamRepository }),
       playerCatalogController: new PlayerCatalogController({ jsonResponder: base.jsonResponder, playerCatalogRepository: storage.playerCatalogRepository }),
       rosterController: new RosterController({ bodyParser: base.bodyParser, jsonResponder: base.jsonResponder, initDataVerifier: base.initDataVerifier, rosterRepository: storage.rosterRepository, priceLocker: storage.priceLocker }) };
   }

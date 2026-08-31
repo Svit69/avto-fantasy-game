@@ -21,6 +21,7 @@ export class HttpApplication {
     if (url.pathname === "/api/telegram-webhook-info") return this.webhookInfo.handleRequest(request, response);
     if (url.pathname === "/api/telegram-bot-info") return this.botInfo.handleRequest(request, response);
     if (url.pathname === "/api/calendar") return this.calendarController.handleRequest(request, response, url);
+    if (url.pathname === "/api/opponents") return this.opponentTeamController.handleRequest(request, response);
     if (url.pathname === "/api/players") return this.playerCatalogController.handleRequest(request, response);
     if (url.pathname === "/api/roster") return this.rosterController.handleRequest(request, response);
     if (url.pathname === "/api/health") return this.healthController.handleRequest(request, response);

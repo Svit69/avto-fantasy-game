@@ -1,12 +1,14 @@
 export class FantasyCalendarController {
-  constructor({ jsonResponder, calendarRepository }) {
-    Object.assign(this, { jsonResponder, calendarRepository });
+  constructor({ jsonResponder, calendarRepository, opponentTeamRepository }) {
+    Object.assign(this, { jsonResponder, calendarRepository, opponentTeamRepository });
   }
 
   async handleRequest(request, response, url) {
     if (request.method !== "GET") return this.jsonResponder.sendJson(response, 405, { error: "method_not_allowed" });
     const calendar = await this.calendarRepository.listCalendar();
-    return this.jsonResponder.sendJson(response, 200, this.#filterCalendar(calendar, url.searchParams));
+    const opponents = await this.opponentTeamRepository.listTeams();
+    const filteredCalendar = this.#filterCalendar(calendar, url.searchParams);
+    return this.jsonResponder.sendJson(response, 200, { ...this.#addTeamDetails(filteredCalendar, opponents), opponents });
   }
 
   #filterCalendar(calendar, searchParams) {
@@ -19,5 +21,11 @@ export class FantasyCalendarController {
 
   #matchesTourFilter(tour, filter) {
     return (!filter.month || tour.month === filter.month) && (!filter.tourId || tour.id === filter.tourId);
+  }
+
+  #addTeamDetails(calendar, opponents) {
+    const opponentByName = new Map(opponents.map((opponent) => [opponent.name, opponent]));
+    const matches = calendar.matches.map((match) => ({ ...match, homeTeamDetails: opponentByName.get(match.homeTeam) || null, awayTeamDetails: opponentByName.get(match.awayTeam) || null }));
+    return { ...calendar, matches };
   }
 }
