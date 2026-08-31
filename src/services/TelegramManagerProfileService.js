@@ -1,36 +1,28 @@
+import { AuthProfileCache } from "./AuthProfileCache.js";
+import { TelegramProfileFormatter } from "./TelegramProfileFormatter.js";
+
 export class TelegramManagerProfileService {
+  constructor(profileCache = new AuthProfileCache(), formatter = new TelegramProfileFormatter()) {
+    Object.assign(this, { profileCache, formatter });
+  }
+
   async loadManagerProfile() {
+    const cachedProfile = this.profileCache.loadProfile();
+    if (cachedProfile) return cachedProfile;
     const webApp = window.Telegram?.WebApp;
-    webApp?.ready();
-    const telegramProfile = this.#createProfileFromUser(webApp?.initDataUnsafe?.user);
+    const telegramProfile = this.formatter.createProfileFromTelegramUser(webApp?.initDataUnsafe?.user);
     if (!webApp?.initData) return telegramProfile;
     return this.#requestVerifiedProfile(webApp.initData, telegramProfile);
   }
 
-  async #requestVerifiedProfile(initData, telegramProfile) {
+  async #requestVerifiedProfile(initData, fallbackProfile) {
     try {
       const response = await fetch(`/api/telegram-auth?stamp=${Date.now()}`, { method: "POST", body: initData });
-      if (!response.ok) return telegramProfile;
-      return this.#mergeVerifiedProfile(await response.json(), telegramProfile);
+      if (!response.ok) return fallbackProfile;
+      const profile = await response.json(); this.profileCache.saveProfile(profile);
+      return profile;
     } catch {
-      return telegramProfile;
+      return fallbackProfile;
     }
   }
-
-  #mergeVerifiedProfile(verifiedProfile, telegramProfile) {
-    const telegramName = telegramProfile.managerName;
-    const verifiedName = verifiedProfile.managerName || "Менеджер";
-    return { managerName: telegramName === "Менеджер" ? verifiedName : telegramName,
-      monthlyPlace: verifiedProfile.monthlyPlace || telegramProfile.monthlyPlace };
-  }
-
-  #createProfileFromUser(user) {
-    if (!user) return this.#createFallbackProfile();
-    const name = [user.first_name, user.last_name].filter(Boolean).join(" ") || this.#formatUsername(user.username);
-    return { managerName: name || "Менеджер", monthlyPlace: "—" };
-  }
-
-  #formatUsername(username) { return username ? `@${username}` : ""; }
-
-  #createFallbackProfile() { return { managerName: "Менеджер", monthlyPlace: "—" }; }
 }

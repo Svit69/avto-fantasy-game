@@ -9,6 +9,7 @@ import { RosterSubmissionApiClient } from "../services/RosterSubmissionApiClient
 import { AppShellView } from "../views/AppShellView.js";
 import { HeaderView } from "../views/HeaderView.js";
 import { PlayerProfileModalView } from "../views/PlayerProfileModalView.js";
+import { AuthGateController } from "./AuthGateController.js";
 import { ManagerMenuController } from "./ManagerMenuController.js";
 import { PlayerLongPressController } from "./PlayerLongPressController.js";
 import { PlayerSelectionController } from "./PlayerSelectionController.js";
@@ -17,19 +18,19 @@ import { RosterSelectionController } from "./RosterSelectionController.js";
 export class AppController {
   constructor(rootElement) { this.rootElement = rootElement; }
   async initializeApplication() {
-    const catalog = await new PlayerCatalogApiClient(INITIAL_PLAYERS).loadPlayerCatalog();
-    const players = new PlayerFactory().createPlayersFromCatalog(catalog);
+    this.#renderApplicationShell();
+    const authStatus = await new AuthGateController(this.rootElement).verifyApplicationAuthorization();
+    if (!authStatus.authorized) return;
+    await this.#initializeAuthorizedApplication();
+  }
+  async #initializeAuthorizedApplication() {
+    const players = new PlayerFactory().createPlayersFromCatalog(await new PlayerCatalogApiClient(INITIAL_PLAYERS).loadPlayerCatalog());
     const teamRoster = new RosterFactory().createDefaultRoster(players);
     const viewFactory = new ApplicationViewFactory();
     const rosterDomRenderer = viewFactory.createRosterDomRenderer(this.rootElement, teamRoster);
-
-    this.#renderApplicationShell();
-    rosterDomRenderer.renderRosterSections();
-    new ManagerMenuController(this.rootElement).connectManagerMenuActions();
-    new RosterSelectionController(this.rootElement, teamRoster, rosterDomRenderer,
-      new RosterSubmissionApiClient()).connectRosterActions();
-    this.#connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory);
-    this.#connectPlayerProfiles(players, teamRoster);
+    rosterDomRenderer.renderRosterSections(); new ManagerMenuController(this.rootElement).connectManagerMenuActions();
+    new RosterSelectionController(this.rootElement, teamRoster, rosterDomRenderer, new RosterSubmissionApiClient()).connectRosterActions();
+    this.#connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory); this.#connectPlayerProfiles(players, teamRoster);
   }
   #connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory) {
     const drawerView = viewFactory.createPlayerSelectionDrawerView();
