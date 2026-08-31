@@ -12,7 +12,7 @@ export class FantasyCalendarRepository {
       tours: this.#mergeRecords(this.seedTours, storedCalendar.tours),
       matches: this.#mergeRecords(this.seedMatches, storedCalendar.matches),
     };
-    if (calendar.tours.length !== storedCalendar.tours.length || calendar.matches.length !== storedCalendar.matches.length) await this.#writeCalendar(calendar);
+    if (JSON.stringify(calendar) !== JSON.stringify(storedCalendar)) await this.#writeCalendar(calendar);
     return calendar;
   }
 
@@ -34,7 +34,8 @@ export class FantasyCalendarRepository {
   }
 
   #mergeRecords(seedRecords, storedRecords) {
-    return [...new Map([...seedRecords, ...storedRecords].map((record) => [record.id, record])).values()];
+    const seedIds = new Set(seedRecords.map((record) => record.id));
+    return [...seedRecords, ...storedRecords.filter((record) => !seedIds.has(record.id))];
   }
 
   async #writeCalendar(calendar) {

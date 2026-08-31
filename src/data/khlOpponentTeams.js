@@ -1,0 +1,25 @@
+const buildOpponentTeam = (id, name, shortName, logoFileName) => ({ id, name, shortName, logoFileName, logoPath: `/assets/opponents/${logoFileName}` });
+
+export const KHL_OPPONENT_TEAMS = [
+  buildOpponentTeam("avangard", "Авангард", "АВГ", "avangard.png"),
+  buildOpponentTeam("admiral", "Адмирал", "АДМ", "admiral.png"),
+  buildOpponentTeam("ak-bars", "Ак Барс", "АКБ", "ak_bars.png"),
+  buildOpponentTeam("amur", "Амур", "АМР", "amur.png"),
+  buildOpponentTeam("barys", "Барыс", "БАР", "barys.png"),
+  buildOpponentTeam("dynamo-minsk", "Динамо Минск", "ДМН", "dynamo_minsk.png"),
+  buildOpponentTeam("dynamo-moscow", "Динамо Москва", "ДМСК", "dynamo_moscow.png"),
+  buildOpponentTeam("dragons", "Драконы", "ДРК", "dragons.png"),
+  buildOpponentTeam("lada", "Лада", "ЛАД", "lada.png"),
+  buildOpponentTeam("lokomotiv", "Локомотив", "ЛОК", "lokomotiv.png"),
+  buildOpponentTeam("metallurg-mg", "Металлург Мг", "ММГ", "metallurg_mg.png"),
+  buildOpponentTeam("neftekhimik", "Нефтехимик", "НХК", "neftekhimik.png"),
+  buildOpponentTeam("ska", "СКА", "СКА", "ska.png"),
+  buildOpponentTeam("salavat-yulaev", "Салават Юлаев", "СЮЛ", "salavat_yulaev.png"),
+  buildOpponentTeam("severstal", "Северсталь", "СЕВ", "severstal.png"),
+  buildOpponentTeam("sibir", "Сибирь", "СИБ", "sibir.png"),
+  buildOpponentTeam("sochi", "Сочи", "СОЧ", "sochi.png"),
+  buildOpponentTeam("spartak", "Спартак", "СПА", "spartak.png"),
+  buildOpponentTeam("torpedo", "Торпедо", "ТОР", "torpedo.png"),
+  buildOpponentTeam("traktor", "Трактор", "ТРК", "traktor.png"),
+  buildOpponentTeam("cska", "ЦСКА", "ЦСКА", "cska.png"),
+];
