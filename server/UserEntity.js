@@ -10,9 +10,10 @@ export class UserEntity {
   }
 
   mergeProfile(profile) {
+    const mergedName = this.#isDefaultManagerName(this.name) ? profile.name : profile.name || this.name;
     return new UserEntity({
       id: this.id,
-      name: profile.name || this.name,
+      name: mergedName,
       phone: profile.phone || this.phone,
       email: profile.email || this.email,
       avatar: profile.avatar || this.avatar,
@@ -24,5 +25,9 @@ export class UserEntity {
   toJSON() {
     const { id, name, phone, email, avatar, created_at, status } = this;
     return { id, name, phone, email, avatar, created_at, status };
+  }
+
+  #isDefaultManagerName(name) {
+    return name === "Менеджер";
   }
 }

@@ -1,6 +1,7 @@
 import path from "node:path";
 import { INITIAL_PLAYERS } from "../src/data/players.js";
-import { AdminAccessPolicy } from "./AdminAccessPolicy.js"; import { AdminCommandParser } from "./AdminCommandParser.js"; import { AdminPanelView } from "./AdminPanelView.js";
+import { AdminAccessPolicy } from "./AdminAccessPolicy.js"; import { AdminConversationStateStore } from "./AdminConversationStateStore.js"; import { AdminKeyboardFactory } from "./AdminKeyboardFactory.js";
+import { AdminPanelRouteHandler } from "./AdminPanelRouteHandler.js"; import { AdminPanelView } from "./AdminPanelView.js"; import { AdminPlayerMutationService } from "./AdminPlayerMutationService.js"; import { AdminRouteParser } from "./AdminRouteParser.js";
 import { HealthController } from "./HealthController.js"; import { HttpApplication } from "./HttpApplication.js"; import { HttpRequestLogger } from "./HttpRequestLogger.js"; import { JsonResponder } from "./JsonResponder.js";
 import { PlayerCatalogController } from "./PlayerCatalogController.js"; import { PlayerCatalogRepository } from "./PlayerCatalogRepository.js"; import { RequestBodyParser } from "./RequestBodyParser.js";
 import { RosterController } from "./RosterController.js"; import { RosterRepository } from "./RosterRepository.js"; import { RosterSlotPriceLocker } from "./RosterSlotPriceLocker.js";
@@ -9,14 +10,10 @@ import { TelegramBotClient } from "./TelegramBotClient.js"; import { TelegramBot
 import { TelegramUserMapper } from "./TelegramUserMapper.js"; import { TelegramWebhookController } from "./TelegramWebhookController.js"; import { TelegramWebhookInstaller } from "./TelegramWebhookInstaller.js";
 import { TelegramWebhookInfoController } from "./TelegramWebhookInfoController.js"; import { TelegramWebhookReplyFactory } from "./TelegramWebhookReplyFactory.js"; import { TelegramUpdateSummarizer } from "./TelegramUpdateSummarizer.js";
 import { TeamBrandResolver } from "./TeamBrandResolver.js"; import { UserRepository } from "./UserRepository.js";
-
 export class ServerApplicationFactory {
-  constructor(rootDirectory, logger) {
-    Object.assign(this, { rootDirectory, logger });
-  }
+  constructor(rootDirectory, logger) { Object.assign(this, { rootDirectory, logger }); }
   createApplication() {
-    const base = this.#createBaseDependencies();
-    const storage = this.#createStorageDependencies(base);
+    const base = this.#createBaseDependencies(); const storage = this.#createStorageDependencies(base);
     return new HttpApplication(this.#createControllers(base, storage));
   }
   #createBaseDependencies() {
@@ -43,7 +40,10 @@ export class ServerApplicationFactory {
       rosterController: new RosterController({ bodyParser: base.bodyParser, jsonResponder: base.jsonResponder, initDataVerifier: base.initDataVerifier, rosterRepository: storage.rosterRepository, priceLocker: storage.priceLocker }) };
   }
   #createAdminPanel(botClient, userRepository, playerCatalogRepository) {
-    return new TelegramAdminPanelController({ accessPolicy: new AdminAccessPolicy((process.env.TELEGRAM_ADMIN_IDS || "").split(",")), commandParser: new AdminCommandParser(), view: new AdminPanelView(), userRepository, playerCatalogRepository, botClient, logger: this.logger });
+    const stateStore = new AdminConversationStateStore(); const view = new AdminPanelView(new AdminKeyboardFactory());
+    const mutationService = new AdminPlayerMutationService({ view, playerCatalogRepository });
+    const routeHandler = new AdminPanelRouteHandler({ view, stateStore, userRepository, playerCatalogRepository, mutationService });
+    return new TelegramAdminPanelController({ accessPolicy: new AdminAccessPolicy((process.env.TELEGRAM_ADMIN_IDS || "").split(",")), routeParser: new AdminRouteParser(), routeHandler, stateStore, botClient, logger: this.logger });
   }
   #resolveStoragePath(filePath) { return path.join(this.rootDirectory, filePath); }
 }

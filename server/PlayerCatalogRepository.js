@@ -13,6 +13,10 @@ export class PlayerCatalogRepository {
     return this.seedPlayers;
   }
 
+  async findPlayerById(playerId) {
+    return (await this.listPlayers()).find((player) => player.id === playerId) || null;
+  }
+
   async updatePlayerPrice(playerId, price) {
     return this.#updatePlayer(playerId, (player) => ({ ...player, price }));
   }

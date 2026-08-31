@@ -9,7 +9,7 @@ export class TelegramManagerProfileService {
 
   async #requestVerifiedProfile(initData, telegramProfile) {
     try {
-      const response = await fetch("/api/telegram-auth", { method: "POST", body: initData });
+      const response = await fetch(`/api/telegram-auth?stamp=${Date.now()}`, { method: "POST", body: initData });
       if (!response.ok) return telegramProfile;
       return this.#mergeVerifiedProfile(await response.json(), telegramProfile);
     } catch {
@@ -19,10 +19,9 @@ export class TelegramManagerProfileService {
 
   #mergeVerifiedProfile(verifiedProfile, telegramProfile) {
     const telegramName = telegramProfile.managerName;
-    return {
-      managerName: telegramName === "Менеджер" ? verifiedProfile.managerName : telegramName,
-      monthlyPlace: verifiedProfile.monthlyPlace || telegramProfile.monthlyPlace,
-    };
+    const verifiedName = verifiedProfile.managerName || "Менеджер";
+    return { managerName: telegramName === "Менеджер" ? verifiedName : telegramName,
+      monthlyPlace: verifiedProfile.monthlyPlace || telegramProfile.monthlyPlace };
   }
 
   #createProfileFromUser(user) {
@@ -31,11 +30,7 @@ export class TelegramManagerProfileService {
     return { managerName: name || "Менеджер", monthlyPlace: "—" };
   }
 
-  #formatUsername(username) {
-    return username ? `@${username}` : "";
-  }
+  #formatUsername(username) { return username ? `@${username}` : ""; }
 
-  #createFallbackProfile() {
-    return { managerName: "Менеджер", monthlyPlace: "—" };
-  }
+  #createFallbackProfile() { return { managerName: "Менеджер", monthlyPlace: "—" }; }
 }

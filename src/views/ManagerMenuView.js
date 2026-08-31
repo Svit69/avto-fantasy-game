@@ -9,11 +9,11 @@ export class ManagerMenuView {
         </header>
         <section>
           <span>Имя менеджера</span>
-          <strong>${profile.managerName}</strong>
+          <strong>${profile.managerName || "Менеджер"}</strong>
         </section>
         <section>
           <span>Место в текущем месяце:</span>
-          <strong>${profile.monthlyPlace}</strong>
+          <strong>${profile.monthlyPlace || "—"}</strong>
         </section>
       </aside>
     `;
