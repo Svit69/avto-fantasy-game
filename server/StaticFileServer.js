@@ -1,17 +1,17 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { StaticPathResolver } from "./StaticPathResolver.js";
 
 export class StaticFileServer {
   constructor(rootDirectory) {
-    this.rootDirectory = rootDirectory;
-    this.allowedRootNames = new Set(["assets", "src", "styles", "public", "index.html"]);
+    this.pathResolver = new StaticPathResolver(rootDirectory);
     this.contentTypes = new Map([[".html", "text/html"], [".js", "text/javascript"], [".css", "text/css"],
       [".png", "image/png"], [".jpg", "image/jpeg"], [".jpeg", "image/jpeg"], [".svg", "image/svg+xml"],
       [".webp", "image/webp"], [".woff", "font/woff"], [".woff2", "font/woff2"], [".ttf", "font/ttf"]]);
   }
 
   async serveFile(pathname, response) {
-    const filePath = this.#resolvePublicPath(pathname);
+    const filePath = await this.pathResolver.resolveFilePath(pathname);
     if (!filePath) return this.#sendNotFound(response);
     try {
       const content = await fs.readFile(filePath);
@@ -20,18 +20,6 @@ export class StaticFileServer {
     } catch {
       this.#sendNotFound(response);
     }
-  }
-
-  #resolvePublicPath(pathname) {
-    const requestedPath = pathname === "/" ? "/index.html" : decodeURIComponent(pathname);
-    if (!this.#isAllowedPublicPath(requestedPath)) return null;
-    const filePath = path.normalize(path.join(this.rootDirectory, requestedPath));
-    return filePath.startsWith(`${this.rootDirectory}${path.sep}`) ? filePath : null;
-  }
-
-  #isAllowedPublicPath(requestedPath) {
-    const rootName = requestedPath.split("/").filter(Boolean)[0];
-    return this.allowedRootNames.has(rootName);
   }
 
   #getContentType(filePath) {
