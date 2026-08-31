@@ -9,4 +9,9 @@ export const MHK_AUTO_NUMBERS = Object.freeze({
   sokolkin: 20,
   sergeyGorbunov: 30,
   plotnikov: 39,
+  chumakov: 46,
+  lyazhev: 73,
+  bannykh: 33,
+  kozlov: 16,
+  nemytykh: 40,
 });

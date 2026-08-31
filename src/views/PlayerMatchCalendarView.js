@@ -1,4 +1,5 @@
 import { MatchDateTimeFormatter } from "../services/MatchDateTimeFormatter.js";
+import { versionAssetUrl } from "../utils/AssetUrlVersioner.js";
 
 export class PlayerMatchCalendarView {
   constructor(dateTimeFormatter = new MatchDateTimeFormatter()) {
@@ -23,7 +24,7 @@ export class PlayerMatchCalendarView {
   #renderMatchTile(player, calendar, match, index) {
     const opponent = this.#getOpponentForPlayer(player, match); const details = this.#getTeamDetails(match, opponent);
     const selected = index === 0 ? " is-selected" : ""; const venue = match.homeTeam === player.getTeam() ? "Д" : "Г";
-    return `<button class="profile-match-tile${selected}" data-profile-match-index="${index}" type="button"><span>${this.#findTourTitle(calendar, match.tourId)}</span><img src="${details.logoPath}" alt="${opponent}" /><strong>${details.shortName} (${venue})</strong></button>`;
+    return `<button class="profile-match-tile${selected}" data-profile-match-index="${index}" type="button"><span>${this.#findTourTitle(calendar, match.tourId)}</span><img src="${versionAssetUrl(details.logoPath)}" alt="${opponent}" /><strong>${details.shortName} (${venue})</strong></button>`;
   }
 
   #renderMatchDetails(player, match) {
@@ -33,7 +34,7 @@ export class PlayerMatchCalendarView {
 
   renderMatchDetails(player, match) {
     const home = this.#getTeamDetails(match, match.homeTeam, player); const away = this.#getTeamDetails(match, match.awayTeam, player);
-    return `<span>${match.homeTeam}</span><img src="${home.logoPath}" alt="${match.homeTeam}" /><time><b>${this.dateTimeFormatter.formatMatchDate(match.startsAt)}</b><b>${this.dateTimeFormatter.formatMatchTime(match.startsAt)}</b></time><img src="${away.logoPath}" alt="${match.awayTeam}" /><span>${match.awayTeam}</span>`;
+    return `<span>${match.homeTeam}</span><img src="${versionAssetUrl(home.logoPath)}" alt="${match.homeTeam}" /><time><b>${this.dateTimeFormatter.formatMatchDate(match.startsAt)}</b><b>${this.dateTimeFormatter.formatMatchTime(match.startsAt)}</b></time><img src="${versionAssetUrl(away.logoPath)}" alt="${match.awayTeam}" /><span>${match.awayTeam}</span>`;
   }
 
   #getOpponentForPlayer(player, match) { return match.homeTeam === player.getTeam() ? match.awayTeam : match.homeTeam; }

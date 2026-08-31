@@ -1,3 +1,5 @@
+import { versionAssetUrl } from "../utils/AssetUrlVersioner.js";
+
 export class PlayerCardView {
   render(props, orderIndex, slotIndex) {
     const tiltClass = this.#selectTiltClass(orderIndex);
@@ -14,7 +16,7 @@ export class PlayerCardView {
             <div class="card-points">${props.points}</div>
             <div class="card-position">${this.#formatPosition(props.position)}</div>
           </div>
-          <img class="card-player-image" src="${props.image}" alt="${props.name} ${props.secondName}" draggable="false" onerror="this.remove()" />
+          <img class="card-player-image" src="${versionAssetUrl(props.image)}" alt="${props.name} ${props.secondName}" draggable="false" onerror="this.remove()" />
         </div>
         <img class="card-layer card-top-layer" src="/assets/card_top_layer.png" alt="" />
         ${this.#renderLeagueLogo(props.leagueLogo)}
@@ -35,7 +37,7 @@ export class PlayerCardView {
   #formatShortName(props) { return `${props.name.charAt(0)}. ${props.secondName}`.toUpperCase(); }
 
   #renderLeagueLogo(leagueLogo) {
-    return leagueLogo ? `<img class="card-league-logo" src="${leagueLogo}" alt="Лига игрока" />` : "";
+    return leagueLogo ? `<img class="card-league-logo" src="${versionAssetUrl(leagueLogo)}" alt="Лига игрока" />` : "";
   }
 
   #selectTiltClass(orderIndex) {

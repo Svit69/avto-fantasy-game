@@ -8,9 +8,14 @@ export function createMhkAutoPlayers(factory) {
     factory.createMhkAutoPlayer("Тимофей", "Никифоров", "nikiforov", ROSTER_POSITIONS.forward, 4, "timofey_nikiforov"),
     factory.createMhkAutoPlayer("Антон", "Лыков", "lykov", ROSTER_POSITIONS.forward, 5, "anton_lykov"),
     factory.createMhkAutoPlayer("Иван", "Плотников", "plotnikov", ROSTER_POSITIONS.forward, 4, "ivan_plotnikov"),
+    factory.createMhkAutoPlayer("Игорь", "Козлов", "kozlov", ROSTER_POSITIONS.forward, 3, "igor_kozlov"),
     factory.createMhkAutoPlayer("Леонид", "Иванов", "ivanov", ROSTER_POSITIONS.defender, 5, "leonid_ivanov"),
+    factory.createMhkAutoPlayer("Матвей", "Чумаков", "chumakov", ROSTER_POSITIONS.defender, 3, "matvey_chumakov"),
+    factory.createMhkAutoPlayer("Михаил", "Ляжьев", "lyazhev", ROSTER_POSITIONS.defender, 3, "mikhail_lyazhev"),
+    factory.createMhkAutoPlayer("Денис", "Банных", "bannykh", ROSTER_POSITIONS.defender, 3, "denis_bannykh"),
     factory.createMhkAutoPlayer("Ефим", "Минаев", "minaev", ROSTER_POSITIONS.goalkeeper, 3, "efim_minaev"),
     factory.createMhkAutoPlayer("Сергей", "Соколкин", "sokolkin", ROSTER_POSITIONS.goalkeeper, 8, "sergey_sokolkin"),
     factory.createMhkAutoPlayer("Сергей", "Горбунов", "sergeyGorbunov", ROSTER_POSITIONS.goalkeeper, 5, "sergey_gorbunov"),
+    factory.createMhkAutoPlayer("Ярослав", "Немытых", "nemytykh", ROSTER_POSITIONS.goalkeeper, 3, "yaroslav_nemytykh"),
   ];
 }

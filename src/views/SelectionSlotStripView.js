@@ -1,3 +1,5 @@
+import { versionAssetUrl } from "../utils/AssetUrlVersioner.js";
+
 export class SelectionSlotStripView {
   render(teamRoster) {
     return `<div class="selection-slot-strip">${this.#renderSlots(teamRoster)}</div>`;
@@ -15,7 +17,7 @@ export class SelectionSlotStripView {
     const player = slot.getPlayer();
     return `
       <div class="selection-slot is-filled" data-roster-slot="${slot.getIndex()}">
-        <img src="${player.getTeamLogo()}" alt="" />
+        <img src="${versionAssetUrl(player.getTeamLogo())}" alt="" />
         <span>${player.getLastName().toUpperCase()}</span>
         <button type="button" data-remove-slot="${slot.getIndex()}" aria-label="Удалить игрока">×</button>
       </div>

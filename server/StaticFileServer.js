@@ -40,11 +40,11 @@ export class StaticFileServer {
 
   #getCacheControl(filePath) {
     const extension = path.extname(filePath).toLowerCase();
-    return [".html", ".js"].includes(extension) ? "no-store" : "public, max-age=3600";
+    return [".html", ".js"].includes(extension) ? "no-store" : "no-cache, must-revalidate";
   }
 
   #sendNotFound(response) {
-    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" });
     response.end("Not found");
   }
 }
