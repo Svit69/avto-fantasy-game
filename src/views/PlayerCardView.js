@@ -11,15 +11,15 @@ export class PlayerCardView {
     return `
       <article class="player-card ${tiltClass}${selectedClass}" data-player-profile="${props.id}">
         ${this.removeButtonView.render(slotIndex, props.editable)}
-        <img class="card-layer card-bottom-layer" src="/assets/card_bottom_layer.png" alt="" />
+        <img class="card-layer card-bottom-layer" src="${versionAssetUrl("/assets/card_bottom_layer.png")}" alt="" loading="eager" decoding="sync" draggable="false" />
         <div class="card-live-layer">
           <div class="card-score-block">
             <div class="card-points">${props.points}</div>
             <div class="card-position">${this.#formatPosition(props.position)}</div>
           </div>
-          <img class="card-player-image" src="${versionAssetUrl(props.image)}" alt="${props.name} ${props.secondName}" draggable="false" onerror="this.remove()" />
+          <img class="card-player-image" src="${versionAssetUrl(props.image)}" alt="${props.name} ${props.secondName}" loading="eager" decoding="async" draggable="false" onerror="this.remove()" />
         </div>
-        <img class="card-layer card-top-layer" src="/assets/card_top_layer.png" alt="" />
+        <img class="card-layer card-top-layer" src="${versionAssetUrl("/assets/card_top_layer.png")}" alt="" loading="eager" decoding="sync" draggable="false" />
         ${this.#renderLeagueLogo(props.leagueLogo)}
         <div class="card-selected-label">ВЫБРАН</div>
         <div class="card-info-stack">

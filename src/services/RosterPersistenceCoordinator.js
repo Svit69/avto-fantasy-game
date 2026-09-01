@@ -1,6 +1,8 @@
+import { RosterAssetPreloader } from "./RosterAssetPreloader.js";
+
 export class RosterPersistenceCoordinator {
-  constructor(rosterFactory, rosterApiClient, calendarApiClient, deadlinePolicy) {
-    Object.assign(this, { rosterFactory, rosterApiClient, calendarApiClient, deadlinePolicy });
+  constructor(rosterFactory, rosterApiClient, calendarApiClient, deadlinePolicy, rosterAssetPreloader = new RosterAssetPreloader()) {
+    Object.assign(this, { rosterFactory, rosterApiClient, calendarApiClient, deadlinePolicy, rosterAssetPreloader });
   }
 
   async createInitialRoster(players, month) {
@@ -22,6 +24,7 @@ export class RosterPersistenceCoordinator {
     const mode = this.deadlinePolicy.resolveRosterMode(savedRoster, calendar, month);
     const roster = this.rosterFactory.createRosterFromSavedRoster(players, savedRoster, mode);
     roster.setTourAccessState(this.deadlinePolicy.resolveTourAccessState(calendar, month));
+    await this.rosterAssetPreloader.preloadRosterVisualAssets(roster);
     return roster;
   }
 }
