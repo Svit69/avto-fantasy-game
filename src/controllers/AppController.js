@@ -11,7 +11,7 @@ import { RosterSubmissionApiClient } from "../services/RosterSubmissionApiClient
 import { TourDeadlinePolicy } from "../services/TourDeadlinePolicy.js";
 import { PlayerProfileModalView } from "../views/PlayerProfileModalView.js"; import { AuthGateController } from "./AuthGateController.js"; import { DeadlineCountdownController } from "./DeadlineCountdownController.js";
 import { ManagerMenuController } from "./ManagerMenuController.js"; import { MonthSelectAvailabilityController } from "./MonthSelectAvailabilityController.js";
-import { PlayerLongPressController } from "./PlayerLongPressController.js"; import { PlayerSelectionController } from "./PlayerSelectionController.js";
+import { PlayerLongPressController } from "./PlayerLongPressController.js"; import { PlayerSelectionController } from "./PlayerSelectionController.js"; import { StandingsController } from "./StandingsController.js";
 import { RosterSelectionController } from "./RosterSelectionController.js";
 export class AppController {
   constructor(rootElement, shellRenderer = new ApplicationShellRenderer()) { Object.assign(this, { rootElement, shellRenderer }); }
@@ -34,7 +34,7 @@ export class AppController {
     await new MonthSelectAvailabilityController(this.rootElement, calendarApiClient, deadlinePolicy.tourSchedulePolicy).applyAvailableTourOptions();
     persistence.connectMonthRosterLoading(this.rootElement, players, teamRoster, rosterDomRenderer, this.#getSelectedMonth.bind(this));
     new RosterSelectionController(this.rootElement, teamRoster, rosterDomRenderer, rosterApiClient, this.#getSelectedMonth.bind(this)).connectRosterActions();
-    this.#connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory); this.#connectPlayerProfiles(players, teamRoster);
+    this.#connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory); this.#connectPlayerProfiles(players, teamRoster); new StandingsController(this.rootElement, this.#getSelectedMonth.bind(this)).connectStandingsActions();
   }
   #connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory) {
     const drawerView = viewFactory.createPlayerSelectionDrawerView();

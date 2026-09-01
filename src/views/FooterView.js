@@ -27,7 +27,7 @@ export class FooterView {
   }
 
   #createActionState(teamRoster, isComplete) {
-    if (teamRoster.isLocked()) return { text: "ТУР НАЧАЛСЯ", className: "is-locked-action", data: "", disabled: "disabled" };
+    if (teamRoster.isLocked()) return { text: "ТАБЛИЦА", className: "is-table-action", data: "data-open-standings", disabled: "" };
     if (teamRoster.isConfirmed()) return { text: "РЕДАКТИРОВАТЬ СОСТАВ", className: "is-edit-action", data: "data-edit-roster", disabled: "" };
     if (!isComplete) return { text: "ИСКАТЬ ИГРОКОВ", className: "is-search-action", data: "data-open-player-panel", disabled: "" };
     const disabled = teamRoster.canConfirmRoster() ? "" : "disabled";

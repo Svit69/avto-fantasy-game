@@ -1,0 +1,24 @@
+.standings-scrim { position: fixed; inset: 0; z-index: 80; background: rgba(0, 0, 0, 0.68); animation: standingsFade 180ms ease-out both; }
+.standings-modal { position: fixed; inset: auto 0 0; z-index: 81; max-height: min(88dvh, 780px); overflow-y: auto; color: var(--text-main); background: #1D1D1E; border-radius: 22px 22px 0 0; box-shadow: 0 -24px 64px rgba(0, 0, 0, 0.58); animation: standingsRise 220ms ease-out both; }
+.standings-modal header { position: sticky; top: 0; z-index: 2; display: grid; gap: 5px; padding: 18px 18px 14px; background: linear-gradient(180deg, #2a0d0c, #1D1D1E); border-bottom: 1px solid rgba(253, 255, 255, 0.12); text-align: center; }
+.standings-modal header button { position: absolute; right: 14px; top: 14px; width: 36px; height: 36px; border: 0; border-radius: 50%; color: #fff; background: rgba(255, 255, 255, 0.1); font-size: 26px; }
+.standings-modal header span { color: rgba(253, 255, 255, 0.62); font-size: 13px; text-transform: uppercase; }
+.standings-modal header h2 { margin: 0; font-family: "Maratype", Impact, sans-serif; font-size: clamp(34px, 10vw, 58px); line-height: 0.9; text-transform: uppercase; }
+.standings-leaders { display: grid; gap: 8px; padding: 14px 12px 8px; }
+.standings-leader, .standings-row, .standings-current-pin { display: grid; grid-template-columns: 44px 1fr minmax(68px, auto); align-items: center; gap: 10px; width: 100%; border: 1px solid rgba(253, 255, 255, 0.1); color: inherit; background: rgba(253, 255, 255, 0.055); }
+.standings-leader { min-height: 62px; padding: 10px 12px; }
+.standings-row { min-height: 56px; padding: 9px 12px; border-width: 0 0 1px; }
+.standings-leader strong, .standings-row strong, .standings-current-pin strong { display: grid; place-items: center; width: 36px; height: 36px; color: #fff; background: #840F0E; font-family: "Maratype", Impact, sans-serif; }
+.standings-leader span, .standings-row span, .standings-current-pin span { display: grid; gap: 2px; min-width: 0; text-align: left; }
+.standings-leader b, .standings-row b, .standings-current-pin b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-transform: uppercase; }
+.standings-leader small, .standings-row small, .standings-current-pin small { color: rgba(253, 255, 255, 0.58); font-size: 12px; }
+.standings-leader em, .standings-row em, .standings-current-pin em { font-style: normal; font-family: "Maratype", Impact, sans-serif; text-align: right; }
+.standings-current-pin { margin: 8px 12px 10px; padding: 12px; border-color: rgba(240, 31, 45, 0.7); background: linear-gradient(180deg, rgba(132, 15, 14, 0.78), rgba(29, 29, 30, 0.88)); cursor: pointer; }
+.standings-current-pin > small { grid-column: 2 / 4; color: rgba(253, 255, 255, 0.66); text-align: left; }
+.standings-table { padding: 0 12px 22px; }
+.is-current-user { border-color: rgba(240, 31, 45, 0.78); box-shadow: 0 0 18px rgba(240, 31, 45, 0.22); }
+.standings-empty { display: grid; gap: 8px; padding: 42px 24px 56px; text-align: center; }
+.standings-empty b { font-size: 22px; text-transform: uppercase; }
+.standings-empty span { color: rgba(253, 255, 255, 0.66); }
+@keyframes standingsFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes standingsRise { from { transform: translateY(28px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }

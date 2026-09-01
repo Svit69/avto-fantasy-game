@@ -1,4 +1,5 @@
 body.is-drawer-open,
-body.is-profile-open {
+body.is-profile-open,
+body.is-standings-open {
   overflow: hidden;
 }
