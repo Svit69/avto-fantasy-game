@@ -38,7 +38,7 @@ export class PlayerSelectionController {
     const slot = player ? this.teamRoster.findAvailableSlotForPlayer(this.state.activeSlotIndex, player) : null;
     if (slot) this.#assignSelectedPlayer(slot, player);
   }
-  #assignSelectedPlayer(slot, player) { this.teamRoster.assignPlayerSelectionAt(slot.getIndex(), player); this.rosterDomRenderer.renderSlotByIndex(slot.getIndex()); this.rosterDomRenderer.renderFooter(); this.#closeDrawer(); }
+  #assignSelectedPlayer(slot, player) { this.teamRoster.assignPlayerSelectionAt(slot.getIndex(), player); this.rosterDomRenderer.renderSlotByIndex(slot.getIndex()); this.rosterDomRenderer.renderFooter(); document.body.classList.remove("is-profile-open"); this.rootElement.querySelector("[data-player-profile-root]").innerHTML = ""; this.#closeDrawer(); }
   #renderDrawer() {
     const root = this.rootElement.querySelector("[data-player-selection-root]");
     document.body.classList.toggle("is-drawer-open", this.state.isOpen()); root.innerHTML = this.state.isOpen() ? this.drawerView.render(this.#createContext()) : "";

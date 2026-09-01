@@ -18,10 +18,7 @@ export class PlayerProfileModalView {
           </div>
           <button type="button" data-close-player-profile aria-label="Закрыть">×</button>
         </header>
-        <div class="profile-action-row">
-          <div class="profile-action-badge">${selected ? "✓" : "+"}</div>
-          <span>${selected ? "В составе" : "Добавить"}</span>
-        </div>
+        ${this.#renderActionRow(player, selected)}
         <div class="profile-stat-strip">
           ${this.#renderStat("Выбравшие команды", "0%")}
           ${this.#renderStat("Очки", `${player.getPoints()} оч.`)}
@@ -33,12 +30,19 @@ export class PlayerProfileModalView {
 
   #renderStat(label, value) { return `<div><small>${label}</small><strong>${value}</strong></div>`; }
 
+  #renderActionRow(player, selected) {
+    const selectData = selected ? "" : `data-select-player="${player.getId()}"`;
+    return `<button class="profile-action-row" type="button" ${selectData} ${selected ? "disabled" : ""}>
+      <div class="profile-action-badge">${selected ? "✓" : "+"}</div><span>${selected ? "В составе" : "Добавить"}</span>
+    </button>`;
+  }
+
   #renderSeasonBlock(player) {
-    return `<article class="profile-panel"><h3>Прошлый сезон</h3>${this.#renderSeasonRows(player)}<footer><b>Итого</b><strong>${player.getPoints()} оч.</strong></footer></article>`;
+    return `<article class="profile-panel"><h3>Прошлый тур</h3>${this.#renderSeasonRows(player)}<footer><b>Итого</b><strong>${player.getPoints()} оч.</strong></footer></article>`;
   }
 
   #renderSeasonRows(player) {
-    const rows = [["Номер игрока", `№${player.getNumber() || "—"}`], ["Матчи", "0"], ["Голы", "0 оч."], ["Передачи", "0 оч."]];
+    const rows = [["Номер игрока", `${player.getNumber() || "—"}`], ["Матчи", "0"], ["Голы", "0 оч."], ["Передачи", "0 оч."]];
     return rows.map(([label, value]) => `<div class="profile-season-row"><span>${label}</span><b>${value}</b></div>`).join("");
   }
 

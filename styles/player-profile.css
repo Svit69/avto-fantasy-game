@@ -40,7 +40,7 @@
 .profile-heading p { margin: 8px 0 0; color: rgba(253, 255, 255, 0.76); font-size: 15px; }
 .profile-hero button { width: 38px; height: 38px; border: 0; border-radius: 50%; color: #fff; background: rgba(0, 0, 0, 0.36); font-size: 28px; cursor: pointer; }
 
-.profile-action-row { display: grid; place-items: center; gap: 8px; padding: 24px 0 22px; border-bottom: 1px solid rgba(19, 32, 36, 0.12); font-size: 16px; }
+.profile-action-row { display: grid; place-items: center; gap: 8px; width: 100%; padding: 24px 0 22px; border: 0; border-bottom: 1px solid rgba(19, 32, 36, 0.12); color: inherit; background: transparent; font: inherit; font-size: 16px; cursor: pointer; }
 .profile-action-badge { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 50%; color: #fff; background: #e01822; font-size: 42px; font-weight: 800; }
 .profile-stat-strip { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid rgba(19, 32, 36, 0.12); }
 .profile-stat-strip div { display: grid; justify-items: center; gap: 4px; padding: 14px 8px; text-align: center; }
