@@ -6,18 +6,22 @@ export class RosterRepository {
     this.filePath = filePath;
   }
 
-  async saveRoster(userId, slots) {
+  async saveRoster(userId, month, slots) {
     const rosters = await this.#readRosters();
-    const nextRoster = { userId: String(userId), slots, updated_at: new Date().toISOString() };
-    const nextRosters = rosters.filter((roster) => roster.userId !== nextRoster.userId);
+    const nextRoster = { userId: String(userId), month, status: "confirmed", slots, updated_at: new Date().toISOString() };
+    const nextRosters = rosters.filter((roster) => !this.#isSameRosterScope(roster, nextRoster));
     nextRosters.push(nextRoster);
     await this.#writeRosters(nextRosters);
     return nextRoster;
   }
 
-  async findRosterByUserId(userId) {
-    return (await this.#readRosters()).find((roster) => roster.userId === String(userId)) || null;
+  async findRosterByUserAndMonth(userId, month) {
+    const rosters = await this.#readRosters();
+    return rosters.find((roster) => roster.userId === String(userId) && roster.month === month)
+      || rosters.find((roster) => roster.userId === String(userId) && !roster.month) || null;
   }
+
+  #isSameRosterScope(roster, nextRoster) { return roster.userId === nextRoster.userId && roster.month === nextRoster.month; }
 
   async #readRosters() {
     try {

@@ -1,6 +1,6 @@
 export class RosterSelectionController {
-  constructor(rootElement, teamRoster, rosterDomRenderer, rosterSubmissionApiClient) {
-    Object.assign(this, { rootElement, teamRoster, rosterDomRenderer, rosterSubmissionApiClient });
+  constructor(rootElement, teamRoster, rosterDomRenderer, rosterSubmissionApiClient, getSelectedMonth) {
+    Object.assign(this, { rootElement, teamRoster, rosterDomRenderer, rosterSubmissionApiClient, getSelectedMonth });
   }
 
   connectRosterActions() {
@@ -27,7 +27,7 @@ export class RosterSelectionController {
   async #submitRoster(confirmButton) {
     if (!this.teamRoster.canConfirmRoster()) return;
     confirmButton.disabled = true;
-    await this.rosterSubmissionApiClient.submitConfirmedRoster(this.teamRoster.createServerPayload());
+    await this.rosterSubmissionApiClient.submitConfirmedRoster(this.teamRoster.createServerPayload(), this.getSelectedMonth());
     confirmButton.textContent = "СОСТАВ СОХРАНЁН";
   }
 }

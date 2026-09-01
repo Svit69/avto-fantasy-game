@@ -5,9 +5,9 @@ export class RosterSlot {
   #position;
   #player;
 
-  constructor(position, player = null) {
-    this.#index = RosterSlot.#nextIndex;
-    RosterSlot.#nextIndex += 1;
+  constructor(position, player = null, index = null) {
+    this.#index = Number.isInteger(index) ? index : RosterSlot.#nextIndex;
+    RosterSlot.#nextIndex = Math.max(RosterSlot.#nextIndex, this.#index + 1);
     this.#position = position;
     this.#player = player;
   }
