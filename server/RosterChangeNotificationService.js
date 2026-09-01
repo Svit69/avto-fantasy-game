@@ -18,7 +18,7 @@ export class RosterChangeNotificationService {
     const [users, rosters] = await Promise.all([this.userRepository.listUsers(), this.rosterRepository.listRosters()]);
     const activeUserIds = new Set(users.filter((user) => user.status !== "blocked").map((user) => user.id));
     const affectedUserIds = [...new Set(rosters.filter((roster) => this.#containsPlayer(roster, playerId)).map((roster) => roster.userId))];
-    return this.dispatcher.dispatchNotificationJobs(affectedUserIds.filter((id) => activeUserIds.has(id)).map((userId) => ({ userId, key, text })));
+    return (await this.dispatcher.dispatchNotificationJobs(affectedUserIds.filter((id) => activeUserIds.has(id)).map((userId) => ({ userId, key, text })))).sent;
   }
 
   #containsPlayer(roster, playerId) {

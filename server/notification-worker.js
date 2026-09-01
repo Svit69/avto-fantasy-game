@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { EnvironmentFileLoader } from "./EnvironmentFileLoader.js";
 import { ServerLogger } from "./ServerLogger.js";
 import { ServerNotificationFactory } from "./ServerNotificationFactory.js";
+import { NotificationWorkerLock } from "./NotificationWorkerLock.js";
 import { TelegramBotClient } from "./TelegramBotClient.js";
 
 const rootDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -16,8 +17,15 @@ if (!botClient.hasToken()) {
   process.exit(0);
 }
 
+const lock = new NotificationWorkerLock(path.join(rootDirectory, process.env.NOTIFICATION_LOCK_PATH || "storage/notification-worker.lock"), Number(process.env.NOTIFICATION_LOCK_TTL_MS || 900000));
+
+if (!(await lock.acquireLock())) {
+  logger.warn("draft_notification_worker_skipped", { reason: "worker_already_running" });
+  process.exit(0);
+}
+
 new ServerNotificationFactory(rootDirectory, botClient, logger).createDraftNotificationWorker()
-  .processDueNotifications().catch((error) => {
+  .processDueNotifications().finally(() => lock.releaseLock()).catch((error) => {
     logger.error("draft_notification_worker_failed", { errorMessage: error.message, stack: error.stack });
     process.exit(1);
   });

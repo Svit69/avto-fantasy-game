@@ -1,16 +1,23 @@
 export class DraftNotificationDispatcher {
-  constructor(botClient, sentRepository, logger) {
-    Object.assign(this, { botClient, sentRepository, logger });
+  constructor(botClient, sentRepository, logger, rateLimiter, batchSize = 500) {
+    Object.assign(this, { botClient, sentRepository, logger, rateLimiter, batchSize });
   }
 
   async dispatchNotificationJobs(jobs) {
-    let sentCount = 0;
-    for (const job of jobs) if (await this.#dispatchNotificationJob(job)) sentCount += 1;
-    return sentCount;
+    const metrics = { planned: jobs.length, skipped: 0, attempted: 0, sent: 0, failed: 0, limited: 0 };
+    for (const job of jobs) await this.#dispatchWithinBatch(job, metrics);
+    return metrics;
+  }
+
+  async #dispatchWithinBatch(job, metrics) {
+    if (metrics.attempted >= this.batchSize) { metrics.limited += 1; return; }
+    if (await this.sentRepository.hasNotificationBeenSent(job.userId, job.key)) { metrics.skipped += 1; return; }
+    metrics.attempted += 1;
+    await this.rateLimiter.waitForNextDeliverySlot();
+    if (await this.#dispatchNotificationJob(job)) metrics.sent += 1; else metrics.failed += 1;
   }
 
   async #dispatchNotificationJob(job) {
-    if (await this.sentRepository.hasNotificationBeenSent(job.userId, job.key)) return false;
     try {
       const response = await this.botClient.callMethod("sendMessage", { chat_id: job.userId, text: job.text });
       if (!response.ok) return false;

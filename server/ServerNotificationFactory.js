@@ -6,6 +6,7 @@ import { DraftNotificationPlanner } from "./DraftNotificationPlanner.js";
 import { DraftNotificationWorker } from "./DraftNotificationWorker.js";
 import { FantasyCalendarRepository } from "./FantasyCalendarRepository.js";
 import { NotificationSentRepository } from "./NotificationSentRepository.js";
+import { NotificationRateLimiter } from "./NotificationRateLimiter.js";
 import { RosterChangeNotificationService } from "./RosterChangeNotificationService.js";
 import { RosterRepository } from "./RosterRepository.js";
 import { UserRepository } from "./UserRepository.js";
@@ -29,7 +30,9 @@ export class ServerNotificationFactory {
   }
 
   #createDispatcher() {
-    return new DraftNotificationDispatcher(this.botClient, new NotificationSentRepository(this.#storagePath(process.env.NOTIFICATION_DATABASE_PATH || "storage/notifications.json")), this.logger);
+    const limit = Number(process.env.NOTIFICATION_RATE_LIMIT_PER_SECOND || 20);
+    const batchSize = Number(process.env.NOTIFICATION_BATCH_SIZE || 500);
+    return new DraftNotificationDispatcher(this.botClient, new NotificationSentRepository(this.#storagePath(process.env.NOTIFICATION_DATABASE_PATH || "storage/notifications.json")), this.logger, new NotificationRateLimiter(limit), batchSize);
   }
 
   #storagePath(filePath) { return path.join(this.rootDirectory, filePath); }
