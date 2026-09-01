@@ -27,6 +27,8 @@ export class Player extends FantasyEntity {
   getPoints() { return this.#data.points; }
 
   getNumber() { return this.#data.number; }
+  getStatus() { return this.#data.status || "active"; }
+  isAvailableForSelection() { return this.getStatus() !== "left_game"; }
 
   getCardProps(selected) {
     return { name: this.#data.firstName, id: this.getId(), secondName: this.#data.lastName,

@@ -26,6 +26,10 @@ export class PlayerCatalogRepository {
     return this.#updatePlayer(playerId, (player) => ({ ...player, team, ...this.teamBrandResolver.resolveTeamAssets(team) }));
   }
 
+  async markPlayerLeftGame(playerId) {
+    return this.#updatePlayer(playerId, (player) => ({ ...player, status: "left_game" }));
+  }
+
   async #updatePlayer(playerId, updatePlayer) {
     const players = await this.listPlayers();
     const nextPlayers = players.map((player) => player.id === playerId ? updatePlayer(player) : player);

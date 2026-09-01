@@ -15,6 +15,7 @@ export class AdminKeyboardFactory {
   createPlayerKeyboard(playerId) {
     return [[{ text: "Изменить цену", callback_data: `admin:price:${playerId}` }],
       [{ text: "Изменить команду", callback_data: `admin:team:${playerId}` }],
+      [{ text: "Игрок покинул игру", callback_data: `admin:leave:${playerId}` }],
       [{ text: "К списку хоккеистов", callback_data: "admin:players:0" }]];
   }
 

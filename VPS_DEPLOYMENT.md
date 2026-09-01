@@ -12,6 +12,11 @@
 10. Check `pm2 logs avto-fantasy --lines 100` for Telegram webhook events.
 11. Check `GET https://your-domain/api/health` to confirm nginx reaches Node.js.
 12. Check `GET https://your-domain/api/telegram-bot-info` to confirm the token points to the expected bot.
+13. Add draft notifications to cron:
+
+```cron
+*/15 * * * * cd /var/www/avto-fantasy-game && npm run notify:draft >> storage/notification-cron.log 2>&1
+```
 
 If Telegram reports `Connection timed out`, make sure nginx proxies
 `/api/telegram-webhook` to Node.js and restart PM2 after pulling changes.

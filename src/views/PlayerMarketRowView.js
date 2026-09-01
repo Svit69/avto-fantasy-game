@@ -5,7 +5,7 @@ export class PlayerMarketRowView {
     const selected = selectedIds.includes(player.getId());
     const clubLocked = !selected && !teamRoster.canSelectPlayerFromClub(null, player);
     const slotMissing = !teamRoster.findAvailableSlotForPlayer(null, player);
-    const disabled = selected || (slotMissing && !clubLocked);
+    const disabled = selected || !player.isAvailableForSelection() || (slotMissing && !clubLocked);
     const classes = this.#createClassName(selected, !selected && (disabled || clubLocked));
     return `<button class="${classes}" type="button" data-select-player="${player.getId()}"
       data-player-profile="${player.getId()}" ${clubLocked ? `data-club-limit-team="${player.getTeam()}"` : ""}

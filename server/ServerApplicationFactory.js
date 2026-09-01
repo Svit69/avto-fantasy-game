@@ -10,7 +10,7 @@ import { StaticFileServer } from "./StaticFileServer.js"; import { TelegramAdmin
 import { TelegramBotClient } from "./TelegramBotClient.js"; import { TelegramBotInfoController } from "./TelegramBotInfoController.js"; import { TelegramInitDataVerifier } from "./TelegramInitDataVerifier.js";
 import { TelegramUserMapper } from "./TelegramUserMapper.js"; import { TelegramWebhookController } from "./TelegramWebhookController.js"; import { TelegramWebhookInstaller } from "./TelegramWebhookInstaller.js";
 import { TelegramWebhookInfoController } from "./TelegramWebhookInfoController.js"; import { TelegramWebhookReplyFactory } from "./TelegramWebhookReplyFactory.js"; import { TelegramUpdateSummarizer } from "./TelegramUpdateSummarizer.js";
-import { TeamBrandResolver } from "./TeamBrandResolver.js"; import { UserRepository } from "./UserRepository.js";
+import { TeamBrandResolver } from "./TeamBrandResolver.js"; import { UserRepository } from "./UserRepository.js"; import { ServerNotificationFactory } from "./ServerNotificationFactory.js";
 export class ServerApplicationFactory {
   constructor(rootDirectory, logger) { Object.assign(this, { rootDirectory, logger }); }
   createApplication() {
@@ -26,7 +26,7 @@ export class ServerApplicationFactory {
     const playerCatalogRepository = new PlayerCatalogRepository(this.#resolveStoragePath(process.env.PLAYER_DATABASE_PATH || "storage/players.json"), INITIAL_PLAYERS, new TeamBrandResolver());
     const calendarStorage = new CalendarStorageFactory((filePath) => this.#resolveStoragePath(filePath)); const calendarRepository = calendarStorage.createCalendarRepository(); const opponentTeamRepository = calendarStorage.createOpponentTeamRepository();
     const rosterRepository = new RosterRepository(this.#resolveStoragePath(process.env.ROSTER_DATABASE_PATH || "storage/rosters.json"));
-    return { userMapper: new TelegramUserMapper(), userRepository, playerCatalogRepository, calendarRepository, opponentTeamRepository, rosterRepository, priceLocker: new RosterSlotPriceLocker(playerCatalogRepository), adminPanel: this.#createAdminPanel(base.botClient, userRepository, playerCatalogRepository) };
+    return { userMapper: new TelegramUserMapper(), userRepository, playerCatalogRepository, calendarRepository, opponentTeamRepository, rosterRepository, priceLocker: new RosterSlotPriceLocker(playerCatalogRepository), adminPanel: this.#createAdminPanel(base.botClient, userRepository, playerCatalogRepository, rosterRepository) };
   }
   #createControllers(base, storage) {
     return { jsonResponder: base.jsonResponder, logger: this.logger, staticFileServer: new StaticFileServer(this.rootDirectory),
@@ -40,9 +40,9 @@ export class ServerApplicationFactory {
       playerCatalogController: new PlayerCatalogController({ jsonResponder: base.jsonResponder, playerCatalogRepository: storage.playerCatalogRepository }),
       rosterController: new RosterController({ bodyParser: base.bodyParser, jsonResponder: base.jsonResponder, initDataVerifier: base.initDataVerifier, rosterRepository: storage.rosterRepository, priceLocker: storage.priceLocker, deadlineGuard: new RosterDeadlineGuard(storage.calendarRepository) }) };
   }
-  #createAdminPanel(botClient, userRepository, playerCatalogRepository) {
+  #createAdminPanel(botClient, userRepository, playerCatalogRepository, rosterRepository) {
     const stateStore = new AdminConversationStateStore(); const view = new AdminPanelView(new AdminKeyboardFactory());
-    const mutationService = new AdminPlayerMutationService({ view, playerCatalogRepository });
+    const rosterChangeNotifications = new ServerNotificationFactory(this.rootDirectory, botClient, this.logger).createRosterChangeNotificationService(userRepository, rosterRepository); const mutationService = new AdminPlayerMutationService({ view, playerCatalogRepository, rosterChangeNotifications });
     const routeHandler = new AdminPanelRouteHandler({ view, stateStore, userRepository, playerCatalogRepository, mutationService });
     return new TelegramAdminPanelController({ accessPolicy: new AdminAccessPolicy((process.env.TELEGRAM_ADMIN_IDS || "").split(",")), routeParser: new AdminRouteParser(), routeHandler, stateStore, botClient, logger: this.logger });
   }

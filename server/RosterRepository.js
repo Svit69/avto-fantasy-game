@@ -20,6 +20,8 @@ export class RosterRepository {
     return rosters.find((roster) => roster.userId === String(userId) && roster.month === month) || null;
   }
 
+  async listRosters() { return this.#readRosters(); }
+
   #isSameRosterScope(roster, nextRoster) { return roster.userId === nextRoster.userId && roster.month === nextRoster.month; }
 
   async #readRosters() {

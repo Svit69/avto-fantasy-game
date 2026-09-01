@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node server/server.js",
-    "check": "node --check src/main.js && node --check server/server.js"
+    "check": "node --check src/main.js && node --check server/server.js && node --check server/notification-worker.js",
+    "notify:draft": "node server/notification-worker.js"
   }
 }

@@ -34,7 +34,7 @@ export class PlayerSelectionController {
     if (!this.teamRoster.isEditable()) return;
     const button = event.target.closest("[data-select-player]");
     if (button.dataset.clubLimitTeam) return this.toastController.showClubLimitNotification(button.dataset.clubLimitTeam);
-    const player = this.players.find((candidate) => candidate.getId() === button.dataset.selectPlayer);
+    const player = this.players.find((candidate) => candidate.getId() === button.dataset.selectPlayer); if (!player?.isAvailableForSelection()) return;
     const slot = player ? this.teamRoster.findAvailableSlotForPlayer(this.state.activeSlotIndex, player) : null;
     if (slot) this.#assignSelectedPlayer(slot, player);
   }

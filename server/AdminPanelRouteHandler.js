@@ -13,6 +13,7 @@ export class AdminPanelRouteHandler {
     if (route.type === "team") return this.#requestTeamInput(source.chatId, route.playerId);
     if (route.type === "custom_team") return this.#requestCustomTeamInput(source.chatId, route.playerId);
     if (route.type === "set_team") return this.mutationService.updatePlayerTeam(source.chatId, route.playerId, this.#resolveTeamName(route.value));
+    if (route.type === "leave") return this.mutationService.markPlayerLeftGame(source.chatId, route.playerId);
     return null;
   }
 
