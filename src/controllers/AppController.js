@@ -8,17 +8,15 @@ import { PlayerFactory } from "../services/PlayerFactory.js"; import { PlayerPro
 import { RosterFactory } from "../services/RosterFactory.js";
 import { RosterPersistenceCoordinator } from "../services/RosterPersistenceCoordinator.js";
 import { RosterSubmissionApiClient } from "../services/RosterSubmissionApiClient.js";
+import { TourDeadlinePolicy } from "../services/TourDeadlinePolicy.js";
 import { PlayerProfileModalView } from "../views/PlayerProfileModalView.js";
 import { AuthGateController } from "./AuthGateController.js";
 import { ManagerMenuController } from "./ManagerMenuController.js";
 import { PlayerLongPressController } from "./PlayerLongPressController.js";
 import { PlayerSelectionController } from "./PlayerSelectionController.js";
 import { RosterSelectionController } from "./RosterSelectionController.js";
-
 export class AppController {
-  constructor(rootElement, shellRenderer = new ApplicationShellRenderer()) {
-    Object.assign(this, { rootElement, shellRenderer });
-  }
+  constructor(rootElement, shellRenderer = new ApplicationShellRenderer()) { Object.assign(this, { rootElement, shellRenderer }); }
   async initializeApplication() {
     this.shellRenderer.renderApplicationShell(this.rootElement);
     const authStatus = await new AuthGateController(this.rootElement).verifyApplicationAuthorization();
@@ -28,7 +26,8 @@ export class AppController {
   async #initializeAuthorizedApplication() {
     const players = new PlayerFactory().createPlayersFromCatalog(await new PlayerCatalogApiClient(INITIAL_PLAYERS).loadPlayerCatalog());
     const rosterFactory = new RosterFactory(); const rosterApiClient = new RosterSubmissionApiClient();
-    const persistence = new RosterPersistenceCoordinator(rosterFactory, rosterApiClient);
+    const calendarApiClient = new FantasyCalendarApiClient();
+    const persistence = new RosterPersistenceCoordinator(rosterFactory, rosterApiClient, calendarApiClient, new TourDeadlinePolicy());
     const teamRoster = await persistence.createInitialRoster(players, this.#getSelectedMonth());
     const viewFactory = new ApplicationViewFactory();
     const rosterDomRenderer = viewFactory.createRosterDomRenderer(this.rootElement, teamRoster);

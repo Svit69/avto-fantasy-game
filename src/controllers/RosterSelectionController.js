@@ -8,6 +8,8 @@ export class RosterSelectionController {
   }
 
   #handleRosterAction(event) {
+    const editButton = event.target.closest("[data-edit-roster]");
+    if (editButton) return this.#enableRosterEditing();
     const confirmButton = event.target.closest("[data-confirm-roster]");
     if (confirmButton) return this.#submitRoster(confirmButton);
 
@@ -28,6 +30,19 @@ export class RosterSelectionController {
     if (!this.teamRoster.canConfirmRoster()) return;
     confirmButton.disabled = true;
     await this.rosterSubmissionApiClient.submitConfirmedRoster(this.teamRoster.createServerPayload(), this.getSelectedMonth());
-    confirmButton.textContent = "СОСТАВ СОХРАНЁН";
+    this.teamRoster.markConfirmed(); this.#animateRosterLock();
+    this.rosterDomRenderer.renderRosterSections();
+  }
+
+  #enableRosterEditing() {
+    this.teamRoster.markEditing(); this.#animateRosterEdit();
+    this.rosterDomRenderer.renderRosterSections();
+  }
+
+  #animateRosterLock() { this.#setRosterAnimationClass("is-roster-locking", "is-roster-editing"); }
+  #animateRosterEdit() { this.#setRosterAnimationClass("is-roster-editing", "is-roster-locking"); }
+  #setRosterAnimationClass(nextClass, previousClass) {
+    const field = this.rootElement.querySelector("[data-draft-field]");
+    field?.classList.remove(previousClass); field?.classList.add(nextClass);
   }
 }

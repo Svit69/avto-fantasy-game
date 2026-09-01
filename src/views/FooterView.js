@@ -5,10 +5,7 @@ export class FooterView {
     const remainingBudget = teamRoster.getBudgetLimit() - teamRoster.calculateSelectedPlayersPrice();
     const budgetState = remainingBudget < 0 ? "is-over-budget" : "";
     const isComplete = filledCount === totalCount;
-    const actionText = isComplete ? "ПОДТВЕРДИТЬ СОСТАВ" : "ИСКАТЬ ИГРОКОВ";
-    const actionClass = isComplete ? "is-confirm-action" : "is-search-action";
-    const actionData = isComplete ? "data-confirm-roster" : "data-open-player-panel";
-    const disabled = isComplete && !teamRoster.canConfirmRoster() ? "disabled" : "";
+    const action = this.#createActionState(teamRoster, isComplete);
 
     return `
       <footer class="app-footer">
@@ -23,9 +20,17 @@ export class FooterView {
               <div class="stat-value">${filledCount}/${totalCount}</div>
             </div>
           </div>
-          <button class="confirm-button ${actionClass}" type="button" ${actionData} ${disabled}>${actionText}</button>
+          <button class="confirm-button ${action.className}" type="button" ${action.data} ${action.disabled}>${action.text}</button>
         </div>
       </footer>
     `;
+  }
+
+  #createActionState(teamRoster, isComplete) {
+    if (teamRoster.isLocked()) return { text: "ТУР НАЧАЛСЯ", className: "is-locked-action", data: "", disabled: "disabled" };
+    if (teamRoster.isConfirmed()) return { text: "РЕДАКТИРОВАТЬ СОСТАВ", className: "is-edit-action", data: "data-edit-roster", disabled: "" };
+    if (!isComplete) return { text: "ИСКАТЬ ИГРОКОВ", className: "is-search-action", data: "data-open-player-panel", disabled: "" };
+    const disabled = teamRoster.canConfirmRoster() ? "" : "disabled";
+    return { text: "ПОДТВЕРДИТЬ СОСТАВ", className: "is-confirm-action", data: "data-confirm-roster", disabled };
   }
 }

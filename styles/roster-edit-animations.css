@@ -1,0 +1,17 @@
+.is-roster-editing .card-remove-button:not(.is-hidden) {
+  animation: card-remove-show 180ms ease-out both;
+}
+
+.is-roster-locking .card-remove-button.is-hidden {
+  animation: card-remove-hide 140ms ease-in both;
+}
+
+@keyframes card-remove-show {
+  from { opacity: 0; transform: translate(35%, -70%) scale(0.72); }
+  to { opacity: 1; transform: translate(35%, -50%) scale(1); }
+}
+
+@keyframes card-remove-hide {
+  from { opacity: 1; transform: translate(35%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(35%, -70%) scale(0.72); }
+}

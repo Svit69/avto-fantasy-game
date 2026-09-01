@@ -1,19 +1,25 @@
 export class RosterPersistenceCoordinator {
-  constructor(rosterFactory, rosterApiClient) {
-    Object.assign(this, { rosterFactory, rosterApiClient });
+  constructor(rosterFactory, rosterApiClient, calendarApiClient, deadlinePolicy) {
+    Object.assign(this, { rosterFactory, rosterApiClient, calendarApiClient, deadlinePolicy });
   }
 
   async createInitialRoster(players, month) {
-    const savedRoster = await this.rosterApiClient.loadSavedRoster(month);
-    return this.rosterFactory.createRosterFromSavedRoster(players, savedRoster);
+    return this.#createRosterFromPersistence(players, month);
   }
 
   connectMonthRosterLoading(rootElement, players, teamRoster, rosterDomRenderer, getSelectedMonth) {
     rootElement.querySelector(".month-select")?.addEventListener("change", async () => {
-      const savedRoster = await this.rosterApiClient.loadSavedRoster(getSelectedMonth());
-      const nextRoster = this.rosterFactory.createRosterFromSavedRoster(players, savedRoster);
-      teamRoster.replaceSlots(nextRoster.getSlots());
+      const nextRoster = await this.#createRosterFromPersistence(players, getSelectedMonth());
+      teamRoster.replaceRosterState(nextRoster);
       rosterDomRenderer.renderRosterSections();
     });
+  }
+
+  async #createRosterFromPersistence(players, month) {
+    const [savedRoster, calendar] = await Promise.all([
+      this.rosterApiClient.loadSavedRoster(month), this.calendarApiClient.loadFantasyCalendar(),
+    ]);
+    const mode = this.deadlinePolicy.resolveRosterMode(savedRoster, calendar, month);
+    return this.rosterFactory.createRosterFromSavedRoster(players, savedRoster, mode);
   }
 }

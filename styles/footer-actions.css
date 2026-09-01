@@ -3,7 +3,9 @@
 }
 
 .confirm-button.is-search-action,
-.confirm-button.is-confirm-action {
+.confirm-button.is-confirm-action,
+.confirm-button.is-edit-action,
+.confirm-button.is-locked-action {
   animation: footer-action-swap 220ms ease-out both;
 }
 
@@ -14,6 +16,16 @@
 
 .confirm-button.is-confirm-action {
   background: linear-gradient(180deg, #f01f2d 0%, #b80f18 100%);
+}
+
+.confirm-button.is-edit-action {
+  background: linear-gradient(180deg, #FDFFFF 0%, #d7d9dc 100%);
+  color: #7b1116;
+}
+
+.confirm-button.is-locked-action {
+  background: linear-gradient(180deg, #3a3a3c 0%, #202022 100%);
+  color: rgba(253, 255, 255, 0.62);
 }
 
 @keyframes footer-action-swap {
@@ -30,7 +42,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .confirm-button.is-search-action,
-  .confirm-button.is-confirm-action {
+  .confirm-button.is-confirm-action,
+  .confirm-button.is-edit-action,
+  .confirm-button.is-locked-action {
     animation: none;
   }
 }

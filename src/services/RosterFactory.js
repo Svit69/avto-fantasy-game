@@ -1,5 +1,6 @@
 import { RosterSlot } from "../models/RosterSlot.js";
 import { TeamRoster } from "../models/TeamRoster.js";
+import { RosterLifecycle, ROSTER_MODES } from "../models/RosterLifecycle.js";
 import { RosterPlayerPriceOverride } from "../models/RosterPlayerPriceOverride.js";
 
 export class RosterFactory {
@@ -13,15 +14,15 @@ export class RosterFactory {
       new RosterSlot("вратарь", null, 5),
     ];
 
-    return new TeamRoster(80, slots);
+    return new TeamRoster(80, slots, new RosterLifecycle());
   }
 
-  createRosterFromSavedRoster(players, savedRoster) {
+  createRosterFromSavedRoster(players, savedRoster, mode = ROSTER_MODES.confirmed) {
     if (!savedRoster?.slots?.length) return this.createDefaultRoster(players);
     const slots = savedRoster.slots.map((slot) => new RosterSlot(
       slot.position, this.#findSavedPlayer(players, slot), slot.slotIndex,
     ));
-    return new TeamRoster(80, slots);
+    return new TeamRoster(80, slots, new RosterLifecycle(mode));
   }
 
   #findPlayerByLastName(players, lastName) {

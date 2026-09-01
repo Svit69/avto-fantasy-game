@@ -1,6 +1,6 @@
 export class RosterController {
-  constructor({ bodyParser, jsonResponder, initDataVerifier, rosterRepository, priceLocker }) {
-    Object.assign(this, { bodyParser, jsonResponder, initDataVerifier, rosterRepository, priceLocker });
+  constructor({ bodyParser, jsonResponder, initDataVerifier, rosterRepository, priceLocker, deadlineGuard }) {
+    Object.assign(this, { bodyParser, jsonResponder, initDataVerifier, rosterRepository, priceLocker, deadlineGuard });
   }
 
   async handleRequest(request, response) {
@@ -22,8 +22,11 @@ export class RosterController {
     const payload = await this.bodyParser.readJson(request);
     const profile = this.#verifyRequestProfile(payload.initData || "");
     if (!profile) return this.jsonResponder.sendJson(response, 401, { error: "invalid_init_data" });
-    const slots = await this.priceLocker.lockRosterSlotPrices(payload.slots || []);
-    const roster = await this.rosterRepository.saveRoster(profile.id, payload.month || "Сентябрь", slots);
+    const month = payload.month || "Сентябрь";
+    if (!await this.deadlineGuard.canModifyRoster(month)) return this.jsonResponder.sendJson(response, 423, { error: "tour_started" });
+    const currentRoster = await this.rosterRepository.findRosterByUserAndMonth(profile.id, month);
+    const slots = await this.priceLocker.lockRosterSlotPrices(payload.slots || [], currentRoster);
+    const roster = await this.rosterRepository.saveRoster(profile.id, month, slots);
     return this.jsonResponder.sendJson(response, 200, { ok: true, roster });
   }
 

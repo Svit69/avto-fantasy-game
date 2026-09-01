@@ -20,6 +20,12 @@
   transform: scale(1.03) rotate(0deg);
 }
 
+.empty-player-slot:disabled {
+  opacity: 0.42;
+  cursor: default;
+  pointer-events: none;
+}
+
 .empty-slot-plus {
   display: grid;
   place-items: center;

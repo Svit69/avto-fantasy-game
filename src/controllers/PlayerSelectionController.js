@@ -6,8 +6,8 @@ export class PlayerSelectionController {
   connectPlayerSelectionActions() { this.rootElement.addEventListener("click", (event) => this.#handleSelectionAction(event)); this.rootElement.addEventListener("input", (event) => this.#handleRangeInput(event)); }
   #handleSelectionAction(event) {
     if (event.target.closest("[data-remove-slot]")) return this.#renderDrawer();
-    if (event.target.closest("[data-open-player-panel]")) return this.#openPlayerSearch();
-    if (event.target.closest(".empty-player-slot")) return this.#openDrawer(event);
+    if (event.target.closest("[data-open-player-panel]") && this.teamRoster.isEditable()) return this.#openPlayerSearch();
+    if (event.target.closest(".empty-player-slot") && this.teamRoster.isEditable()) return this.#openDrawer(event);
     if (event.target.closest("[data-close-player-panel]")) return this.#closeDrawer();
     if (event.target.closest("[data-close-filter]")) return this.#closeFilter();
     if (event.target.closest("[data-close-toast]")) return this.toastController.closeNotification();
@@ -31,6 +31,7 @@ export class PlayerSelectionController {
     this.state.applyFilter(option.dataset.filterKind, option.dataset.filterValue); this.#closeFilter();
   }
   #selectPlayer(event) {
+    if (!this.teamRoster.isEditable()) return;
     const button = event.target.closest("[data-select-player]");
     if (button.dataset.clubLimitTeam) return this.toastController.showClubLimitNotification(button.dataset.clubLimitTeam);
     const player = this.players.find((candidate) => candidate.getId() === button.dataset.selectPlayer);

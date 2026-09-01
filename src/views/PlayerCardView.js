@@ -1,15 +1,16 @@
 import { versionAssetUrl } from "../utils/AssetUrlVersioner.js";
+import { PlayerCardRemoveButtonView } from "./PlayerCardRemoveButtonView.js";
 
 export class PlayerCardView {
+  constructor(removeButtonView = new PlayerCardRemoveButtonView()) { this.removeButtonView = removeButtonView; }
+
   render(props, orderIndex, slotIndex) {
     const tiltClass = this.#selectTiltClass(orderIndex);
     const selectedClass = props.selected ? " is-selected" : "";
 
     return `
       <article class="player-card ${tiltClass}${selectedClass}" data-player-profile="${props.id}">
-        <button class="card-remove-button" type="button" data-remove-slot="${slotIndex}" aria-label="Удалить игрока">
-          <span aria-hidden="true">×</span>
-        </button>
+        ${this.removeButtonView.render(slotIndex, props.editable)}
         <img class="card-layer card-bottom-layer" src="/assets/card_bottom_layer.png" alt="" />
         <div class="card-live-layer">
           <div class="card-score-block">
