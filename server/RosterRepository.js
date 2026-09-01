@@ -17,8 +17,7 @@ export class RosterRepository {
 
   async findRosterByUserAndMonth(userId, month) {
     const rosters = await this.#readRosters();
-    return rosters.find((roster) => roster.userId === String(userId) && roster.month === month)
-      || rosters.find((roster) => roster.userId === String(userId) && !roster.month) || null;
+    return rosters.find((roster) => roster.userId === String(userId) && roster.month === month) || null;
   }
 
   #isSameRosterScope(roster, nextRoster) { return roster.userId === nextRoster.userId && roster.month === nextRoster.month; }

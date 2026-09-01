@@ -10,7 +10,7 @@ export class TeamRoster {
     this.#syncSlotEditability();
   }
   getSlots() { return [...this.#slots]; }
-  replaceRosterState(roster) { this.#slots = roster.getSlots(); this.#lifecycle = roster.getLifecycle(); this.#syncSlotEditability(); }
+  replaceRosterState(roster) { this.#slots = roster.getSlots(); this.#lifecycle = roster.getLifecycle(); this.#tourAccessState = roster.getTourAccessState(); this.#syncSlotEditability(); }
   getLifecycle() { return this.#lifecycle; }
   getTourAccessState() { return this.#tourAccessState; }
   setTourAccessState(tourAccessState) { this.#tourAccessState = tourAccessState; }
