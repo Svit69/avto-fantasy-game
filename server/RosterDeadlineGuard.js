@@ -1,10 +1,13 @@
+import { TourSchedulePolicy } from "../src/services/TourSchedulePolicy.js";
+
 export class RosterDeadlineGuard {
-  constructor(calendarRepository) { this.calendarRepository = calendarRepository; }
+  constructor(calendarRepository, tourSchedulePolicy = new TourSchedulePolicy()) {
+    Object.assign(this, { calendarRepository, tourSchedulePolicy });
+  }
 
   async canModifyRoster(month) {
-    const tours = await this.calendarRepository.listTours();
-    const tour = tours.find((candidate) => candidate.month === month);
-    if (!tour?.deadlineAt) return true;
-    return Date.parse(tour.deadlineAt) > Date.now();
+    const calendar = await this.calendarRepository.listCalendar();
+    const state = this.tourSchedulePolicy.findTourAccessState(calendar, month);
+    return state.isOpen && !state.isLocked;
   }
 }

@@ -4,6 +4,7 @@ export class TeamRoster {
   #budgetLimit;
   #slots;
   #lifecycle;
+  #tourAccessState;
   constructor(budgetLimit, slots, lifecycle = new RosterLifecycle()) {
     this.#budgetLimit = budgetLimit; this.#slots = slots; this.#lifecycle = lifecycle;
     this.#syncSlotEditability();
@@ -11,6 +12,8 @@ export class TeamRoster {
   getSlots() { return [...this.#slots]; }
   replaceRosterState(roster) { this.#slots = roster.getSlots(); this.#lifecycle = roster.getLifecycle(); this.#syncSlotEditability(); }
   getLifecycle() { return this.#lifecycle; }
+  getTourAccessState() { return this.#tourAccessState; }
+  setTourAccessState(tourAccessState) { this.#tourAccessState = tourAccessState; }
   isEditable() { return this.#lifecycle.isEditable(); }
   isConfirmed() { return this.#lifecycle.isConfirmed(); }
   isLocked() { return this.#lifecycle.isLocked(); }

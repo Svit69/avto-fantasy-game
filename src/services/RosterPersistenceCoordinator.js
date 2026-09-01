@@ -20,6 +20,8 @@ export class RosterPersistenceCoordinator {
       this.rosterApiClient.loadSavedRoster(month), this.calendarApiClient.loadFantasyCalendar(),
     ]);
     const mode = this.deadlinePolicy.resolveRosterMode(savedRoster, calendar, month);
-    return this.rosterFactory.createRosterFromSavedRoster(players, savedRoster, mode);
+    const roster = this.rosterFactory.createRosterFromSavedRoster(players, savedRoster, mode);
+    roster.setTourAccessState(this.deadlinePolicy.resolveTourAccessState(calendar, month));
+    return roster;
   }
 }

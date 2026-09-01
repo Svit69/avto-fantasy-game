@@ -17,8 +17,14 @@ export class RosterFactory {
     return new TeamRoster(80, slots, new RosterLifecycle());
   }
 
+  createEmptyRoster(mode = ROSTER_MODES.draft) {
+    const positions = ["нападающий", "нападающий", "нападающий", "защитник", "защитник", "вратарь"];
+    const slots = positions.map((position, index) => new RosterSlot(position, null, index));
+    return new TeamRoster(80, slots, new RosterLifecycle(mode));
+  }
+
   createRosterFromSavedRoster(players, savedRoster, mode = ROSTER_MODES.confirmed) {
-    if (!savedRoster?.slots?.length) return this.createDefaultRoster(players);
+    if (!savedRoster?.slots?.length) return mode === ROSTER_MODES.locked ? this.createEmptyRoster(mode) : this.createDefaultRoster(players);
     const slots = savedRoster.slots.map((slot) => new RosterSlot(
       slot.position, this.#findSavedPlayer(players, slot), slot.slotIndex,
     ));
