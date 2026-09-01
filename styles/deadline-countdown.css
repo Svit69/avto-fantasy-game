@@ -8,13 +8,16 @@
 
 .deadline-countdown span {
   display: block;
-  font-size: clamp(13px, 3.2vw, 17px);
+  font-size: clamp(10px, 2.55vw, 13px);
   line-height: 1.1;
 }
 
 .deadline-countdown strong {
-  display: block;
-  margin-top: 3px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: min(148px, 44vw);
+  margin: 7px auto 0;
   color: #FDFFFF;
   font-family: "Maratype", "Arial Narrow", Impact, sans-serif;
   font-size: clamp(20px, 5.4vw, 30px);
@@ -23,11 +26,18 @@
 }
 
 .deadline-countdown small {
-  display: block;
-  margin-top: 2px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: min(148px, 44vw);
+  margin: 2px auto 0;
   color: rgba(253, 255, 255, 0.62);
   font-size: clamp(9px, 2.4vw, 11px);
   letter-spacing: 0;
+}
+
+.deadline-countdown b {
+  text-align: center;
 }
 
 .month-select option:disabled {

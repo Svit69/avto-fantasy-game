@@ -23,8 +23,8 @@ export class DraftFieldView {
     if (!state?.isOpen || state.isLocked || !state.deadlineAt) return "";
     return `<div class="deadline-countdown" data-deadline-countdown data-deadline-at="${state.deadlineAt}">
       <span>ОБРАТНЫЙ ОТСЧЕТ ДО НАЧАЛА ТУРА</span>
-      <strong data-countdown-value>00 : 00 : 00</strong>
-      <small>ДНИ&nbsp;&nbsp;&nbsp;ЧАСЫ&nbsp;&nbsp;&nbsp;МИН</small>
+      <strong data-countdown-value><b>00</b><b>00</b><b>00</b></strong>
+      <small><b>д</b><b>ч</b><b>м</b></small>
     </div>`;
   }
 }

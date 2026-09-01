@@ -11,7 +11,7 @@ export class DeadlineCountdownController {
       const deadlineTime = Date.parse(element.dataset.deadlineAt);
       const remainingTime = deadlineTime - Date.now();
       if (!Number.isFinite(deadlineTime) || remainingTime <= 0) return element.remove();
-      element.querySelector("[data-countdown-value]").textContent = this.#formatRemainingTime(remainingTime);
+      element.querySelector("[data-countdown-value]").innerHTML = this.#formatRemainingTime(remainingTime);
     });
   }
 
@@ -20,6 +20,6 @@ export class DeadlineCountdownController {
     const days = Math.floor(totalMinutes / 1440);
     const hours = Math.floor((totalMinutes % 1440) / 60);
     const minutes = totalMinutes % 60;
-    return [days, hours, minutes].map((value) => String(value).padStart(2, "0")).join(" : ");
+    return [days, hours, minutes].map((value) => `<b>${String(value).padStart(2, "0")}</b>`).join("");
   }
 }
