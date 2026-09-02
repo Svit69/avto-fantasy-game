@@ -4,9 +4,7 @@ export class KhlProtocolPlayerMatcher {
   constructor(players, league) { Object.assign(this, { players, teamNormalizer: new KhlProtocolTeamNameNormalizer(league) }); }
 
   findPlayer(row) {
-    return this.players.find((player) => {
-      return String(player.number || "") === String(row.number) && this.#sameTeam(player.team, row.team);
-    }) || this.#findPlayerByName(row);
+    return this.#findPlayerByName(row) || this.#findPlayerByNumberWhenNameIsMissing(row);
   }
 
   #findPlayerByName(row) {
@@ -15,6 +13,15 @@ export class KhlProtocolPlayerMatcher {
       const playerName = this.#normalizeName(`${player.lastName} ${player.firstName}`);
       return this.#isSamePlayerName(playerName, rowName) && this.#sameTeam(player.team, row.team);
     }) || null;
+  }
+
+  #findPlayerByNumberWhenNameIsMissing(row) {
+    if (this.#normalizeName(row.name)) return null;
+    return this.players.find((player) => this.#hasSameNumber(player, row) && this.#sameTeam(player.team, row.team)) || null;
+  }
+
+  #hasSameNumber(player, row) {
+    return String(player.number || "") === String(row.number || "");
   }
 
   #isSamePlayerName(playerName, rowName) {
