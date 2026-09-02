@@ -1,0 +1,6 @@
+{
+  "match": { "tournamentId": "1369", "gameId": "898228", "homeTeamId": "dragons", "awayTeamId": "avtomobilist", "league": "КХЛ", "status": "period_1" },
+  "events": [
+    { "period": 1, "gameTime": "02:00", "eventType": "shot_on_goal", "playerId": "17594", "teamId": "avtomobilist" }
+  ]
+}

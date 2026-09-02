@@ -1,0 +1,12 @@
+{
+  "tournamentId": "1369",
+  "gameId": "898228",
+  "league": "КХЛ",
+  "team": "Автомобилист",
+  "snapshots": [
+    { "file": "001-before-start.json", "offsetSeconds": 0 },
+    { "file": "002-period-1-live.json", "offsetSeconds": 1 },
+    { "file": "003-period-2-live.json", "offsetSeconds": 2 },
+    { "file": "004-game-end.json", "offsetSeconds": 3 }
+  ]
+}

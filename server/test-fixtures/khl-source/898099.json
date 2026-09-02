@@ -1,0 +1,13 @@
+{
+  "match": {
+    "tournamentId": "1369",
+    "gameId": "898099",
+    "homeTeamId": "190",
+    "awayTeamId": "37",
+    "league": "КХЛ",
+    "status": "finished"
+  },
+  "events": [],
+  "protocol": {},
+  "lineups": {}
+}
