@@ -10,10 +10,12 @@ export class KhlProtocolPdfMatchParser {
       awayTeamId: String(identity.awayTeamId || ""),
       homeTeam,
       awayTeam,
+      protocolHomeTeam: homeTeam,
+      protocolAwayTeam: awayTeam,
       opponentTeam: homeTeam === "Автомобилист" ? awayTeam : homeTeam,
       league: identity.league || "КХЛ",
       status: identity.status || "finished",
-      arena: this.#matchText(content.text, /зрителей,\s*«([^»]+)»/u),
+      arena: this.#matchText(content.text, /зрителей,\s*(?:«([^»]+)»|([^\n]+))/u),
       scheduledAt: this.#createScheduledAt(dateLine, this.#matchText(content.text, /Начало матча:\s*(\d{1,2}:\d{2})/u)),
       createdAt: new Date().toISOString(),
     };
@@ -32,7 +34,7 @@ export class KhlProtocolPdfMatchParser {
   }
 
   #readKnownTeam(lines) {
-    return ["Автомобилист", "Горняк-УГМК", "МХК Авто"].find((team) => lines.includes(team)) || "";
+    return ["Автомобилист", "Горняк-УГМК", "МХК Авто", "Авто"].find((team) => lines.includes(team)) || "";
   }
 
   #createScheduledAt(dateLine, time) {
@@ -46,5 +48,8 @@ export class KhlProtocolPdfMatchParser {
     return match ? `${match[3]}-${months[match[2].toLowerCase()]}-${match[1].padStart(2, "0")}` : null;
   }
 
-  #matchText(text, pattern) { return text.match(pattern)?.[1] || null; }
+  #matchText(text, pattern) {
+    const match = text.match(pattern);
+    return match ? match.slice(1).find(Boolean)?.trim() || null : null;
+  }
 }

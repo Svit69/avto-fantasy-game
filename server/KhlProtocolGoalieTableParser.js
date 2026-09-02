@@ -15,10 +15,11 @@ export class KhlProtocolGoalieTableParser {
   }
 
   #parseRow(items, teamName) {
-    const number = this.#readText(items, 44, 55);
-    const position = this.#readText(items, 75, 85);
-    const name = this.#readText(items, 95, 180);
-    const total = this.#readText(items, 540, 560).match(/(\d+)\s*-\s*(\d+)/);
+    const [numberItem, positionItem, ...nameItems] = items.filter((item) => item.x < 180).sort((a, b) => a.x - b.x);
+    const number = numberItem?.text || "";
+    const position = positionItem?.text || "";
+    const name = nameItems.map((item) => item.text).join(" ").trim();
+    const total = [...items].reverse().find((item) => /\d+\s*-\s*\d+/.test(item.text))?.text.match(/(\d+)\s*-\s*(\d+)/);
     if (!number || position !== "вр" || !name || !total) return null;
     const goalsAgainst = Number(total[1]);
     return { team: teamName, number, name, position, goalsAgainst, saves: Math.max(Number(total[2]) - goalsAgainst, 0) };

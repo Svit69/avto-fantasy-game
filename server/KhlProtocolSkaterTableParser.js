@@ -13,9 +13,10 @@ export class KhlProtocolSkaterTableParser {
   }
 
   #parseRow(items, teamName) {
-    const number = this.#readText(items, 38, 52);
-    const position = this.#readText(items, 58, 68);
-    const name = this.#readText(items, 70, 150);
+    const [numberItem, positionItem, ...nameItems] = items.filter((item) => item.x < 150).sort((a, b) => a.x - b.x);
+    const number = numberItem?.text || "";
+    const position = positionItem?.text || "";
+    const name = nameItems.map((item) => item.text).join(" ").trim();
     if (!number || !["н", "з"].includes(position) || !name) return null;
     return { team: teamName, number, name, position, ...this.#readStats(items) };
   }
