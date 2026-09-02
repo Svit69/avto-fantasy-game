@@ -8,6 +8,7 @@ export class RosterPlayerPriceOverride {
   getShortDisplayName() { return this.player.getShortDisplayName(); }
   getLastName() { return this.player.getLastName(); }
   getTeam() { return this.player.getTeam(); }
+  getLeague() { return this.player.getLeague(); }
   getTeamLogo() { return this.player.getTeamLogo(); }
   getPosition() { return this.player.getPosition(); }
   getImage() { return this.player.getImage(); }

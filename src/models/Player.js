@@ -15,6 +15,7 @@ export class Player extends FantasyEntity {
   getLastName() { return this.#data.lastName; }
 
   getTeam() { return this.#data.team; }
+  getLeague() { return this.#data.league; }
 
   getTeamLogo() { return this.#data.teamLogo; }
 
@@ -33,7 +34,7 @@ export class Player extends FantasyEntity {
   getCardProps(selected) {
     return { name: this.#data.firstName, id: this.getId(), secondName: this.#data.lastName,
       number: this.#data.number, position: this.#data.position, price: this.#data.price, image: this.#data.image,
-      selected, team: this.#data.team, teamLogo: this.#data.teamLogo, leagueLogo: this.#data.leagueLogo,
+      selected, team: this.#data.team, teamLogo: this.#data.teamLogo, league: this.#data.league, leagueLogo: this.#data.leagueLogo,
       points: this.#data.points };
   }
 
