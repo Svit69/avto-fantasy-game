@@ -12,6 +12,11 @@ export class AdminKeyboardFactory {
       [{ text: "В меню", callback_data: "admin:menu" }]];
   }
 
+  createProtocolWaitingKeyboard() {
+    return [[{ text: "Отменить загрузку", callback_data: "admin:cancel" }],
+      [{ text: "В меню", callback_data: "admin:menu" }]];
+  }
+
   createPlayersKeyboard(players, page, pageSize) {
     const offset = page * pageSize;
     const playerRows = players.slice(offset, offset + pageSize).map((player) => [

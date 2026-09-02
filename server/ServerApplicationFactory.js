@@ -1,6 +1,6 @@
 import path from "node:path";
 import { INITIAL_PLAYERS } from "../src/data/players.js";
-import { AdminAccessPolicy } from "./AdminAccessPolicy.js"; import { AdminConversationStateStore } from "./AdminConversationStateStore.js"; import { AdminKeyboardFactory } from "./AdminKeyboardFactory.js"; import { AdminProtocolPanelView } from "./AdminProtocolPanelView.js";
+import { AdminAccessPolicy } from "./AdminAccessPolicy.js"; import { AdminConversationStateStore } from "./AdminConversationStateStore.js"; import { AdminKeyboardFactory } from "./AdminKeyboardFactory.js"; import { AdminPendingActionController } from "./AdminPendingActionController.js"; import { AdminProtocolPanelView } from "./AdminProtocolPanelView.js";
 import { AdminPanelRouteHandler } from "./AdminPanelRouteHandler.js"; import { AdminPanelView } from "./AdminPanelView.js"; import { AdminPlayerMutationService } from "./AdminPlayerMutationService.js"; import { AdminRouteParser } from "./AdminRouteParser.js";
 import { CalendarStorageFactory } from "./CalendarStorageFactory.js"; import { FantasyCalendarController } from "./FantasyCalendarController.js";
 import { HealthController } from "./HealthController.js"; import { HttpApplication } from "./HttpApplication.js"; import { HttpRequestLogger } from "./HttpRequestLogger.js"; import { JsonResponder } from "./JsonResponder.js";
@@ -14,9 +14,7 @@ import { TelegramWebhookInfoController } from "./TelegramWebhookInfoController.j
 import { TeamBrandResolver } from "./TeamBrandResolver.js"; import { UserRepository } from "./UserRepository.js"; import { ServerNotificationFactory } from "./ServerNotificationFactory.js";
 export class ServerApplicationFactory {
   constructor(rootDirectory, logger) { Object.assign(this, { rootDirectory, logger }); }
-  createApplication() {
-    const base = this.#createBaseDependencies(); const storage = this.#createStorageDependencies(base); return new HttpApplication(this.#createControllers(base, storage));
-  }
+  createApplication() { const base = this.#createBaseDependencies(); const storage = this.#createStorageDependencies(base); return new HttpApplication(this.#createControllers(base, storage)); }
   #createBaseDependencies() {
     const bodyParser = new RequestBodyParser(); const jsonResponder = new JsonResponder();
     const botClient = new TelegramBotClient(process.env.TELEGRAM_BOT_TOKEN, this.logger, Number(process.env.TELEGRAM_API_TIMEOUT_MS || 15000));
@@ -43,7 +41,8 @@ export class ServerApplicationFactory {
   #createAdminPanel(botClient, userRepository, playerCatalogRepository, rosterRepository) {
     const stateStore = new AdminConversationStateStore(); const keyboardFactory = new AdminKeyboardFactory(); const view = new AdminPanelView(keyboardFactory); const protocolView = new AdminProtocolPanelView(keyboardFactory);
     const rosterChangeNotifications = new ServerNotificationFactory(this.rootDirectory, botClient, this.logger).createRosterChangeNotificationService(userRepository, rosterRepository); const mutationService = new AdminPlayerMutationService({ view, playerCatalogRepository, rosterChangeNotifications });
-    const protocolImportService = new AdminProtocolImportService({ botClient, khlServiceFactory: new KhlServiceFactory(this.rootDirectory), protocolView, logger: this.logger, stateStore }); const routeHandler = new AdminPanelRouteHandler({ view, protocolView, stateStore, userRepository, playerCatalogRepository, mutationService, protocolImportService });
+    const protocolImportService = new AdminProtocolImportService({ botClient, khlServiceFactory: new KhlServiceFactory(this.rootDirectory), protocolView, logger: this.logger, stateStore }); const pendingActionController = new AdminPendingActionController({ stateStore, view, protocolView });
+    const routeHandler = new AdminPanelRouteHandler({ view, protocolView, stateStore, userRepository, playerCatalogRepository, mutationService, protocolImportService, pendingActionController });
     return new TelegramAdminPanelController({ accessPolicy: new AdminAccessPolicy((process.env.TELEGRAM_ADMIN_IDS || "").split(",")), routeParser: new AdminRouteParser(), routeHandler, stateStore, botClient, logger: this.logger });
   }
   #resolveStoragePath(filePath) { return path.join(this.rootDirectory, filePath); }

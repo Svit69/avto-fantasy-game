@@ -15,6 +15,10 @@ export class AdminConversationStateStore {
     this.states.set(String(chatId), { type: "protocol", league });
   }
 
+  clearState(chatId) {
+    this.states.delete(String(chatId));
+  }
+
   consumeState(chatId) {
     const key = String(chatId);
     const state = this.states.get(key) || null;

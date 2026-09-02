@@ -6,12 +6,14 @@ export class AdminProtocolPanelView {
   }
 
   renderFilePrompt(chatId, league) {
-    return this.#message(chatId, `Лига: ${league}\nОтправьте PDF-протокол матча документом. Имя файла может быть вида game-898099-ru.pdf.`);
+    return this.#message(chatId, `Лига: ${league}\nОтправьте PDF-протокол матча документом. Имя файла может быть вида game-898099-ru.pdf.`, this.keyboardFactory.createProtocolWaitingKeyboard());
   }
 
   renderInvalidFile(chatId) {
-    return this.#message(chatId, "Нужен PDF-файл протокола матча. Отправьте файл документом ещё раз.");
+    return this.#message(chatId, "Нужен PDF-файл протокола матча. Отправьте файл документом ещё раз.", this.keyboardFactory.createProtocolWaitingKeyboard());
   }
+
+  renderCancelled(chatId) { return this.#message(chatId, "Загрузка протокола отменена.", [[{ text: "В меню", callback_data: "admin:menu" }]]); }
 
   renderImportFailed(chatId) {
     return this.#message(chatId, "Не удалось обработать протокол. Проверьте PDF и попробуйте ещё раз.", [[{ text: "В меню", callback_data: "admin:menu" }]]);

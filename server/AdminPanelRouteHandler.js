@@ -1,11 +1,12 @@
 export class AdminPanelRouteHandler {
-  constructor({ view, protocolView, stateStore, userRepository, playerCatalogRepository, mutationService, protocolImportService }) {
-    Object.assign(this, { view, protocolView, stateStore, userRepository, playerCatalogRepository, mutationService, protocolImportService });
+  constructor({ view, protocolView, stateStore, userRepository, playerCatalogRepository, mutationService, protocolImportService, pendingActionController }) {
+    Object.assign(this, { view, protocolView, stateStore, userRepository, playerCatalogRepository, mutationService, protocolImportService, pendingActionController });
   }
 
   async executeRoute(source) {
     const route = source.route;
-    if (route.type === "menu") return this.view.renderMenu(source.chatId);
+    if (route.type === "menu") return this.pendingActionController.renderMenuAndClearState(source.chatId);
+    if (route.type === "cancel") return this.pendingActionController.cancelPendingAction(source.chatId);
     if (route.type === "users") return this.view.renderUsers(source.chatId, await this.userRepository.listUsers());
     if (route.type === "players") return this.view.renderPlayers(source.chatId, await this.playerCatalogRepository.listPlayers(), route.page || 0);
     if (route.type === "player") return this.view.renderPlayer(source.chatId, await this.playerCatalogRepository.findPlayerById(route.playerId));
