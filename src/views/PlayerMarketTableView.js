@@ -25,8 +25,9 @@ export class PlayerMarketTableView {
   }
 
   #filterPlayers(players, filters) {
-    return players.filter((player) => filters.position === "Все" || player.getPosition() === filters.position)
-      .filter((player) => (filters.team === "Все" || player.getTeam() === filters.team) && player.getPrice() <= filters.maxPrice)
+    return players.filter((player) => player.isAvailableForSelection())
+      .filter((player) => filters.position === "Все" || player.getPosition() === filters.position)
+      .filter((player) => (filters.team === "Все" || player.getTeam() === filters.team) && Number(player.getPrice()) <= Number(filters.maxPrice))
       .sort((firstPlayer, secondPlayer) => secondPlayer.getPrice() - firstPlayer.getPrice());
   }
 }

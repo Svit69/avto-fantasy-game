@@ -5,6 +5,7 @@ export class PlayerSelectionDrawerView {
 
   render(context) {
     const { teamRoster, players, filters, activeFilter, shouldAnimate } = context;
+    const availablePlayers = this.#selectAvailablePlayers(players);
     const filled = teamRoster.calculateFilledPlayersCount();
     const total = teamRoster.calculateTotalSlotsCount();
     return `
@@ -17,9 +18,9 @@ export class PlayerSelectionDrawerView {
         <h2 class="selection-title">Выбор игроков</h2>
         ${this.slotStripView.render(teamRoster)}
         <div class="selection-filters">${this.#renderFilters(filters)}</div>
-        ${this.marketTableView.render(players, teamRoster, filters)}
+        ${this.marketTableView.render(availablePlayers, teamRoster, filters)}
       </aside>
-      ${this.filterSheetView.render(activeFilter, filters, this.#selectTeams(players), this.#selectPriceRange(players))}
+      ${this.filterSheetView.render(activeFilter, filters, this.#selectTeams(availablePlayers), this.#selectPriceRange(availablePlayers))}
     `;
   }
 
@@ -35,10 +36,13 @@ export class PlayerSelectionDrawerView {
     return `<button type="button" data-open-filter="${kind}"><span>${label}</span><b>${value}</b></button>`;
   }
 
+  #selectAvailablePlayers(players) { return players.filter((player) => player.isAvailableForSelection()); }
+
   #selectTeams(players) { return [...new Set(players.map((player) => player.getTeam()))]; }
 
   #selectPriceRange(players) {
     const prices = players.map((player) => player.getPrice());
+    if (!prices.length) return { min: 0, max: 0 };
     return { min: Math.floor(Math.min(...prices)), max: Math.ceil(Math.max(...prices)) };
   }
 
