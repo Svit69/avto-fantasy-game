@@ -27,6 +27,7 @@ export class KhlProtocolSkaterTableParser {
       assists: this.#readNumber(items, 169, 178),
       penalties: this.#readNumber(items, 206, 216),
       shotsOnGoal: Math.max(this.#readNumber(items, 410, 421) - goals, 0),
+      blockedShots: this.#readNumber(items, 438, 449),
       hits: this.#readNumber(items, 456, 469),
       takeaways: this.#readNumber(items, 476, 487),
       interceptions: this.#readNumber(items, 493, 505),

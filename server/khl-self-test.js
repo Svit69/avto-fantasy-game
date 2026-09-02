@@ -44,6 +44,6 @@ if (process.env.KHL_TEST_PROTOCOL_PDF_PATH) {
   const pdfProvider = new KhlProtocolPdfDataProvider({ pdfBuffer, players: await service.playerCatalogRepository.listPlayers(), identity: { tournamentId: "1369", gameId: "898099", homeTeamId: "190", league: "КХЛ" } });
   await new KhlMatchIngestionService({ dataProvider: pdfProvider, repository: pdfRepository, playerCatalogRepository: service.playerCatalogRepository, scopePolicy: new KhlMatchScopePolicy("190") }).ingestMatch("1369", "898099");
   const pdfTryamkin = (await pdfRepository.listStatsByGameId("898099")).find((stat) => stat.playerId === "tryamkin");
-  if (pdfTryamkin?.fantasyPoints !== 0) throw new Error("khl_pdf_protocol_self_test_failed");
+  if (pdfTryamkin?.fantasyPoints !== 30) throw new Error("khl_pdf_protocol_self_test_failed");
 }
 console.log("KHL self-test passed: Tryamkin = 80 FP");

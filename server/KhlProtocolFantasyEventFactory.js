@@ -18,6 +18,7 @@ export class KhlProtocolFantasyEventFactory {
       assist: row.assists || 0,
       penalty: row.penalties || 0,
       shotOnGoal: row.shotsOnGoal || 0,
+      blockedShot: row.blockedShots || 0,
       hit: row.hits || 0,
       takeaway: row.takeaways || 0,
       interception: row.interceptions || 0,

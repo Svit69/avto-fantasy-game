@@ -5,6 +5,7 @@ export class KhlFantasyEventMapper {
     if (event.eventType === "assist") events.push(this.#createEvent(event, "assists"));
     if (event.eventType === "penalty") events.push(this.#createEvent(event, "penalties"));
     if (event.eventType === "shot_on_goal") events.push(this.#createEvent(event, "shotsOnGoal"));
+    if (event.eventType === "blocked_shot") events.push(this.#createEvent(event, "blockedShots"));
     if (event.eventType === "hit") events.push(this.#createEvent(event, "hits"));
     if (event.eventType === "takeaway") events.push(this.#createEvent(event, "takeaways"));
     if (event.eventType === "interception") events.push(this.#createEvent(event, "interceptions"));

@@ -17,11 +17,11 @@ export class SkaterFantasyScoringRulebook {
   }
 
   #createForwardRules() {
-    return { goals: 50, assists: 30, penalties: -10, shotsOnGoal: 5, hits: 5, takeaways: 10, interceptions: 10 };
+    return { goals: 50, assists: 30, penalties: -10, shotsOnGoal: 5, blockedShots: 5, hits: 5, takeaways: 10, interceptions: 10 };
   }
 
   #createDefenderRules() {
-    return { goals: 60, assists: 40, penalties: -10, shotsOnGoal: 5, hits: 5, takeaways: 10, interceptions: 10 };
+    return { goals: 60, assists: 40, penalties: -10, shotsOnGoal: 5, blockedShots: 10, hits: 5, takeaways: 10, interceptions: 10 };
   }
 
   #getEventCount(events, eventName) {
