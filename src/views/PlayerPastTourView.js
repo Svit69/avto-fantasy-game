@@ -1,28 +1,30 @@
 import { ROSTER_POSITIONS } from "../data/positions.js";
 
 export class PlayerPastTourView {
-  render(player) {
-    return `<article class="profile-panel"><h3>Прошлый тур</h3>${this.#renderRows(player)}<footer><b>Итого</b><strong>${player.getPoints()} оч.</strong></footer></article>`;
+  render(player, stats = {}) {
+    return `<article class="profile-panel"><h3>Прошлый тур</h3>${this.#renderRows(player, stats)}<footer><b>Итого</b><strong>${Number(stats.fantasyPoints || 0)} оч.</strong></footer></article>`;
   }
 
-  #renderRows(player) {
-    return this.#createRows(player).map(([label, value]) => `<div class="profile-season-row"><span>${label}</span><span>${value}</span></div>`).join("");
+  #renderRows(player, stats) {
+    return this.#createRows(player, stats).map(([label, value]) => `<div class="profile-season-row"><span>${label}</span><span>${value}</span></div>`).join("");
   }
 
-  #createRows(player) {
-    const baseRows = [["Номер игрока", `${player.getNumber() || "—"}`], ["Матчи", "0"]];
+  #createRows(player, stats) {
+    const baseRows = [["Номер игрока", `${player.getNumber() || "—"}`], ["Матчи", `${Number(stats.matches || 0)}`]];
     return player.getPosition() === ROSTER_POSITIONS.goalkeeper
-      ? [...baseRows, ...this.#createGoalkeeperRows()]
-      : [...baseRows, ...this.#createSkaterRows()];
+      ? [...baseRows, ...this.#createGoalkeeperRows(stats)]
+      : [...baseRows, ...this.#createSkaterRows(stats)];
   }
 
-  #createSkaterRows() {
-    return [["Голы", "0"], ["Передачи", "0"], ["Удаления", "0"], ["Броски в створ", "0"], ["Блокированные броски", "0"],
-      ["Силовые приемы", "0"], ["Отборы", "0"], ["Перехваты", "0"]];
+  #createSkaterRows(stats) {
+    return [["Голы", stats.goals], ["Передачи", stats.assists], ["Удаления", stats.penalties], ["Броски в створ", stats.shotsOnGoal], ["Блокированные броски", stats.blockedShots],
+      ["Силовые приемы", stats.hits], ["Отборы", stats.takeaways], ["Перехваты", stats.interceptions]].map(this.#formatRow);
   }
 
-  #createGoalkeeperRows() {
-    return [["Отраженные броски", "0"], ["Пропущенные голы", "0"], ["Удаления", "0"],
-      ["Передачи", "0"], ["Голы", "0"]];
+  #createGoalkeeperRows(stats) {
+    return [["Отраженные броски", stats.saves], ["Пропущенные голы", stats.goalsAgainst], ["Удаления", stats.penalties],
+      ["Передачи", stats.assists], ["Голы", stats.goals]].map(this.#formatRow);
   }
+
+  #formatRow([label, value]) { return [label, `${Number(value || 0)}`]; }
 }

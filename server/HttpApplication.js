@@ -24,6 +24,7 @@ export class HttpApplication {
     if (url.pathname === "/api/internal/khl/import") return this.khlManualImportController.handleRequest(request, response);
     if (url.pathname === "/api/calendar") return this.calendarController.handleRequest(request, response, url);
     if (url.pathname === "/api/opponents") return this.opponentTeamController.handleRequest(request, response);
+    if (url.pathname === "/api/player-tour-stats") return this.playerTourStatsController.handleRequest(request, response, url);
     if (url.pathname === "/api/players") return this.playerCatalogController.handleRequest(request, response);
     if (url.pathname === "/api/player-selection-stats") return this.playerSelectionStatsController.handleRequest(request, response);
     if (url.pathname === "/api/roster") return this.rosterController.handleRequest(request, response);

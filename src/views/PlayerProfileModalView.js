@@ -7,7 +7,7 @@ export class PlayerProfileModalView {
     Object.assign(this, { calendarView, pastTourView });
   }
 
-  render(player, selected, calendar, selectedMonth) {
+  render(player, selected, calendar, selectedMonth, tourStats) {
     return `
       <div class="player-profile-scrim" data-close-player-profile></div>
       <section class="player-profile-modal" role="dialog" aria-modal="true" aria-label="${player.getFullName()}">
@@ -24,7 +24,7 @@ export class PlayerProfileModalView {
           ${this.#renderStat("Очки", `${player.getPoints()} оч.`)}
           ${this.#renderStat("Цена", player.getFormattedPrice())}
         </div>
-        <div class="profile-body">${this.calendarView.render(player, calendar, selectedMonth)}${this.pastTourView.render(player)}</div>
+        <div class="profile-body">${this.calendarView.render(player, calendar, selectedMonth)}${this.pastTourView.render(player, tourStats)}</div>
       </section>`;
   }
 

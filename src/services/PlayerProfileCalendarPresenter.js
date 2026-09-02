@@ -1,12 +1,15 @@
+import { PlayerTourStatsApiClient } from "./PlayerTourStatsApiClient.js";
+
 export class PlayerProfileCalendarPresenter {
-  constructor(calendarApiClient, getSelectedMonth) {
-    Object.assign(this, { calendarApiClient, getSelectedMonth });
+  constructor(calendarApiClient, getSelectedMonth, statsApiClient = new PlayerTourStatsApiClient()) {
+    Object.assign(this, { calendarApiClient, getSelectedMonth, statsApiClient });
     this.calendar = null;
   }
 
   async renderPlayerProfile(profileView, player, selected) {
-    const calendar = await this.#loadCalendar();
-    return profileView.render(player, selected, calendar, this.getSelectedMonth());
+    const month = this.getSelectedMonth();
+    const [calendar, tourStats] = await Promise.all([this.#loadCalendar(), this.statsApiClient.loadPlayerTourStats(player.getId(), month)]);
+    return profileView.render(player, selected, calendar, month, tourStats);
   }
 
   async findPlayerMonthMatches(player) {
