@@ -5,11 +5,13 @@
   "private": true,
   "scripts": {
     "start": "node server/server.js",
-    "check": "node --check src/main.js && node --check server/server.js && node --check server/notification-worker.js && node --check server/khl-worker.js && node --check server/khl-import.js && node --check server/khl-replay.js && node --check server/khl-import-pdf.js",
+    "check": "node --check src/main.js && node --check server/server.js && node --check server/notification-worker.js && node --check server/khl-worker.js && node --check server/khl-import.js && node --check server/khl-replay.js && node --check server/khl-import-pdf.js && node --check server/vhl-import-online.js && node --check server/vhl-poll-online.js",
     "khl:ingest": "node server/khl-worker.js",
     "khl:import": "node server/khl-import.js",
     "khl:replay": "node server/khl-replay.js",
     "khl:import-pdf": "node server/khl-import-pdf.js",
+    "vhl:ingest": "node server/vhl-import-online.js",
+    "vhl:poll": "node server/vhl-poll-online.js",
     "test:khl": "node server/khl-self-test.js",
     "notify:draft": "node server/notification-worker.js"
   },

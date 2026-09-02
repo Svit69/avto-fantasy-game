@@ -1,12 +1,15 @@
 import { KhlProtocolPdfDataProvider } from "./KhlProtocolPdfDataProvider.js";
 import { TelegramDocumentFileDownloader } from "./TelegramDocumentFileDownloader.js";
+import { AdminVhlOnlineProtocolImporter } from "./AdminVhlOnlineProtocolImporter.js";
 
 export class AdminProtocolImportService {
   constructor({ botClient, khlServiceFactory, protocolView, logger, stateStore }) {
-    Object.assign(this, { botClient, khlServiceFactory, protocolView, logger, stateStore, downloader: new TelegramDocumentFileDownloader(botClient) });
+    Object.assign(this, { botClient, khlServiceFactory, protocolView, logger, stateStore, downloader: new TelegramDocumentFileDownloader(botClient),
+      vhlImporter: new AdminVhlOnlineProtocolImporter({ khlServiceFactory, protocolView, logger, stateStore }) });
   }
 
   async importProtocolDocument(source) {
+    if (source.pending.league === "ВХЛ") return this.vhlImporter.importProtocol(source);
     if (!this.#isPdf(source.document)) return this.#renderInvalidFileAndKeepWaiting(source);
     try {
       const pdfBuffer = await this.downloader.downloadDocument(source.document);

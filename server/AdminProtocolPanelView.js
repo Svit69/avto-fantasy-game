@@ -2,15 +2,16 @@ export class AdminProtocolPanelView {
   constructor(keyboardFactory) { this.keyboardFactory = keyboardFactory; }
 
   renderLeaguePrompt(chatId) {
-    return this.#message(chatId, "Загрузка протокола матча\nВыберите лигу, затем отправьте PDF-протокол матча.", this.keyboardFactory.createLeagueKeyboard());
+    return this.#message(chatId, "Загрузка протокола матча\nВыберите лигу. КХЛ и МХЛ принимают PDF, ВХЛ принимает ссылку на online.vhlru.ru.", this.keyboardFactory.createLeagueKeyboard());
   }
 
   renderFilePrompt(chatId, league) {
+    if (league === "ВХЛ") return this.#message(chatId, "Лига: ВХЛ\nОтправьте ссылку или id онлайн-протокола. Например: https://online.vhlru.ru/online/899183.html", this.keyboardFactory.createProtocolWaitingKeyboard());
     return this.#message(chatId, `Лига: ${league}\nОтправьте PDF-протокол матча документом. Имя файла может быть вида game-898099-ru.pdf.`, this.keyboardFactory.createProtocolWaitingKeyboard());
   }
 
   renderInvalidFile(chatId) {
-    return this.#message(chatId, "Нужен PDF-файл протокола матча. Отправьте файл документом ещё раз.", this.keyboardFactory.createProtocolWaitingKeyboard());
+    return this.#message(chatId, "Нужен PDF-файл или ссылка ВХЛ. Отправьте данные ещё раз.", this.keyboardFactory.createProtocolWaitingKeyboard());
   }
 
   renderCancelled(chatId) { return this.#message(chatId, "Загрузка протокола отменена.", [[{ text: "В меню", callback_data: "admin:menu" }]]); }
