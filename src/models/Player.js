@@ -26,10 +26,15 @@ export class Player extends FantasyEntity {
   getImage() { return this.#data.image; }
 
   getPoints() { return this.#data.points; }
+  getSelectionPercent() { return Number(this.#data.selectionPercent || 0); }
 
   getNumber() { return this.#data.number; }
   getStatus() { return this.#data.status || "active"; }
   isAvailableForSelection() { return this.getStatus() !== "left_game"; }
+  applySelectionStats(stats = {}) {
+    this.#data.selectionPercent = Number(stats?.selectionPercent || 0);
+    this.#data.selectedTeams = Number(stats?.selectedTeams || 0);
+  }
 
   getCardProps(selected) {
     return { name: this.#data.firstName, id: this.getId(), secondName: this.#data.lastName,

@@ -1,6 +1,6 @@
 export class RosterSelectionController {
-  constructor(rootElement, teamRoster, rosterDomRenderer, rosterSubmissionApiClient, getSelectedMonth) {
-    Object.assign(this, { rootElement, teamRoster, rosterDomRenderer, rosterSubmissionApiClient, getSelectedMonth });
+  constructor(rootElement, teamRoster, rosterDomRenderer, rosterSubmissionApiClient, getSelectedMonth, afterRosterSubmit = async () => {}) {
+    Object.assign(this, { rootElement, teamRoster, rosterDomRenderer, rosterSubmissionApiClient, getSelectedMonth, afterRosterSubmit });
   }
 
   connectRosterActions() {
@@ -30,6 +30,7 @@ export class RosterSelectionController {
     if (!this.teamRoster.canConfirmRoster()) return;
     confirmButton.disabled = true;
     await this.rosterSubmissionApiClient.submitConfirmedRoster(this.teamRoster.createServerPayload(), this.getSelectedMonth());
+    await this.afterRosterSubmit();
     this.teamRoster.markConfirmed(); this.#animateRosterLock();
     this.rosterDomRenderer.renderRosterSections();
   }

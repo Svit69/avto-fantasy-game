@@ -16,7 +16,7 @@ export class PlayerMarketRowView {
       </div>
       <div class="market-stats-scroll">
         <span><b>${player.getFormattedPrice()}</b><small>${this.#formatPosition(player.getPosition())}</small></span>
-        <span>${player.getPoints()}</span><span>0%</span><span>0</span><span>0</span>
+        <span>${player.getPoints()}</span><span>${player.getSelectionPercent()}%</span><span>0</span><span>0</span>
       </div>
     </button>`;
   }

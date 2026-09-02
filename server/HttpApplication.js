@@ -23,6 +23,7 @@ export class HttpApplication {
     if (url.pathname === "/api/calendar") return this.calendarController.handleRequest(request, response, url);
     if (url.pathname === "/api/opponents") return this.opponentTeamController.handleRequest(request, response);
     if (url.pathname === "/api/players") return this.playerCatalogController.handleRequest(request, response);
+    if (url.pathname === "/api/player-selection-stats") return this.playerSelectionStatsController.handleRequest(request, response);
     if (url.pathname === "/api/roster") return this.rosterController.handleRequest(request, response);
     if (url.pathname === "/api/standings") return this.standingsController.handleRequest(request, response);
     if (url.pathname === "/api/health") return this.healthController.handleRequest(request, response);
