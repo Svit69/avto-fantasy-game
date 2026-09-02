@@ -6,7 +6,7 @@ export class PlayerPastTourView {
   }
 
   #renderRows(player) {
-    return this.#createRows(player).map(([label, value]) => `<div class="profile-season-row"><span>${label}</span><b>${value}</b></div>`).join("");
+    return this.#createRows(player).map(([label, value]) => `<div class="profile-season-row"><span>${label}</span><span>${value}</span></div>`).join("");
   }
 
   #createRows(player) {
@@ -17,12 +17,12 @@ export class PlayerPastTourView {
   }
 
   #createSkaterRows() {
-    return [["Голы", "0 оч."], ["Передачи", "0 оч."], ["Удаления", "0 оч."], ["Броски в створ", "0 оч."],
-      ["Силовые приемы", "0 оч."], ["Отборы", "0 оч."], ["Перехваты", "0 оч."]];
+    return [["Голы", "0"], ["Передачи", "0"], ["Удаления", "0"], ["Броски в створ", "0"],
+      ["Силовые приемы", "0"], ["Отборы", "0"], ["Перехваты", "0"]];
   }
 
   #createGoalkeeperRows() {
-    return [["Отраженные броски", "0 оч."], ["Пропущенные голы", "0 оч."], ["Удаления", "0 оч."],
-      ["Передачи", "0 оч."], ["Голы", "0 оч."]];
+    return [["Отраженные броски", "0"], ["Пропущенные голы", "0"], ["Удаления", "0"],
+      ["Передачи", "0"], ["Голы", "0"]];
   }
 }
