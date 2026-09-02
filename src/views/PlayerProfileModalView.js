@@ -1,9 +1,10 @@
 import { PlayerMatchCalendarView } from "./PlayerMatchCalendarView.js";
+import { PlayerPastTourView } from "./PlayerPastTourView.js";
 import { versionAssetUrl } from "../utils/AssetUrlVersioner.js";
 
 export class PlayerProfileModalView {
-  constructor(calendarView = new PlayerMatchCalendarView()) {
-    this.calendarView = calendarView;
+  constructor(calendarView = new PlayerMatchCalendarView(), pastTourView = new PlayerPastTourView()) {
+    Object.assign(this, { calendarView, pastTourView });
   }
 
   render(player, selected, calendar, selectedMonth) {
@@ -24,7 +25,7 @@ export class PlayerProfileModalView {
           ${this.#renderStat("Очки", `${player.getPoints()} оч.`)}
           ${this.#renderStat("Цена", player.getFormattedPrice())}
         </div>
-        <div class="profile-body">${this.calendarView.render(player, calendar, selectedMonth)}${this.#renderSeasonBlock(player)}</div>
+        <div class="profile-body">${this.calendarView.render(player, calendar, selectedMonth)}${this.pastTourView.render(player)}</div>
       </section>`;
   }
 
@@ -35,15 +36,6 @@ export class PlayerProfileModalView {
     return `<button class="profile-action-row" type="button" ${selectData} ${selected ? "disabled" : ""}>
       <div class="profile-action-badge">${selected ? "✓" : "+"}</div><span>${selected ? "В составе" : "Добавить"}</span>
     </button>`;
-  }
-
-  #renderSeasonBlock(player) {
-    return `<article class="profile-panel"><h3>Прошлый тур</h3>${this.#renderSeasonRows(player)}<footer><b>Итого</b><strong>${player.getPoints()} оч.</strong></footer></article>`;
-  }
-
-  #renderSeasonRows(player) {
-    const rows = [["Номер игрока", `${player.getNumber() || "—"}`], ["Матчи", "0"], ["Голы", "0 оч."], ["Передачи", "0 оч."]];
-    return rows.map(([label, value]) => `<div class="profile-season-row"><span>${label}</span><b>${value}</b></div>`).join("");
   }
 
   #formatPosition(position) {
