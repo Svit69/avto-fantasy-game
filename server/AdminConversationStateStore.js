@@ -11,6 +11,10 @@ export class AdminConversationStateStore {
     this.states.set(String(chatId), { type: "team", playerId });
   }
 
+  waitForProtocol(chatId, league) {
+    this.states.set(String(chatId), { type: "protocol", league });
+  }
+
   consumeState(chatId) {
     const key = String(chatId);
     const state = this.states.get(key) || null;

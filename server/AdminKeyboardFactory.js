@@ -1,7 +1,15 @@
 export class AdminKeyboardFactory {
   createMenuKeyboard() {
     return [[{ text: "Зарегистрированные пользователи", callback_data: "admin:users" }],
-      [{ text: "База хоккеистов", callback_data: "admin:players:0" }]];
+      [{ text: "База хоккеистов", callback_data: "admin:players:0" }],
+      [{ text: "Загрузить протокол матча", callback_data: "admin:protocol" }]];
+  }
+
+  createLeagueKeyboard() {
+    return [[{ text: "КХЛ", callback_data: "admin:protocol_league:КХЛ" }],
+      [{ text: "ВХЛ", callback_data: "admin:protocol_league:ВХЛ" }],
+      [{ text: "МХЛ", callback_data: "admin:protocol_league:МХЛ" }],
+      [{ text: "В меню", callback_data: "admin:menu" }]];
   }
 
   createPlayersKeyboard(players, page, pageSize) {

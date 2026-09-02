@@ -6,6 +6,17 @@ export class TelegramBotClient {
   }
 
   hasToken() { return Boolean(this.token); }
+  async callJson(method, payload) {
+    const response = await this.callMethod(method, payload);
+    return response.json();
+  }
+
+  async downloadFile(filePath) {
+    const response = await fetch(`https://api.telegram.org/file/bot${this.token}/${filePath}`);
+    if (!response.ok) throw new Error(`telegram_file_download_failed_${response.status}`);
+    return Buffer.from(await response.arrayBuffer());
+  }
+
   async callMethod(method, payload) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);

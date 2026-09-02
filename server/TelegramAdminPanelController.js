@@ -13,9 +13,9 @@ export class TelegramAdminPanelController {
 
   #extractPendingMessage(update) {
     const message = update.message;
-    if (!message?.text) return null;
+    if (!message) return null;
     const pending = this.stateStore.consumeState(message.chat.id);
-    return pending ? { pending, text: message.text, chatId: message.chat.id, userId: message.from?.id } : null;
+    return pending ? { pending, text: message.text, caption: message.caption, document: message.document, chatId: message.chat.id, userId: message.from?.id } : null;
   }
 
   #answerCallback(callbackId) {
