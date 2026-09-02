@@ -16,7 +16,7 @@ export function createAvtomobilistPlayers(factory) {
     factory.createAvtomobilistPlayer("Роман", "Горбунов", "gorbunov", ROSTER_POSITIONS.forward, 17, "roman_gorbunov"),
     factory.createAvtomobilistPlayer("Никита", "Шашков", "shashkov", ROSTER_POSITIONS.forward, 14, "nikita_shashkov"),
     factory.createAvtomobilistPlayer("Егор", "Черников", "chernikov", ROSTER_POSITIONS.forward, 11, "egor_chernikov"),
-    factory.createAvtomobilistPlayer("Никита", "Трямкин", "tryamkin", ROSTER_POSITIONS.defender, 17, "nikita_tryamkin"),
+    factory.createAvtomobilistPlayer("Никита", "Трямкин", "tryamkin", ROSTER_POSITIONS.defender, 17, "nikita_tryamkin", { khl_player_id: "17594" }),
     factory.createAvtomobilistPlayer("Джордан", "Гросс", "gross", ROSTER_POSITIONS.defender, 17, "jordan_gross"),
     factory.createAvtomobilistPlayer("Илья", "Карпухин", "karpukhin", ROSTER_POSITIONS.defender, 16, "ilya_karpukhin"),
     factory.createAvtomobilistPlayer("Джесси", "Блэкер", "blacker", ROSTER_POSITIONS.defender, 18, "jesse_blacker"),

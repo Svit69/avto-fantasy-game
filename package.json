@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "start": "node server/server.js",
-    "check": "node --check src/main.js && node --check server/server.js && node --check server/notification-worker.js",
+    "check": "node --check src/main.js && node --check server/server.js && node --check server/notification-worker.js && node --check server/khl-worker.js",
+    "khl:ingest": "node server/khl-worker.js",
+    "test:khl": "node server/khl-self-test.js",
     "notify:draft": "node server/notification-worker.js"
   }
 }
