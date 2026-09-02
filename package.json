@@ -5,11 +5,15 @@
   "private": true,
   "scripts": {
     "start": "node server/server.js",
-    "check": "node --check src/main.js && node --check server/server.js && node --check server/notification-worker.js && node --check server/khl-worker.js && node --check server/khl-import.js && node --check server/khl-replay.js",
+    "check": "node --check src/main.js && node --check server/server.js && node --check server/notification-worker.js && node --check server/khl-worker.js && node --check server/khl-import.js && node --check server/khl-replay.js && node --check server/khl-import-pdf.js",
     "khl:ingest": "node server/khl-worker.js",
     "khl:import": "node server/khl-import.js",
     "khl:replay": "node server/khl-replay.js",
+    "khl:import-pdf": "node server/khl-import-pdf.js",
     "test:khl": "node server/khl-self-test.js",
     "notify:draft": "node server/notification-worker.js"
+  },
+  "dependencies": {
+    "pdf-parse": "^1.1.1"
   }
 }

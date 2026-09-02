@@ -1,7 +1,8 @@
 import { KhlPayloadDataProvider } from "./KhlPayloadDataProvider.js";
+import { KhlProtocolPdfDataProvider } from "./KhlProtocolPdfDataProvider.js";
 
 export class KhlManualImportController {
-  constructor({ bodyParser, jsonResponder, serviceFactory, maxBytes = 1_000_000 }) {
+  constructor({ bodyParser, jsonResponder, serviceFactory, maxBytes = 8_000_000 }) {
     Object.assign(this, { bodyParser, jsonResponder, serviceFactory, maxBytes });
   }
 
@@ -12,8 +13,14 @@ export class KhlManualImportController {
     if (Number(request.headers["content-length"] || 0) > this.maxBytes) return this.jsonResponder.sendJson(response, 413, { error: "payload_too_large" });
     const payload = await this.bodyParser.readJson(request);
     if (!payload.match?.tournamentId || !payload.match?.gameId) return this.jsonResponder.sendJson(response, 422, { error: "invalid_khl_payload" });
-    const service = this.serviceFactory.createIngestionService(new KhlPayloadDataProvider(payload));
+    const service = this.serviceFactory.createIngestionService(await this.#createDataProvider(payload));
     return this.jsonResponder.sendJson(response, 200, await service.ingestMatch(payload.match.tournamentId, payload.match.gameId));
+  }
+
+  async #createDataProvider(payload) {
+    if (!payload.pdfBase64) return new KhlPayloadDataProvider(payload);
+    const players = await this.serviceFactory.createPlayerCatalogRepository().listPlayers();
+    return new KhlProtocolPdfDataProvider({ pdfBuffer: Buffer.from(payload.pdfBase64, "base64"), identity: payload.match, players });
   }
 
   #isAuthorized(request) {

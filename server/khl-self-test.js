@@ -7,6 +7,7 @@ import { KhlFixtureImporter } from "./KhlFixtureImporter.js";
 import { KhlMatchDataRepository } from "./KhlMatchDataRepository.js";
 import { KhlMatchIngestionService } from "./KhlMatchIngestionService.js";
 import { KhlMatchScopePolicy } from "./KhlMatchScopePolicy.js";
+import { KhlProtocolPdfDataProvider } from "./KhlProtocolPdfDataProvider.js";
 import { KhlReplayRunner } from "./KhlReplayRunner.js";
 import { PlayerCatalogRepository } from "./PlayerCatalogRepository.js";
 import { TeamBrandResolver } from "./TeamBrandResolver.js";
@@ -37,4 +38,12 @@ const imported = await new KhlFixtureImporter(path.join(temp, "fixtures")).impor
 const sanitized = JSON.parse(await fs.readFile(path.join(imported.fixtureDirectory, "001-raw-sanitized.json"), "utf8"));
 const headerNames = [...sanitized.log.entries[0].request.headers, ...sanitized.log.entries[0].response.headers].map((header) => header.name.toLowerCase());
 if (headerNames.includes("cookie") || headerNames.includes("authorization")) throw new Error("khl_har_sanitizer_failed");
+if (process.env.KHL_TEST_PROTOCOL_PDF_PATH) {
+  const pdfRepository = new KhlMatchDataRepository(path.join(temp, "khl-pdf.json"));
+  const pdfBuffer = await fs.readFile(process.env.KHL_TEST_PROTOCOL_PDF_PATH);
+  const pdfProvider = new KhlProtocolPdfDataProvider({ pdfBuffer, players: await service.playerCatalogRepository.listPlayers(), identity: { tournamentId: "1369", gameId: "898099", homeTeamId: "190", league: "КХЛ" } });
+  await new KhlMatchIngestionService({ dataProvider: pdfProvider, repository: pdfRepository, playerCatalogRepository: service.playerCatalogRepository, scopePolicy: new KhlMatchScopePolicy("190") }).ingestMatch("1369", "898099");
+  const pdfTryamkin = (await pdfRepository.listStatsByGameId("898099")).find((stat) => stat.playerId === "tryamkin");
+  if (pdfTryamkin?.fantasyPoints !== 0) throw new Error("khl_pdf_protocol_self_test_failed");
+}
 console.log("KHL self-test passed: Tryamkin = 80 FP");

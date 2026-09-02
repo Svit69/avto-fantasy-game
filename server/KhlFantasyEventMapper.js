@@ -8,6 +8,8 @@ export class KhlFantasyEventMapper {
     if (event.eventType === "hit") events.push(this.#createEvent(event, "hits"));
     if (event.eventType === "takeaway") events.push(this.#createEvent(event, "takeaways"));
     if (event.eventType === "interception") events.push(this.#createEvent(event, "interceptions"));
+    if (event.eventType === "save") events.push(this.#createEvent(event, "saves"));
+    if (event.eventType === "goal_against") events.push(this.#createEvent(event, "goalsAgainst"));
     if (event.rawPayload?.goaliePlayerId && !event.rawPayload?.emptyNet) events.push({ ...this.#createEvent(event, "goalsAgainst"), khlPlayerId: String(event.rawPayload.goaliePlayerId) });
     return events.filter((entry) => entry.khlPlayerId);
   }
