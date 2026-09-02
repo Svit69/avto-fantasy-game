@@ -11,6 +11,7 @@ export class AdminVhlOnlineProtocolImporter {
       const onlineGameId = new VhlOnlineUrlResolver().resolveGameId(source.text);
       if (!onlineGameId) return this.#renderInvalidInputAndKeepWaiting(source);
       const result = await this.#ingestOnlineProtocol(onlineGameId);
+      if (!result.ok) return this.protocolView.renderImportRejected(source.chatId, result);
       return this.protocolView.renderImportResult(source.chatId, result);
     } catch (error) {
       this.logger.warn("admin_vhl_import_failed", { chatId: source.chatId, errorMessage: error.message });
@@ -28,7 +29,7 @@ export class AdminVhlOnlineProtocolImporter {
 
   #enrichPlayerStats(result, players) {
     const names = new Map(players.map((player) => [player.id, `${player.lastName} ${player.firstName}`]));
-    return { ...result, playerStats: result.playerStats.map((stat) => ({ ...stat, playerName: names.get(stat.playerId) || stat.playerId })) };
+    return { ...result, playerStats: (result.playerStats || []).map((stat) => ({ ...stat, playerName: names.get(stat.playerId) || stat.playerId })) };
   }
 
   #renderInvalidInputAndKeepWaiting(source) {

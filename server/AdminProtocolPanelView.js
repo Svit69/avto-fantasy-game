@@ -17,7 +17,12 @@ export class AdminProtocolPanelView {
   renderCancelled(chatId) { return this.#message(chatId, "Загрузка протокола отменена.", [[{ text: "В меню", callback_data: "admin:menu" }]]); }
 
   renderImportFailed(chatId) {
-    return this.#message(chatId, "Не удалось обработать протокол. Проверьте PDF и попробуйте ещё раз.", [[{ text: "В меню", callback_data: "admin:menu" }]]);
+    return this.#message(chatId, "Не удалось обработать протокол. Проверьте файл или ссылку и попробуйте ещё раз.", [[{ text: "В меню", callback_data: "admin:menu" }]]);
+  }
+
+  renderImportRejected(chatId, result) {
+    const match = result.match || {};
+    return this.#message(chatId, `Протокол не принят\nПричина: ${result.reason || "неизвестно"}\nМатч: ${match.homeTeam || "?"} - ${match.awayTeam || "?"}`, [[{ text: "В меню", callback_data: "admin:menu" }]]);
   }
 
   renderImportResult(chatId, result) {

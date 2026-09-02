@@ -5,7 +5,8 @@ export class VhlOnlineMatchDetailsParser {
 
   parseMatch(html, identity = {}) {
     const title = this.cleaner.stripTags(html.match(/<title>(.*?)<\/title>/s)?.[1] || "");
-    const [, gameNumber, date, homeTeam, awayTeam] = title.match(/Игра номер\s+(\d+)\s+(.+?):\s*(.+?)-(.+?)\s*\(/) || [];
+    const [, gameNumber, date] = title.match(/Игра номер\s+(\d+)\s+(.+?):/) || [];
+    const [homeTeam, awayTeam] = this.#parseTeamNames(html);
     return { tournamentId: String(identity.tournamentId || "vhl-online"), gameId: String(identity.gameId || ""),
       homeTeamId: "", awayTeamId: "", homeTeam: homeTeam || "", awayTeam: awayTeam || "",
       opponentTeam: this.#resolveOpponent(homeTeam, awayTeam), arena: this.#parseArena(html), league: "ВХЛ",
@@ -15,6 +16,11 @@ export class VhlOnlineMatchDetailsParser {
 
   #resolveOpponent(homeTeam, awayTeam) {
     return homeTeam === "Горняк-УГМК" ? awayTeam : homeTeam;
+  }
+
+  #parseTeamNames(html) {
+    const names = [...html.matchAll(/<div class="game__team-name">([\s\S]*?)<\/div>/g)];
+    return names.slice(0, 2).map(([, name]) => this.cleaner.stripTags(name));
   }
 
   #parseArena(html) {
