@@ -4,7 +4,7 @@ export class PlayerSelectionState {
     this.activeFilter = null;
     this.drawerOpen = false;
     this.shouldAnimateDrawer = false;
-    this.filters = { position: "Все", team: "Все", maxPrice: 22 };
+    this.filters = { position: "Все", team: "Все", maxPrice: null };
   }
 
   openForSlot(slot) {

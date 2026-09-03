@@ -1,6 +1,7 @@
 export class PriceRangeFilterView {
   render(filters, priceRange) {
-    const currentPrice = Math.min(filters.maxPrice, priceRange.max);
+    const selectedPrice = filters.maxPrice ?? priceRange.max;
+    const currentPrice = Math.min(selectedPrice, priceRange.max);
     const progress = this.#calculateProgress(currentPrice, priceRange);
 
     return `
@@ -17,6 +18,7 @@ export class PriceRangeFilterView {
   }
 
   #calculateProgress(currentPrice, priceRange) {
+    if (priceRange.max <= priceRange.min) return 100;
     return ((currentPrice - priceRange.min) / (priceRange.max - priceRange.min)) * 100;
   }
 }
