@@ -21,11 +21,11 @@ export class StandingsModalView {
   }
 
   #renderCompactEntry(entry, currentUser) {
-    return `<div class="standings-leader ${this.#currentClass(entry, currentUser)}">${this.#renderEntryContent(entry, false)}</div>`;
+    return `<button class="standings-leader ${this.#currentClass(entry, currentUser)}" data-view-manager-roster="${entry.userId}" type="button">${this.#renderEntryContent(entry, false)}</button>`;
   }
 
   #renderTableEntry(entry, currentUser) {
-    return `<div class="standings-row ${this.#currentClass(entry, currentUser)}" data-standing-user="${entry.userId}">${this.#renderEntryContent(entry, false)}</div>`;
+    return `<button class="standings-row ${this.#currentClass(entry, currentUser)}" data-standing-user="${entry.userId}" data-view-manager-roster="${entry.userId}" type="button">${this.#renderEntryContent(entry, false)}</button>`;
   }
 
   #renderEntryContent(entry, isPinned) {

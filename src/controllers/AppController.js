@@ -34,7 +34,7 @@ export class AppController {
     await new MonthSelectAvailabilityController(this.rootElement, calendarApiClient, deadlinePolicy.tourSchedulePolicy).applyAvailableTourOptions();
     persistence.connectMonthRosterLoading(this.rootElement, players, teamRoster, rosterDomRenderer, this.#getSelectedMonth.bind(this)); selectionStats.connectMonthSelectionStatsLoading(this.rootElement, players, this.#getSelectedMonth.bind(this)); tourPoints.connectMonthTourPointsLoading(this.rootElement, players, rosterDomRenderer, this.#getSelectedMonth.bind(this));
     new RosterSelectionController(this.rootElement, teamRoster, rosterDomRenderer, rosterApiClient, this.#getSelectedMonth.bind(this), () => selectionStats.applySelectionStats(players, this.#getSelectedMonth())).connectRosterActions();
-    this.#connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory); this.#connectPlayerProfiles(players, teamRoster); new StandingsController(this.rootElement, this.#getSelectedMonth.bind(this)).connectStandingsActions();
+    this.#connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory); this.#connectPlayerProfiles(players, teamRoster); new StandingsController(this.rootElement, this.#getSelectedMonth.bind(this), players).connectStandingsActions();
     new OnboardingController(this.rootElement, authProfile?.userId).connectOnboarding();
   }
   #connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory) {

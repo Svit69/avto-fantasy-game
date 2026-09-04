@@ -14,6 +14,7 @@ export class StandingsCalculator {
       name: user.name || "Менеджер",
       points: selectedPlayerIds.reduce((sum, playerId) => sum + (playerPoints.get(playerId) || 0), 0),
       playersCount: selectedPlayerIds.length,
+      slots: roster.slots || [],
     };
   }
 
