@@ -5,16 +5,7 @@ import { RosterPlayerPriceOverride } from "../models/RosterPlayerPriceOverride.j
 
 export class RosterFactory {
   createDefaultRoster(players) {
-    const slots = [
-      new RosterSlot("нападающий", this.#findPlayerByLastName(players, "Голышев"), 0),
-      new RosterSlot("нападающий", null, 1),
-      new RosterSlot("нападающий", this.#findPlayerByLastName(players, "Спронг"), 2),
-      new RosterSlot("защитник", this.#findPlayerByLastName(players, "Трямкин"), 3),
-      new RosterSlot("защитник", null, 4),
-      new RosterSlot("вратарь", null, 5),
-    ];
-
-    return new TeamRoster(80, slots, new RosterLifecycle());
+    return this.createEmptyRoster();
   }
 
   createEmptyRoster(mode = ROSTER_MODES.draft) {
@@ -29,10 +20,6 @@ export class RosterFactory {
       slot.position, this.#findSavedPlayer(players, slot), slot.slotIndex,
     ));
     return new TeamRoster(80, slots, new RosterLifecycle(mode));
-  }
-
-  #findPlayerByLastName(players, lastName) {
-    return players.find((player) => player.getLastName() === lastName);
   }
 
   #findSavedPlayer(players, slot) {

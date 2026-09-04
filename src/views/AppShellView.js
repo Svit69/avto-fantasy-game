@@ -14,6 +14,7 @@ export class AppShellView {
         <div data-player-profile-root></div>
         <div data-standings-root></div>
         <div data-auth-root></div>
+        <div data-onboarding-root></div>
       </div>
     `;
   }

@@ -11,7 +11,7 @@ import { RosterSubmissionApiClient } from "../services/RosterSubmissionApiClient
 import { TourDeadlinePolicy } from "../services/TourDeadlinePolicy.js";
 import { PlayerProfileModalView } from "../views/PlayerProfileModalView.js"; import { AuthGateController } from "./AuthGateController.js"; import { DeadlineCountdownController } from "./DeadlineCountdownController.js";
 import { ManagerMenuController } from "./ManagerMenuController.js"; import { MonthSelectAvailabilityController } from "./MonthSelectAvailabilityController.js";
-import { PlayerLongPressController } from "./PlayerLongPressController.js"; import { PlayerSelectionController } from "./PlayerSelectionController.js"; import { StandingsController } from "./StandingsController.js";
+import { OnboardingController } from "./OnboardingController.js"; import { PlayerLongPressController } from "./PlayerLongPressController.js"; import { PlayerSelectionController } from "./PlayerSelectionController.js"; import { StandingsController } from "./StandingsController.js";
 import { RosterSelectionController } from "./RosterSelectionController.js";
 export class AppController {
   constructor(rootElement, shellRenderer = new ApplicationShellRenderer()) { Object.assign(this, { rootElement, shellRenderer }); }
@@ -19,9 +19,9 @@ export class AppController {
     this.shellRenderer.renderApplicationShell(this.rootElement);
     const authStatus = await new AuthGateController(this.rootElement).verifyApplicationAuthorization();
     if (!authStatus.authorized) return;
-    await this.#initializeAuthorizedApplication();
+    await this.#initializeAuthorizedApplication(authStatus.profile);
   }
-  async #initializeAuthorizedApplication() {
+  async #initializeAuthorizedApplication(authProfile) {
     const players = new PlayerFactory().createPlayersFromCatalog(await new PlayerCatalogApiClient(INITIAL_PLAYERS).loadPlayerCatalog()); const selectionStats = new PlayerSelectionStatsCoordinator(); await selectionStats.applySelectionStats(players, this.#getSelectedMonth());
     const rosterFactory = new RosterFactory(); const rosterApiClient = new RosterSubmissionApiClient();
     const calendarApiClient = new FantasyCalendarApiClient(); const deadlinePolicy = new TourDeadlinePolicy();
@@ -35,6 +35,7 @@ export class AppController {
     persistence.connectMonthRosterLoading(this.rootElement, players, teamRoster, rosterDomRenderer, this.#getSelectedMonth.bind(this)); selectionStats.connectMonthSelectionStatsLoading(this.rootElement, players, this.#getSelectedMonth.bind(this));
     new RosterSelectionController(this.rootElement, teamRoster, rosterDomRenderer, rosterApiClient, this.#getSelectedMonth.bind(this), () => selectionStats.applySelectionStats(players, this.#getSelectedMonth())).connectRosterActions();
     this.#connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory); this.#connectPlayerProfiles(players, teamRoster); new StandingsController(this.rootElement, this.#getSelectedMonth.bind(this)).connectStandingsActions();
+    new OnboardingController(this.rootElement, authProfile?.userId).connectOnboarding();
   }
   #connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory) {
     const drawerView = viewFactory.createPlayerSelectionDrawerView();
