@@ -1,7 +1,7 @@
 import path from "node:path";
 import { INITIAL_PLAYERS } from "../src/data/players.js";
 import { AdminAccessPolicy } from "./AdminAccessPolicy.js"; import { AdminConversationStateStore } from "./AdminConversationStateStore.js"; import { AdminKeyboardFactory } from "./AdminKeyboardFactory.js"; import { AdminPendingActionController } from "./AdminPendingActionController.js"; import { AdminProtocolPanelView } from "./AdminProtocolPanelView.js";
-import { AdminPanelRouteHandler } from "./AdminPanelRouteHandler.js"; import { AdminPanelView } from "./AdminPanelView.js"; import { AdminPlayerMutationService } from "./AdminPlayerMutationService.js"; import { AdminRouteParser } from "./AdminRouteParser.js";
+import { AdminPanelRouteHandler } from "./AdminPanelRouteHandler.js"; import { AdminPanelView } from "./AdminPanelView.js"; import { AdminPlayerMutationService } from "./AdminPlayerMutationService.js"; import { AdminRouteParser } from "./AdminRouteParser.js"; import { AdminRosterReportView } from "./AdminRosterReportView.js";
 import { CalendarStorageFactory } from "./CalendarStorageFactory.js"; import { FantasyCalendarController } from "./FantasyCalendarController.js";
 import { HealthController } from "./HealthController.js"; import { HttpApplication } from "./HttpApplication.js"; import { HttpRequestLogger } from "./HttpRequestLogger.js"; import { JsonResponder } from "./JsonResponder.js";
 import { KhlManualImportController } from "./KhlManualImportController.js"; import { KhlMatchDataController } from "./KhlMatchDataController.js"; import { KhlMatchDataRepository } from "./KhlMatchDataRepository.js"; import { KhlServiceFactory } from "./KhlServiceFactory.js"; import { AdminProtocolImportService } from "./AdminProtocolImportService.js";
@@ -40,10 +40,10 @@ export class ServerApplicationFactory {
       rosterController: new RosterController({ bodyParser: base.bodyParser, jsonResponder: base.jsonResponder, initDataVerifier: base.initDataVerifier, rosterRepository: storage.rosterRepository, priceLocker: storage.priceLocker, deadlineGuard: new RosterDeadlineGuard(storage.calendarRepository) }), standingsController: new StandingsController({ jsonResponder: base.jsonResponder, initDataVerifier: base.initDataVerifier, userRepository: storage.userRepository, rosterRepository: storage.rosterRepository, playerCatalogRepository: storage.playerCatalogRepository }) };
   }
   #createAdminPanel(botClient, userRepository, playerCatalogRepository, rosterRepository) {
-    const stateStore = new AdminConversationStateStore(); const keyboardFactory = new AdminKeyboardFactory(); const view = new AdminPanelView(keyboardFactory); const protocolView = new AdminProtocolPanelView(keyboardFactory);
+    const stateStore = new AdminConversationStateStore(); const keyboardFactory = new AdminKeyboardFactory(); const view = new AdminPanelView(keyboardFactory); const protocolView = new AdminProtocolPanelView(keyboardFactory); const rosterView = new AdminRosterReportView();
     const rosterChangeNotifications = new ServerNotificationFactory(this.rootDirectory, botClient, this.logger).createRosterChangeNotificationService(userRepository, rosterRepository); const mutationService = new AdminPlayerMutationService({ view, playerCatalogRepository, rosterChangeNotifications });
     const protocolImportService = new AdminProtocolImportService({ botClient, khlServiceFactory: new KhlServiceFactory(this.rootDirectory), protocolView, logger: this.logger, stateStore }); const pendingActionController = new AdminPendingActionController({ stateStore, view, protocolView });
-    const routeHandler = new AdminPanelRouteHandler({ view, protocolView, stateStore, userRepository, playerCatalogRepository, mutationService, protocolImportService, pendingActionController });
+    const routeHandler = new AdminPanelRouteHandler({ view, protocolView, rosterView, stateStore, userRepository, playerCatalogRepository, rosterRepository, mutationService, protocolImportService, pendingActionController });
     return new TelegramAdminPanelController({ accessPolicy: new AdminAccessPolicy((process.env.TELEGRAM_ADMIN_IDS || "").split(",")), routeParser: new AdminRouteParser(), routeHandler, stateStore, botClient, logger: this.logger });
   }
   #resolveStoragePath(filePath) { return path.join(this.rootDirectory, filePath); }

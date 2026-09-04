@@ -2,6 +2,7 @@ export class AdminKeyboardFactory {
   createMenuKeyboard() {
     return [[{ text: "Зарегистрированные пользователи", callback_data: "admin:users" }],
       [{ text: "База хоккеистов", callback_data: "admin:players:0" }],
+      [{ text: "Составы по турам", callback_data: "admin:rosters" }],
       [{ text: "Загрузить протокол матча", callback_data: "admin:protocol" }]];
   }
 

@@ -5,6 +5,7 @@ export class AdminRouteParser {
     if (update.message?.text?.startsWith("/admin")) return this.#parseMessage(update.message, { type: "menu" });
     if (update.message?.text?.startsWith("/users")) return this.#parseMessage(update.message, { type: "users" });
     if (update.message?.text?.startsWith("/players")) return this.#parseMessage(update.message, { type: "players", page: 0 });
+    if (update.message?.text?.startsWith("/rosters")) return this.#parseRosterMessage(update.message);
     return null;
   }
 
@@ -16,5 +17,10 @@ export class AdminRouteParser {
 
   #parseMessage(message, route) {
     return { route, chatId: message.chat.id, userId: message.from?.id, text: message.text };
+  }
+
+  #parseRosterMessage(message) {
+    const month = message.text.replace(/^\/rosters(?:@\w+)?\s*/i, "").trim();
+    return this.#parseMessage(message, { type: "rosters", playerId: month || undefined });
   }
 }

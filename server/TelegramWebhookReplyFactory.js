@@ -4,8 +4,9 @@ export class TelegramWebhookReplyFactory {
   constructor(scoringGuide = new FantasyScoringGuideText()) { this.scoringGuide = scoringGuide; }
 
   createAgreementMessage(chatId) {
-    return { method: "sendMessage", chat_id: chatId, text: "Примите пользовательское соглашение.",
-      reply_markup: { inline_keyboard: [[{ text: "Принимаю", callback_data: "accept_terms" }]] } };
+    const text = "Перед регистрацией ознакомьтесь с <a href=\"https://s-promo.ru/politika-konfidenczialnosti/\">Политикой конфиденциальности</a>.";
+    return { method: "sendMessage", chat_id: chatId, text, parse_mode: "HTML",
+      reply_markup: { inline_keyboard: [[{ text: "Принимаю", callback_data: "accept_privacy" }]] } };
   }
 
   createContactRequestMessage(chatId, appUrl) {

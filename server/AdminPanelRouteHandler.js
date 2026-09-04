@@ -1,13 +1,11 @@
 export class AdminPanelRouteHandler {
-  constructor({ view, protocolView, stateStore, userRepository, playerCatalogRepository, mutationService, protocolImportService, pendingActionController }) {
-    Object.assign(this, { view, protocolView, stateStore, userRepository, playerCatalogRepository, mutationService, protocolImportService, pendingActionController });
-  }
-
+  constructor(dependencies) { Object.assign(this, dependencies); }
   async executeRoute(source) {
     const route = source.route;
     if (route.type === "menu") return this.pendingActionController.renderMenuAndClearState(source.chatId);
     if (route.type === "cancel") return this.pendingActionController.cancelPendingAction(source.chatId);
     if (route.type === "users") return this.view.renderUsers(source.chatId, await this.userRepository.listUsers());
+    if (route.type === "rosters") return this.#renderRosterReport(source.chatId, route.playerId);
     if (route.type === "players") return this.view.renderPlayers(source.chatId, await this.playerCatalogRepository.listPlayers(), route.page || 0);
     if (route.type === "player") return this.view.renderPlayer(source.chatId, await this.playerCatalogRepository.findPlayerById(route.playerId));
     if (route.type === "price") return this.#requestPriceInput(source.chatId, route.playerId);
@@ -19,40 +17,32 @@ export class AdminPanelRouteHandler {
     if (route.type === "leave") return this.mutationService.markPlayerLeftGame(source.chatId, route.playerId);
     return null;
   }
-
-  renderAccessDenied(chatId) {
-    return this.view.renderAccessDenied(chatId);
-  }
-
+  renderAccessDenied(chatId) { return this.view.renderAccessDenied(chatId); }
   async handlePendingInput(source) {
     if (source.pending.type === "price") return this.mutationService.updatePlayerPrice(source.chatId, source.pending.playerId, Number(source.text));
     if (source.pending.type === "team") return this.mutationService.updatePlayerTeam(source.chatId, source.pending.playerId, source.text.trim());
     if (source.pending.type === "protocol") return this.protocolImportService.importProtocolDocument(source);
     return null;
   }
-
+  async #renderRosterReport(chatId, month) {
+    if (!month) return this.rosterView.renderMonthPrompt(chatId);
+    const [rosters, users, players] = await Promise.all([this.rosterRepository.listRosters(), this.userRepository.listUsers(), this.playerCatalogRepository.listPlayers()]);
+    return this.rosterView.renderMonthlyRosters(chatId, { month, rosters, users, players });
+  }
   async #requestPriceInput(chatId, playerId) {
     const player = await this.playerCatalogRepository.findPlayerById(playerId);
     if (!player) return this.view.renderNotFound(chatId);
     this.stateStore.waitForPrice(chatId, playerId); return this.view.renderPricePrompt(chatId, player);
   }
-
   async #requestTeamInput(chatId, playerId) {
     const player = await this.playerCatalogRepository.findPlayerById(playerId);
     return player ? this.view.renderTeamPrompt(chatId, player) : this.view.renderNotFound(chatId);
   }
-
   async #requestCustomTeamInput(chatId, playerId) {
     const player = await this.playerCatalogRepository.findPlayerById(playerId);
     if (!player) return this.view.renderNotFound(chatId);
     this.stateStore.waitForTeam(chatId, playerId); return this.view.renderTeamPrompt(chatId, player);
   }
-
-  #requestProtocolFile(chatId, league) {
-    this.stateStore.waitForProtocol(chatId, league); return this.protocolView.renderFilePrompt(chatId, league);
-  }
-
-  #resolveTeamName(teamCode) {
-    return { avto: "Автомобилист", gornyak: "Горняк-УГМК", mhk_auto: "МХК Авто" }[teamCode] || teamCode;
-  }
+  #requestProtocolFile(chatId, league) { this.stateStore.waitForProtocol(chatId, league); return this.protocolView.renderFilePrompt(chatId, league); }
+  #resolveTeamName(teamCode) { return { avto: "Автомобилист", gornyak: "Горняк-УГМК", mhk_auto: "МХК Авто" }[teamCode] || teamCode; }
 }
