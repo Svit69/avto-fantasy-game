@@ -1,8 +1,8 @@
 import { ROSTER_POSITIONS } from "../data/positions.js";
 
 export class PlayerPastTourView {
-  render(player, stats = {}) {
-    return `<article class="profile-panel"><h3>Прошлый тур</h3>${this.#renderRows(player, stats)}<footer><b>Итого</b><strong>${Number(stats.fantasyPoints || 0)} оч.</strong></footer></article>`;
+  render(player, stats = {}, title = "Прошлый тур") {
+    return `<article class="profile-panel"><h3>${title}</h3>${this.#renderRows(player, stats)}<footer><b>Итого</b><strong>${Number(stats.fantasyPoints || 0)} оч.</strong></footer></article>`;
   }
 
   #renderRows(player, stats) {

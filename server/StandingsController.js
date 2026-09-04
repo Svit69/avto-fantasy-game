@@ -1,8 +1,9 @@
 import { StandingsCalculator } from "./StandingsCalculator.js";
+import { MonthlyPlayerPointsCalculator } from "./MonthlyPlayerPointsCalculator.js";
 
 export class StandingsController {
-  constructor({ jsonResponder, initDataVerifier, userRepository, rosterRepository, playerCatalogRepository, calculator = new StandingsCalculator() }) {
-    Object.assign(this, { jsonResponder, initDataVerifier, userRepository, rosterRepository, playerCatalogRepository, calculator });
+  constructor({ jsonResponder, initDataVerifier, userRepository, rosterRepository, playerCatalogRepository, calendarRepository, matchDataRepository, calculator = new StandingsCalculator(), pointsCalculator = new MonthlyPlayerPointsCalculator() }) {
+    Object.assign(this, { jsonResponder, initDataVerifier, userRepository, rosterRepository, playerCatalogRepository, calendarRepository, matchDataRepository, calculator, pointsCalculator });
   }
 
   async handleRequest(request, response) {
@@ -10,10 +11,11 @@ export class StandingsController {
     const profile = this.#verifyRequestProfile(request.headers["x-telegram-init-data"] || "");
     if (!profile) return this.jsonResponder.sendJson(response, 401, { error: "invalid_init_data" });
     const month = new URL(request.url, `http://${request.headers.host}`).searchParams.get("month") || "Сентябрь";
-    const [users, rosters, players] = await Promise.all([
-      this.userRepository.listUsers(), this.rosterRepository.listRosters(), this.playerCatalogRepository.listPlayers(),
+    const [users, rosters, players, calendar, matchDatabase] = await Promise.all([
+      this.userRepository.listUsers(), this.rosterRepository.listRosters(), this.playerCatalogRepository.listPlayers(), this.calendarRepository.listCalendar(), this.matchDataRepository.readDatabase(),
     ]);
-    const standings = this.calculator.createMonthlyStandings(rosters, users, players, month, profile.id);
+    const playerPoints = this.pointsCalculator.createPlayerPointsMap(players, month, calendar, matchDatabase);
+    const standings = this.calculator.createMonthlyStandings(rosters, users, playerPoints, month, profile.id);
     return this.jsonResponder.sendJson(response, 200, { ok: true, standings });
   }
 

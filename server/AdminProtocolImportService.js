@@ -1,13 +1,11 @@
 import { KhlProtocolPdfDataProvider } from "./KhlProtocolPdfDataProvider.js";
 import { TelegramDocumentFileDownloader } from "./TelegramDocumentFileDownloader.js";
 import { AdminVhlOnlineProtocolImporter } from "./AdminVhlOnlineProtocolImporter.js";
-
 export class AdminProtocolImportService {
-  constructor({ botClient, khlServiceFactory, protocolView, logger, stateStore }) {
+  constructor({ botClient, khlServiceFactory, protocolView, logger, stateStore, calendarRepository }) {
     Object.assign(this, { botClient, khlServiceFactory, protocolView, logger, stateStore, downloader: new TelegramDocumentFileDownloader(botClient),
-      vhlImporter: new AdminVhlOnlineProtocolImporter({ khlServiceFactory, protocolView, logger, stateStore }) });
+      vhlImporter: new AdminVhlOnlineProtocolImporter({ khlServiceFactory, protocolView, logger, stateStore, calendarRepository }) });
   }
-
   async importProtocolDocument(source) {
     if (source.pending.league === "ВХЛ") return this.vhlImporter.importProtocol(source);
     if (!this.#isPdf(source.document)) return this.#renderInvalidFileAndKeepWaiting(source);
@@ -20,7 +18,6 @@ export class AdminProtocolImportService {
       return this.protocolView.renderImportFailed(source.chatId);
     }
   }
-
   async #ingestProtocol(source, pdfBuffer) {
     const playerCatalogRepository = this.khlServiceFactory.createPlayerCatalogRepository();
     const players = await playerCatalogRepository.listPlayers();
@@ -29,20 +26,16 @@ export class AdminProtocolImportService {
     const result = await this.khlServiceFactory.createIngestionService(provider).ingestMatch(identity.tournamentId, identity.gameId);
     return this.#enrichPlayerStats(result, players);
   }
-
   #createMatchIdentity(source) {
     return { tournamentId: this.#resolveTournamentId(source), gameId: this.#resolveGameId(source),
       league: source.pending.league, status: "finished", ...this.#resolveTeamId(source.pending.league) };
   }
-
   #resolveTournamentId(source) {
     return this.#matchValue(source.caption, /tournamentId[:=\s]+(\d+)/i) || process.env.KHL_DEFAULT_TOURNAMENT_ID || "1369";
   }
-
   #resolveGameId(source) {
     return this.#matchValue(`${source.document.file_name} ${source.caption}`, /(?:game-|gameId[:=\s]+)(\d+)/i) || `telegram-${source.document.file_unique_id}`;
   }
-
   #resolveTeamId(league) { return league === "КХЛ" ? { homeTeamId: "190" } : {}; }
   #renderInvalidFileAndKeepWaiting(source) { this.stateStore.waitForProtocol(source.chatId, source.pending.league); return this.protocolView.renderInvalidFile(source.chatId); }
   #enrichPlayerStats(result, players) {

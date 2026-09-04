@@ -1,9 +1,11 @@
 import { VhlOnlineDataProvider } from "./VhlOnlineDataProvider.js";
 import { VhlOnlineUrlResolver } from "./VhlOnlineUrlResolver.js";
+import { VhlOnlineCalendarMatchResolver } from "./VhlOnlineCalendarMatchResolver.js";
 
 export class AdminVhlOnlineProtocolImporter {
-  constructor({ khlServiceFactory, protocolView, logger, stateStore }) {
-    Object.assign(this, { khlServiceFactory, protocolView, logger, stateStore });
+  constructor({ khlServiceFactory, protocolView, logger, stateStore, calendarRepository }) {
+    Object.assign(this, { khlServiceFactory, protocolView, logger, stateStore,
+      calendarResolver: new VhlOnlineCalendarMatchResolver(calendarRepository) });
   }
 
   async importProtocol(source) {
@@ -21,9 +23,10 @@ export class AdminVhlOnlineProtocolImporter {
 
   async #ingestOnlineProtocol(onlineGameId) {
     const playerCatalogRepository = this.khlServiceFactory.createPlayerCatalogRepository();
-    const players = await playerCatalogRepository.listPlayers();
-    const provider = new VhlOnlineDataProvider({ onlineGameId, players });
-    const result = await this.khlServiceFactory.createIngestionService(provider).ingestMatch("vhl-online", onlineGameId);
+    const [players, calendarMatch] = await Promise.all([playerCatalogRepository.listPlayers(), this.calendarResolver.findMatchByOnlineGameId(onlineGameId)]);
+    const identity = this.calendarResolver.createProviderIdentity(calendarMatch, onlineGameId);
+    const provider = new VhlOnlineDataProvider({ onlineGameId, players, identity });
+    const result = await this.khlServiceFactory.createIngestionService(provider).ingestMatch(identity.tournamentId || "vhl-online", onlineGameId);
     return this.#enrichPlayerStats(result, players);
   }
 

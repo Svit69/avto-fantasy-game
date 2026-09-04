@@ -8,5 +8,10 @@ module.exports = {
         PORT: 3000,
       },
     },
+    {
+      name: "avto-fantasy-vhl-poll",
+      script: "server/vhl-poll-online.js",
+      env: { NODE_ENV: "production" },
+    },
   ],
 };

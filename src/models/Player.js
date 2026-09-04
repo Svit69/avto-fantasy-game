@@ -35,6 +35,7 @@ export class Player extends FantasyEntity {
     this.#data.selectionPercent = Number(stats?.selectionPercent || 0);
     this.#data.selectedTeams = Number(stats?.selectedTeams || 0);
   }
+  applyTourStats(stats = {}) { this.#data.points = Number(stats?.fantasyPoints || 0); }
 
   getCardProps(selected) {
     return { name: this.#data.firstName, id: this.getId(), secondName: this.#data.lastName,

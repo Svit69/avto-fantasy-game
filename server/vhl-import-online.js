@@ -1,8 +1,10 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { EnvironmentFileLoader } from "./EnvironmentFileLoader.js";
+import { CalendarStorageFactory } from "./CalendarStorageFactory.js";
 import { KhlServiceFactory } from "./KhlServiceFactory.js";
 import { VhlOnlineDataProvider } from "./VhlOnlineDataProvider.js";
+import { VhlOnlineCalendarMatchResolver } from "./VhlOnlineCalendarMatchResolver.js";
 import { VhlOnlineUrlResolver } from "./VhlOnlineUrlResolver.js";
 
 const rootDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -11,6 +13,10 @@ const onlineGameId = new VhlOnlineUrlResolver().resolveGameId(process.argv[2]);
 if (!onlineGameId) throw new Error("Usage: npm run vhl:ingest -- 899183");
 const serviceFactory = new KhlServiceFactory(rootDirectory);
 const players = await serviceFactory.createPlayerCatalogRepository().listPlayers();
-const provider = new VhlOnlineDataProvider({ onlineGameId, players });
-const result = await serviceFactory.createIngestionService(provider).ingestMatch("vhl-online", onlineGameId);
+const storage = new CalendarStorageFactory((filePath) => path.join(rootDirectory, filePath));
+const calendarResolver = new VhlOnlineCalendarMatchResolver(storage.createCalendarRepository());
+const calendarMatch = await calendarResolver.findMatchByOnlineGameId(onlineGameId);
+const identity = calendarResolver.createProviderIdentity(calendarMatch, onlineGameId);
+const provider = new VhlOnlineDataProvider({ onlineGameId, players, identity });
+const result = await serviceFactory.createIngestionService(provider).ingestMatch(identity.tournamentId || "vhl-online", onlineGameId);
 console.log(JSON.stringify(result, null, 2));
