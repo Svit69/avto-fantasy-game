@@ -5,7 +5,7 @@ export class AdminPanelRouteHandler {
     if (route.type === "menu") return this.pendingActionController.renderMenuAndClearState(source.chatId);
     if (route.type === "cancel") return this.pendingActionController.cancelPendingAction(source.chatId);
     if (route.type === "users") return this.view.renderUsers(source.chatId, await this.userRepository.listUsers());
-    if (route.type === "rosters") return this.#renderRosterReport(source.chatId, route.playerId);
+    if (route.type === "rosters") return this.#renderRosterReport(source.chatId, route.playerId, Number(route.value || 0));
     if (route.type === "players") return this.view.renderPlayers(source.chatId, await this.playerCatalogRepository.listPlayers(), route.page || 0);
     if (route.type === "player") return this.view.renderPlayer(source.chatId, await this.playerCatalogRepository.findPlayerById(route.playerId));
     if (route.type === "price") return this.#requestPriceInput(source.chatId, route.playerId);
@@ -24,10 +24,10 @@ export class AdminPanelRouteHandler {
     if (source.pending.type === "protocol") return this.protocolImportService.importProtocolDocument(source);
     return null;
   }
-  async #renderRosterReport(chatId, month) {
+  async #renderRosterReport(chatId, month, page = 0) {
     if (!month) return this.rosterView.renderMonthPrompt(chatId);
     const [rosters, users, players] = await Promise.all([this.rosterRepository.listRosters(), this.userRepository.listUsers(), this.playerCatalogRepository.listPlayers()]);
-    return this.rosterView.renderMonthlyRosters(chatId, { month, rosters, users, players });
+    return this.rosterView.renderMonthlyRosters(chatId, { month, page, rosters, users, players });
   }
   async #requestPriceInput(chatId, playerId) {
     const player = await this.playerCatalogRepository.findPlayerById(playerId);

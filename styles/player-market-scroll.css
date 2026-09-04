@@ -17,12 +17,14 @@
   grid-auto-columns: minmax(82px, max-content);
   grid-auto-flow: column;
   gap: 14px;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
   padding: 0 10px;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
-  touch-action: pan-x;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .market-stats-scroll b { font-size: 17px; }

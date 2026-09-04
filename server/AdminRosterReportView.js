@@ -1,35 +1,31 @@
+import { AdminRosterReportFormatter } from "./AdminRosterReportFormatter.js";
+
 export class AdminRosterReportView {
-  constructor(months = ["Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь", "Январь", "Февраль", "Март"]) {
+  constructor(months = ["Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь", "Январь", "Февраль", "Март"], formatter = new AdminRosterReportFormatter()) {
     this.months = months;
+    this.formatter = formatter;
   }
 
   renderMonthPrompt(chatId) {
     return this.#message(chatId, "Составы пользователей\nВыберите туровый месяц.", this.#createMonthKeyboard());
   }
 
-  renderMonthlyRosters(chatId, { month, rosters, users, players }) {
-    const monthlyRosters = rosters.filter((roster) => roster.month === month);
-    const text = [`Составы пользователей: ${month}`, `Всего составов: ${monthlyRosters.length}`, ""]
-      .concat(monthlyRosters.map((roster) => this.#renderRoster(roster, users, players))).join("\n");
-    return this.#message(chatId, text || "Составов пока нет.", this.#createMonthKeyboard());
+  renderMonthlyRosters(chatId, { month, page = 0, rosters, users, players }) {
+    const monthlyRosters = this.#getMonthlyRosters(rosters, month);
+    const pageCount = Math.max(1, Math.ceil(monthlyRosters.length / 5));
+    const currentPage = Math.min(Math.max(0, page), pageCount - 1);
+    const text = this.formatter.formatReport({ month, rosters: this.#slicePage(monthlyRosters, currentPage),
+      users, players, total: monthlyRosters.length, page: currentPage, pageCount });
+    return this.#message(chatId, text, this.#createRosterKeyboard(month, currentPage, pageCount));
   }
 
-  #renderRoster(roster, users, players) {
-    const manager = users.find((user) => user.id === roster.userId);
-    const rows = (roster.slots || []).map((slot) => this.#renderSlot(slot, players));
-    return [`Менеджер: ${manager?.name || roster.userId}`, `Статус: ${roster.status || "confirmed"}`,
-      `Бюджет: ${this.#calculateRosterBudget(roster)}к`, rows.join("\n") || "Слоты пустые"].join("\n");
+  #getMonthlyRosters(rosters, month) {
+    return rosters.filter((roster) => roster.month === month)
+      .sort((firstRoster, secondRoster) => String(firstRoster.userId).localeCompare(String(secondRoster.userId)));
   }
 
-  #renderSlot(slot, players) {
-    const player = players.find((candidate) => candidate.id === slot.playerId);
-    const name = player ? `${player.firstName[0]}. ${player.lastName}` : slot.playerId || "Пусто";
-    const price = slot.lockedPrice ?? "-";
-    return `${slot.position}: ${name} — ${price}к`;
-  }
-
-  #calculateRosterBudget(roster) {
-    return (roster.slots || []).reduce((sum, slot) => sum + Number(slot.lockedPrice || 0), 0);
+  #slicePage(rosters, page) {
+    return rosters.slice(page * 5, page * 5 + 5);
   }
 
   #createMonthKeyboard() {
@@ -37,7 +33,14 @@ export class AdminRosterReportView {
       .concat([[{ text: "В меню", callback_data: "admin:menu" }]]);
   }
 
+  #createRosterKeyboard(month, page, pageCount) {
+    const navigation = [];
+    if (page > 0) navigation.push({ text: "Назад", callback_data: `admin:rosters:${month}:${page - 1}` });
+    if (page < pageCount - 1) navigation.push({ text: "Вперёд", callback_data: `admin:rosters:${month}:${page + 1}` });
+    return (navigation.length ? [navigation] : []).concat(this.#createMonthKeyboard());
+  }
+
   #message(chatId, text, inline_keyboard) {
-    return { method: "sendMessage", chat_id: chatId, text, reply_markup: { inline_keyboard } };
+    return { method: "sendMessage", chat_id: chatId, text, parse_mode: "HTML", reply_markup: { inline_keyboard } };
   }
 }
