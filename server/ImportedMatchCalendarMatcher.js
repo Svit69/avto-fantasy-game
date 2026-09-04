@@ -4,9 +4,19 @@ export class ImportedMatchCalendarMatcher {
   }
 
   #isSameMatch(importedMatch, calendarMatch) {
-    return importedMatch.tournamentId === calendarMatch.tourId || importedMatch.league === calendarMatch.league
+    return this.#hasSameExternalId(importedMatch, calendarMatch) || this.#hasSameMatchScope(importedMatch, calendarMatch)
       && this.#isSameDate(importedMatch.scheduledAt, calendarMatch.startsAt)
       && this.#hasSameTeams(importedMatch, calendarMatch);
+  }
+
+  #hasSameMatchScope(importedMatch, calendarMatch) {
+    return importedMatch.tournamentId === calendarMatch.tourId || importedMatch.league === calendarMatch.league;
+  }
+
+  #hasSameExternalId(importedMatch, calendarMatch) {
+    const importedGameId = String(importedMatch.gameId || "");
+    const calendarIds = [calendarMatch.khlGameId, calendarMatch.onlineProtocolId, calendarMatch.gameId].map((id) => String(id || ""));
+    return importedGameId && calendarIds.includes(importedGameId);
   }
 
   #isSameDate(firstDate, secondDate) {
