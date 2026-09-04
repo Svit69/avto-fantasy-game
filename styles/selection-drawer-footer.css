@@ -1,0 +1,41 @@
+.selection-drawer-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 10px -12px calc(env(safe-area-inset-bottom) * -1);
+  padding: 12px 12px calc(env(safe-area-inset-bottom) + 12px);
+  background: linear-gradient(180deg, rgba(29, 29, 30, 0), #1D1D1E 24%, #1D1D1E 100%);
+  border-top: 1px solid rgba(253, 255, 255, 0.12);
+}
+
+.selection-drawer-footer div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 10px 12px;
+  background: rgba(253, 255, 255, 0.06);
+  border: 1px solid rgba(253, 255, 255, 0.12);
+  clip-path: polygon(4% 0, 100% 0, 96% 100%, 0 100%);
+}
+
+.selection-drawer-footer span {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.selection-drawer-footer strong {
+  color: var(--text-main);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.selection-drawer-footer .is-over-budget {
+  color: #ff3b45;
+}

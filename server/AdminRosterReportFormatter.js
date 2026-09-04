@@ -3,6 +3,7 @@ const POSITION_GROUPS = [
   ["защитник", "Защитники"],
   ["вратарь", "Вратарь"],
 ];
+const ROSTER_BUDGET_LIMIT = 80;
 
 export class AdminRosterReportFormatter {
   formatReport({ month, rosters, users, players, total, page, pageCount }) {
@@ -14,8 +15,9 @@ export class AdminRosterReportFormatter {
   #renderRoster(roster, index, page, users, players) {
     const manager = users.find((user) => user.id === roster.userId);
     const title = `<b>${page * 5 + index + 1}. ${this.#escape(manager?.name || "Менеджер")}</b>`;
+    const budget = this.#calculateBudget(roster);
     const meta = [`ID: <code>${this.#escape(String(roster.userId))}</code>`, `Статус: ${this.#escape(roster.status || "confirmed")}`,
-      `Игроков: <b>${(roster.slots || []).length}/6</b>`, `Стоимость состава: <b>${this.#calculateBudget(roster)}к</b>`];
+      `Игроков: <b>${(roster.slots || []).length}/6</b>`, `Стоимость: <b>${budget}к</b>`, `Остаток: <b>${ROSTER_BUDGET_LIMIT - budget}к</b>`];
     return [title, meta.join(" | "), this.#renderLines(roster, players), ""].join("\n");
   }
 

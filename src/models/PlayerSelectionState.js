@@ -30,6 +30,7 @@ export class PlayerSelectionState {
   closeFilter() { this.activeFilter = null; }
 
   applyFilter(kind, value) {
+    if (kind === "position") this.activeSlotIndex = null;
     this.filters[kind === "price" ? "maxPrice" : kind] = kind === "price" ? Number(value) : value;
   }
 

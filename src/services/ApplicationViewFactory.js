@@ -5,6 +5,7 @@ import { FilterSheetView } from "../views/FilterSheetView.js";
 import { FooterView } from "../views/FooterView.js";
 import { PlayerCardView } from "../views/PlayerCardView.js";
 import { PlayerMarketTableView } from "../views/PlayerMarketTableView.js";
+import { SelectionDrawerFooterView } from "../views/SelectionDrawerFooterView.js";
 import { PlayerSelectionDrawerView } from "../views/PlayerSelectionDrawerView.js";
 import { SelectionSlotStripView } from "../views/SelectionSlotStripView.js";
 import { RosterDomRenderer } from "./RosterDomRenderer.js";
@@ -30,6 +31,7 @@ export class ApplicationViewFactory {
       new SelectionSlotStripView(),
       new PlayerMarketTableView(),
       new FilterSheetView(),
+      new SelectionDrawerFooterView(),
     );
   }
 }
