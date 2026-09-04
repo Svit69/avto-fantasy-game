@@ -11,12 +11,12 @@ export class TelegramWebhookReplyFactory {
 
   createContactRequestMessage(chatId, appUrl) {
     return { method: "sendMessage", chat_id: chatId, text: "Поделитесь номером телефона для регистрации.",
-      reply_markup: { keyboard: this.#createMainKeyboard(appUrl, true), resize_keyboard: true } };
+      reply_markup: { keyboard: this.#createMainKeyboard(appUrl, true), resize_keyboard: true, one_time_keyboard: true } };
   }
 
   createMiniAppMessage(chatId, appUrl) {
     return { method: "sendMessage", chat_id: chatId, text: "Регистрация завершена. Запустите мини-приложение кнопкой ниже.",
-      reply_markup: { keyboard: this.#createMainKeyboard(appUrl, false), resize_keyboard: true } };
+      reply_markup: { inline_keyboard: this.#createRegisteredInlineKeyboard(appUrl) } };
   }
 
   createScoringGuideMessage(chatId) {
@@ -26,5 +26,10 @@ export class TelegramWebhookReplyFactory {
   #createMainKeyboard(appUrl, includeContactRequest) {
     const rows = includeContactRequest ? [[{ text: "Поделиться номером", request_contact: true }]] : [];
     return [...rows, [{ text: "Открыть приложение", web_app: { url: appUrl } }], [{ text: "Как считаются очки" }]];
+  }
+
+  #createRegisteredInlineKeyboard(appUrl) {
+    return [[{ text: "Открыть приложение", web_app: { url: appUrl } }],
+      [{ text: "Как считаются очки", callback_data: "score_guide" }]];
   }
 }
