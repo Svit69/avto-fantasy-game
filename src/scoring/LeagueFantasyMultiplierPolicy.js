@@ -1,6 +1,6 @@
 export class LeagueFantasyMultiplierPolicy {
   constructor() {
-    this.multipliersByLeague = Object.freeze({ КХЛ: 1, ВХЛ: 0.8, МХЛ: 0.6 });
+    this.multipliersByLeague = Object.freeze({ КХЛ: 1, ВХЛ: 0.7, МХЛ: 0.5 });
     this.leaguesByTeam = Object.freeze({ Автомобилист: "КХЛ", "Горняк-УГМК": "ВХЛ", "МХК Авто": "МХЛ" });
   }
 
