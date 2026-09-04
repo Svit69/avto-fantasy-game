@@ -15,7 +15,7 @@ export class ImportedMatchCalendarMatcher {
 
   #hasSameExternalId(importedMatch, calendarMatch) {
     const importedGameId = String(importedMatch.gameId || "");
-    const calendarIds = [calendarMatch.khlGameId, calendarMatch.onlineProtocolId, calendarMatch.gameId].map((id) => String(id || ""));
+    const calendarIds = [calendarMatch.khlGameId, calendarMatch.mhlGameId, calendarMatch.onlineProtocolId, calendarMatch.gameId].map((id) => String(id || ""));
     return importedGameId && calendarIds.includes(importedGameId);
   }
 
