@@ -1,7 +1,7 @@
-import { ImportedMatchCalendarMatcher } from "./ImportedMatchCalendarMatcher.js";
+import { MonthlyImportedMatchSelector } from "./MonthlyImportedMatchSelector.js";
 
 export class PlayerTourStatsCalculator {
-  constructor(matchMatcher = new ImportedMatchCalendarMatcher()) { this.matchMatcher = matchMatcher; }
+  constructor(matchSelector = new MonthlyImportedMatchSelector()) { this.matchSelector = matchSelector; }
 
   createMonthlyPlayerStats({ playerId, month, calendar, matchDatabase }) {
     const matches = this.#findMonthImportedMatches(month, calendar, matchDatabase.matches || []);
@@ -10,13 +10,7 @@ export class PlayerTourStatsCalculator {
   }
 
   #findMonthImportedMatches(month, calendar, importedMatches) {
-    const calendarMatches = this.#findMonthCalendarMatches(calendar, month);
-    return importedMatches.filter((match) => this.matchMatcher.findCalendarMatch(match, calendarMatches));
-  }
-
-  #findMonthCalendarMatches(calendar, month) {
-    const tourIds = new Set((calendar.tours || []).filter((tour) => tour.month === month).map((tour) => tour.id));
-    return (calendar.matches || []).filter((match) => tourIds.has(match.tourId));
+    return this.matchSelector.selectLatestMonthMatches(month, calendar, importedMatches);
   }
 
   #findPlayerStats(playerId, matches, playerStats) {
