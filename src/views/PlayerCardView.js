@@ -1,13 +1,12 @@
 import { versionAssetUrl } from "../utils/AssetUrlVersioner.js";
 import { PlayerCardRemoveButtonView } from "./PlayerCardRemoveButtonView.js";
-
 export class PlayerCardView {
   constructor(removeButtonView = new PlayerCardRemoveButtonView()) { this.removeButtonView = removeButtonView; }
-
   render(props, orderIndex, slotIndex) {
     const tiltClass = this.#selectTiltClass(orderIndex);
     const selectedClass = props.selected ? " is-selected" : "";
-
+    const shortName = this.#formatShortName(props);
+    const nameFitClass = this.#selectNameFitClass(shortName);
     return `
       <article class="player-card ${tiltClass}${selectedClass}" data-player-profile="${props.id}">
         ${this.removeButtonView.render(slotIndex, props.editable)}
@@ -23,7 +22,7 @@ export class PlayerCardView {
         ${this.#renderLeagueLogo(props.leagueLogo)}
         <div class="card-selected-label">ВЫБРАН</div>
         <div class="card-info-stack">
-          <div class="card-name">${this.#formatShortName(props)}</div>
+          <div class="card-name ${nameFitClass}">${shortName}</div>
           <div class="card-price"><span>${props.price}</span><small>к</small></div>
         </div>
       </article>
@@ -34,13 +33,11 @@ export class PlayerCardView {
     const codes = { нападающий: "НАП", защитник: "ЗАЩ", вратарь: "ВРТ" };
     return codes[position] ?? position;
   }
-
   #formatShortName(props) { return `${props.name.charAt(0)}. ${props.secondName}`.toUpperCase(); }
-
   #renderLeagueLogo(leagueLogo) {
     return leagueLogo ? `<img class="card-league-logo" src="${versionAssetUrl(leagueLogo)}" alt="Лига игрока" />` : "";
   }
-
+  #selectNameFitClass(shortName) { return shortName.length >= 15 ? "is-long-name" : ""; }
   #selectTiltClass(orderIndex) {
     const variants = ["tilt-left", "tilt-right", "tilt-soft-left"];
     return variants[orderIndex % variants.length];

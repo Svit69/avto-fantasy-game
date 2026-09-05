@@ -1,0 +1,15 @@
+.card-name {
+  white-space: nowrap;
+}
+
+.card-name.is-long-name {
+  font-size: clamp(14px, 4vw, 22px);
+  transform: scaleX(0.96);
+  transform-origin: left center;
+}
+
+@media (min-width: 520px) {
+  .card-name.is-long-name {
+    font-size: clamp(18px, 3.2vw, 26px);
+  }
+}

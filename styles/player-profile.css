@@ -1,14 +1,14 @@
 .player-profile-scrim {
   position: fixed;
   inset: 0;
-  z-index: 70;
+  z-index: 150;
   background: rgba(0, 0, 0, 0.62);
   animation: profileFade 180ms ease-out both;
 }
 .player-profile-modal {
   position: fixed;
   inset: auto 0 0;
-  z-index: 71;
+  z-index: 151;
   max-height: min(86dvh, 760px);
   overflow-y: auto;
   color: #132024;
