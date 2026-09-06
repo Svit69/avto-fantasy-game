@@ -30,6 +30,6 @@ export class HttpApplication {
     if (url.pathname === "/api/roster") return this.rosterController.handleRequest(request, response);
     if (url.pathname === "/api/standings") return this.standingsController.handleRequest(request, response);
     if (url.pathname === "/api/health") return this.healthController.handleRequest(request, response);
-    return this.staticFileServer.serveFile(url.pathname, response);
+    return this.staticFileServer.serveFile(url.pathname, response, url.search);
   }
 }

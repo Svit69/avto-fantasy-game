@@ -1,31 +1,22 @@
 import { KhlProtocolTeamNameNormalizer } from "./KhlProtocolTeamNameNormalizer.js";
+import { KhlProtocolPlayerNameMatcher } from "./KhlProtocolPlayerNameMatcher.js";
 
 export class KhlProtocolPlayerMatcher {
-  constructor(players, league) { Object.assign(this, { players, teamNormalizer: new KhlProtocolTeamNameNormalizer(league) }); }
+  constructor(players, league, nameMatcher = new KhlProtocolPlayerNameMatcher()) {
+    Object.assign(this, { players, nameMatcher, teamNormalizer: new KhlProtocolTeamNameNormalizer(league) });
+  }
 
   findPlayer(row) {
-    return this.#findPlayerByName(row) || this.#findPlayerByNumberWhenNameIsMissing(row);
+    const teamPlayers = this.players.filter((player) => this.#sameTeam(player.team, row.team));
+    return this.#findPlayerByName(teamPlayers, row) || this.#findTrustedPlayerByNumber(teamPlayers, row);
   }
 
-  #findPlayerByName(row) {
-    const rowName = this.#normalizeName(row.name);
-    return this.players.find((player) => {
-      const playerName = this.#normalizeName(`${player.lastName} ${player.firstName}`);
-      return this.#isSamePlayerName(playerName, rowName) && this.#sameTeam(player.team, row.team);
-    }) || null;
+  #findPlayerByName(teamPlayers, row) {
+    return teamPlayers.find((player) => this.nameMatcher.isSamePlayer(player, row.name)) || null;
   }
 
-  #findPlayerByNumberWhenNameIsMissing(row) {
-    if (this.#normalizeName(row.name)) return null;
-    return this.players.find((player) => this.#hasSameNumber(player, row) && this.#sameTeam(player.team, row.team)) || null;
-  }
-
-  #hasSameNumber(player, row) {
-    return String(player.number || "") === String(row.number || "");
-  }
-
-  #isSamePlayerName(playerName, rowName) {
-    return playerName === rowName || rowName.startsWith(`${playerName} `);
+  #findTrustedPlayerByNumber(teamPlayers, row) {
+    return teamPlayers.find((player) => this.nameMatcher.canTrustNumber(player, row)) || null;
   }
 
   #sameTeam(playerTeam, rowTeam) {

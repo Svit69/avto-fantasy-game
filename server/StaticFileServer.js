@@ -1,21 +1,22 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { StaticCachePolicy } from "./StaticCachePolicy.js";
 import { StaticPathResolver } from "./StaticPathResolver.js";
 
 export class StaticFileServer {
-  constructor(rootDirectory) {
-    this.pathResolver = new StaticPathResolver(rootDirectory);
+  constructor(rootDirectory, cachePolicy = new StaticCachePolicy()) {
+    Object.assign(this, { pathResolver: new StaticPathResolver(rootDirectory), cachePolicy });
     this.contentTypes = new Map([[".html", "text/html"], [".js", "text/javascript"], [".css", "text/css"],
       [".png", "image/png"], [".jpg", "image/jpeg"], [".jpeg", "image/jpeg"], [".svg", "image/svg+xml"],
       [".webp", "image/webp"], [".woff", "font/woff"], [".woff2", "font/woff2"], [".ttf", "font/ttf"]]);
   }
 
-  async serveFile(pathname, response) {
+  async serveFile(pathname, response, search = "") {
     const filePath = await this.pathResolver.resolveFilePath(pathname);
     if (!filePath) return this.#sendNotFound(response);
     try {
       const content = await fs.readFile(filePath);
-      response.writeHead(200, { "Content-Type": this.#getContentType(filePath), "Cache-Control": this.#getCacheControl(filePath) });
+      response.writeHead(200, { "Content-Type": this.#getContentType(filePath), "Cache-Control": this.cachePolicy.createCacheControl(filePath, search) });
       response.end(content);
     } catch {
       this.#sendNotFound(response);
@@ -24,13 +25,6 @@ export class StaticFileServer {
 
   #getContentType(filePath) {
     return `${this.contentTypes.get(path.extname(filePath).toLowerCase()) || "application/octet-stream"}; charset=utf-8`;
-  }
-
-  #getCacheControl(filePath) {
-    const extension = path.extname(filePath).toLowerCase();
-    if ([".html", ".js", ".css"].includes(extension)) return "no-store";
-    if ([".png", ".jpg", ".jpeg", ".svg", ".webp", ".woff", ".woff2", ".ttf"].includes(extension)) return "public, max-age=86400";
-    return "no-cache, must-revalidate";
   }
 
   #sendNotFound(response) {

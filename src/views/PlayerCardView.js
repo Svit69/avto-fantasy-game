@@ -1,7 +1,9 @@
-import { versionAssetUrl } from "../utils/AssetUrlVersioner.js";
+import { AssetImageView } from "./AssetImageView.js";
 import { PlayerCardRemoveButtonView } from "./PlayerCardRemoveButtonView.js";
 export class PlayerCardView {
-  constructor(removeButtonView = new PlayerCardRemoveButtonView()) { this.removeButtonView = removeButtonView; }
+  constructor(removeButtonView = new PlayerCardRemoveButtonView(), imageView = new AssetImageView()) {
+    Object.assign(this, { removeButtonView, imageView });
+  }
   render(props, orderIndex, slotIndex) {
     const tiltClass = this.#selectTiltClass(orderIndex);
     const selectedClass = props.selected ? " is-selected" : "";
@@ -10,15 +12,15 @@ export class PlayerCardView {
     return `
       <article class="player-card ${tiltClass}${selectedClass}" data-player-profile="${props.id}">
         ${this.removeButtonView.render(slotIndex, props.editable)}
-        <img class="card-layer card-bottom-layer" src="${versionAssetUrl("/assets/card_bottom_layer.png")}" alt="" loading="eager" decoding="sync" draggable="false" />
+        ${this.imageView.renderAsset({ className: "card-layer card-bottom-layer", src: "/assets/card_bottom_layer.png", loading: "eager", decoding: "sync", priority: "high" })}
         <div class="card-live-layer">
           <div class="card-score-block">
             <div class="card-points">${props.points}</div>
             <div class="card-position">${this.#formatPosition(props.position)}</div>
           </div>
-          <img class="card-player-image" src="${versionAssetUrl(props.image)}" alt="${props.name} ${props.secondName}" loading="eager" decoding="async" draggable="false" onerror="this.remove()" />
+          ${this.imageView.renderPlayerImage({ className: "card-player-image", src: props.image, alt: `${props.name} ${props.secondName}`, loading: "eager", priority: "high" })}
         </div>
-        <img class="card-layer card-top-layer" src="${versionAssetUrl("/assets/card_top_layer.png")}" alt="" loading="eager" decoding="sync" draggable="false" />
+        ${this.imageView.renderAsset({ className: "card-layer card-top-layer", src: "/assets/card_top_layer.png", loading: "eager", decoding: "sync", priority: "high" })}
         ${this.#renderLeagueLogo(props.leagueLogo)}
         <div class="card-selected-label">ВЫБРАН</div>
         <div class="card-info-stack">
@@ -35,7 +37,7 @@ export class PlayerCardView {
   }
   #formatShortName(props) { return `${props.name.charAt(0)}. ${props.secondName}`.toUpperCase(); }
   #renderLeagueLogo(leagueLogo) {
-    return leagueLogo ? `<img class="card-league-logo" src="${versionAssetUrl(leagueLogo)}" alt="Лига игрока" />` : "";
+    return leagueLogo ? this.imageView.renderAsset({ className: "card-league-logo", src: leagueLogo, alt: "Лига игрока" }) : "";
   }
   #selectNameFitClass(shortName) { return shortName.length >= 15 ? "is-long-name" : ""; }
   #selectTiltClass(orderIndex) {

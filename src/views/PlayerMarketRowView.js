@@ -1,6 +1,8 @@
-import { versionAssetUrl } from "../utils/AssetUrlVersioner.js";
+import { AssetImageView } from "./AssetImageView.js";
 
 export class PlayerMarketRowView {
+  constructor(imageView = new AssetImageView()) { this.imageView = imageView; }
+
   render(player, selectedIds, teamRoster) {
     const selected = selectedIds.includes(player.getId());
     const clubLocked = !selected && !teamRoster.canSelectPlayerFromClub(null, player);
@@ -11,7 +13,7 @@ export class PlayerMarketRowView {
       data-player-profile="${player.getId()}" ${clubLocked ? `data-club-limit-team="${player.getTeam()}"` : ""}
       ${disabled ? `aria-disabled="true"` : ""}>
       <div class="market-player-cell">
-        <span class="market-player-avatar"><img src="${versionAssetUrl(player.getImage())}" alt="${player.getFullName()}" loading="lazy" decoding="async" draggable="false" />${selected ? "<i>✓</i>" : ""}</span>
+        <span class="market-player-avatar">${this.#renderAvatar(player)}${selected ? "<i>✓</i>" : ""}</span>
         <span><b>${player.getLastName().toUpperCase()}</b><small>${player.getTeam().toUpperCase()}</small></span>
       </div>
       <div class="market-stats-scroll">
@@ -28,5 +30,9 @@ export class PlayerMarketRowView {
   #formatPosition(position) {
     const codes = { нападающий: "НАП", защитник: "ЗАЩ", вратарь: "ВРТ" };
     return codes[position] ?? position;
+  }
+
+  #renderAvatar(player) {
+    return this.imageView.renderPlayerImage({ src: player.getImage(), alt: player.getFullName() });
   }
 }

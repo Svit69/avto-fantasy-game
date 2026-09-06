@@ -1,6 +1,8 @@
-import { versionAssetUrl } from "../utils/AssetUrlVersioner.js";
+import { AssetImageView } from "./AssetImageView.js";
 
 export class SelectionSlotStripView {
+  constructor(imageView = new AssetImageView()) { this.imageView = imageView; }
+
   render(teamRoster) {
     return `<div class="selection-slot-strip">${this.#renderSlots(teamRoster)}</div>`;
   }
@@ -17,7 +19,7 @@ export class SelectionSlotStripView {
     const player = slot.getPlayer();
     return `
       <div class="selection-slot is-filled" data-roster-slot="${slot.getIndex()}">
-        <img src="${versionAssetUrl(player.getTeamLogo())}" alt="" decoding="async" draggable="false" />
+        ${this.imageView.renderAsset({ src: player.getTeamLogo(), alt: "" })}
         <span>${player.getLastName().toUpperCase()}</span>
         <button type="button" data-remove-slot="${slot.getIndex()}" aria-label="Удалить игрока">×</button>
       </div>

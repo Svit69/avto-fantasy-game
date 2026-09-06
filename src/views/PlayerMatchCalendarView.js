@@ -1,9 +1,9 @@
 import { MatchDateTimeFormatter } from "../services/MatchDateTimeFormatter.js";
-import { versionAssetUrl } from "../utils/AssetUrlVersioner.js";
+import { AssetImageView } from "./AssetImageView.js";
 
 export class PlayerMatchCalendarView {
-  constructor(dateTimeFormatter = new MatchDateTimeFormatter()) {
-    this.dateTimeFormatter = dateTimeFormatter;
+  constructor(dateTimeFormatter = new MatchDateTimeFormatter(), imageView = new AssetImageView()) {
+    Object.assign(this, { dateTimeFormatter, imageView });
   }
 
   render(player, calendar, selectedMonth) {
@@ -24,7 +24,7 @@ export class PlayerMatchCalendarView {
   #renderMatchTile(player, calendar, match, index) {
     const opponent = this.#getOpponentForPlayer(player, match); const details = this.#getTeamDetails(match, opponent);
     const selected = index === 0 ? " is-selected" : ""; const venue = match.homeTeam === player.getTeam() ? "Д" : "Г";
-    return `<button class="profile-match-tile${selected}" data-profile-match-index="${index}" type="button"><span>${this.#findTourTitle(calendar, match.tourId)}</span><img src="${versionAssetUrl(details.logoPath)}" alt="${opponent}" /><strong>${details.shortName} (${venue})</strong></button>`;
+    return `<button class="profile-match-tile${selected}" data-profile-match-index="${index}" type="button"><span>${this.#findTourTitle(calendar, match.tourId)}</span>${this.#renderLogo(details.logoPath, opponent)}<strong>${details.shortName} (${venue})</strong></button>`;
   }
 
   #renderMatchDetails(player, match) {
@@ -34,12 +34,13 @@ export class PlayerMatchCalendarView {
 
   renderMatchDetails(player, match) {
     const home = this.#getTeamDetails(match, match.homeTeam, player); const away = this.#getTeamDetails(match, match.awayTeam, player);
-    return `<span>${match.homeTeam}</span><img src="${versionAssetUrl(home.logoPath)}" alt="${match.homeTeam}" /><time><b>${this.dateTimeFormatter.formatMatchDate(match.startsAt)}</b><b>${this.dateTimeFormatter.formatMatchTime(match.startsAt)}</b></time><img src="${versionAssetUrl(away.logoPath)}" alt="${match.awayTeam}" /><span>${match.awayTeam}</span>`;
+    return `<span>${match.homeTeam}</span>${this.#renderLogo(home.logoPath, match.homeTeam)}<time><b>${this.dateTimeFormatter.formatMatchDate(match.startsAt)}</b><b>${this.dateTimeFormatter.formatMatchTime(match.startsAt)}</b></time>${this.#renderLogo(away.logoPath, match.awayTeam)}<span>${match.awayTeam}</span>`;
   }
 
   #getOpponentForPlayer(player, match) { return match.homeTeam === player.getTeam() ? match.awayTeam : match.homeTeam; }
   #findTourTitle(calendar, tourId) { return calendar.tours.find((tour) => tour.id === tourId)?.title ?? "Тур"; }
   #getTeamDetails(match, teamName, player) { return match.homeTeam === teamName ? match.homeTeamDetails || this.#getPlayerTeamDetails(player, teamName) : match.awayTeamDetails || this.#getPlayerTeamDetails(player, teamName); }
   #getPlayerTeamDetails(player, teamName) { return { shortName: teamName, logoPath: player?.getTeamLogo?.() || "/assets/avto_logo.png" }; }
+  #renderLogo(src, alt) { return this.imageView.renderAsset({ src, alt, fallback: "/assets/avto_logo.png" }); }
   #renderEmptyCalendar(month) { return `<article class="profile-panel"><h3>Календарь</h3><p>Матчи на ${month} пока не добавлены.</p><a href="#">Узнать как считаются очки</a></article>`; }
 }
