@@ -1,13 +1,18 @@
 import crypto from "node:crypto";
+import { KhlMatchCollectionDeduplicator } from "./KhlMatchCollectionDeduplicator.js";
 
 export class KhlMatchDataJsonNormalizer {
+  constructor(deduplicator = new KhlMatchCollectionDeduplicator()) {
+    this.deduplicator = deduplicator;
+  }
+
   normalizeDatabase(database) {
     const normalized = this.#createEmptyDatabase(database);
     const matchIds = this.#createMatchIdMap(normalized.matches);
     normalized.events = normalized.events.map((event, index) => this.#normalizeMatchItem(event, index, matchIds, "event"));
     normalized.pointEntries = normalized.pointEntries.map((entry, index) => this.#normalizeMatchItem(entry, index, matchIds, "point"));
     normalized.playerStats = normalized.playerStats.map((stat) => this.#normalizePlayerStat(stat, matchIds));
-    return normalized;
+    return { ...normalized, ...this.deduplicator.deduplicateCollections(normalized) };
   }
 
   #createEmptyDatabase(database) {

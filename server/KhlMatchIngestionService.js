@@ -1,12 +1,13 @@
 import { KhlEventNormalizer } from "./KhlEventNormalizer.js";
 import { KhlFantasyEventMapper } from "./KhlFantasyEventMapper.js";
 import { KhlFantasyPointValuePolicy } from "./KhlFantasyPointValuePolicy.js";
+import { KhlMatchCollectionDeduplicator } from "./KhlMatchCollectionDeduplicator.js";
 import { KhlPlayerResolver } from "./KhlPlayerResolver.js";
 import { KhlPlayerStatsAggregator } from "./KhlPlayerStatsAggregator.js";
 
 export class KhlMatchIngestionService {
-  constructor({ dataProvider, repository, playerCatalogRepository, scopePolicy, normalizer = new KhlEventNormalizer(), mapper = new KhlFantasyEventMapper(), pointValuePolicy = new KhlFantasyPointValuePolicy(), aggregator = new KhlPlayerStatsAggregator() }) {
-    Object.assign(this, { dataProvider, repository, playerCatalogRepository, scopePolicy, normalizer, mapper, pointValuePolicy, aggregator });
+  constructor({ dataProvider, repository, playerCatalogRepository, scopePolicy, normalizer = new KhlEventNormalizer(), mapper = new KhlFantasyEventMapper(), pointValuePolicy = new KhlFantasyPointValuePolicy(), aggregator = new KhlPlayerStatsAggregator(), deduplicator = new KhlMatchCollectionDeduplicator() }) {
+    Object.assign(this, { dataProvider, repository, playerCatalogRepository, scopePolicy, normalizer, mapper, pointValuePolicy, aggregator, deduplicator });
   }
 
   async ingestMatch(tournamentId, gameId) {
@@ -18,9 +19,11 @@ export class KhlMatchIngestionService {
     const pointEntries = this.#createPointEntries(match, events, new KhlPlayerResolver(players));
     const playersById = Object.fromEntries(players.map((player) => [player.id, player]));
     const playerStats = this.aggregator.createPlayerMatchStats(match, pointEntries, playersById);
+    const collections = this.deduplicator.deduplicateCollections({ events, pointEntries, playerStats });
     await this.repository.upsertMatch({ ...match, lastEventAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
-    await this.repository.replaceMatchCollections(match.id, { events, pointEntries, playerStats });
-    return { ok: true, match, eventsReceived: events.length, pointEntriesCreated: pointEntries.length, playerStats };
+    await this.repository.replaceMatchCollections(match.id, collections);
+    return { ok: true, match, eventsReceived: collections.events.length,
+      pointEntriesCreated: collections.pointEntries.length, playerStats: collections.playerStats };
   }
 
   #createPointEntries(match, events, resolver) {
