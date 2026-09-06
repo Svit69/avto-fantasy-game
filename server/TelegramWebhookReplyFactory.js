@@ -26,12 +26,13 @@ export class TelegramWebhookReplyFactory {
   #createMainKeyboard(appUrl, includeContactRequest) {
     const rows = includeContactRequest ? [[{ text: "Поделиться номером", request_contact: true }]] : [];
     return [...rows, [{ text: "Открыть приложение", web_app: { url: appUrl } }],
-      [{ text: "Как считаются очки" }, { text: "Обратная связь" }]];
+      [{ text: "Как считаются очки" }, { text: "Обратная связь" }], [{ text: "Не открывается приложение" }]];
   }
 
   #createRegisteredInlineKeyboard(appUrl) {
     return [[{ text: "Открыть приложение", web_app: { url: appUrl } }],
       [{ text: "Как считаются очки", callback_data: "score_guide" }],
-      [{ text: "Обратная связь", callback_data: "feedback:start" }]];
+      [{ text: "Обратная связь", callback_data: "feedback:start" }],
+      [{ text: "Не открывается приложение", callback_data: "fallback_site" }]];
   }
 }

@@ -17,7 +17,7 @@ export class SelectionSlotStripView {
     const player = slot.getPlayer();
     return `
       <div class="selection-slot is-filled" data-roster-slot="${slot.getIndex()}">
-        <img src="${versionAssetUrl(player.getTeamLogo())}" alt="" />
+        <img src="${versionAssetUrl(player.getTeamLogo())}" alt="" decoding="async" draggable="false" />
         <span>${player.getLastName().toUpperCase()}</span>
         <button type="button" data-remove-slot="${slot.getIndex()}" aria-label="Удалить игрока">×</button>
       </div>

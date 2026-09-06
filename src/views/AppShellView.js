@@ -1,12 +1,15 @@
+import { LoadingScreenView } from "./LoadingScreenView.js";
+
 export class AppShellView {
-  constructor(headerView) {
-    this.headerView = headerView;
+  constructor(headerView, loadingScreenView = new LoadingScreenView()) {
+    Object.assign(this, { headerView, loadingScreenView });
   }
 
   render() {
     return `
       <div class="app">
         ${this.headerView.render()}
+        ${this.loadingScreenView.render()}
         <div data-draft-field></div>
         <div data-roster-footer></div>
         <div data-player-selection-root></div>

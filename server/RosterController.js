@@ -1,6 +1,6 @@
 export class RosterController {
-  constructor({ bodyParser, jsonResponder, initDataVerifier, rosterRepository, priceLocker, deadlineGuard }) {
-    Object.assign(this, { bodyParser, jsonResponder, initDataVerifier, rosterRepository, priceLocker, deadlineGuard });
+  constructor({ bodyParser, jsonResponder, profileResolver, rosterRepository, priceLocker, deadlineGuard }) {
+    Object.assign(this, { bodyParser, jsonResponder, profileResolver, rosterRepository, priceLocker, deadlineGuard });
   }
 
   async handleRequest(request, response) {
@@ -10,7 +10,7 @@ export class RosterController {
   }
 
   async #handleRosterLoad(request, response) {
-    const profile = this.#verifyRequestProfile(request.headers["x-telegram-init-data"] || "");
+    const profile = await this.profileResolver.resolveProfile(request);
     if (!profile) return this.jsonResponder.sendJson(response, 401, { error: "invalid_init_data" });
     const month = new URL(request.url, `http://${request.headers.host}`).searchParams.get("month") || "Сентябрь";
     const roster = await this.rosterRepository.findRosterByUserAndMonth(profile.id, month);
@@ -18,9 +18,8 @@ export class RosterController {
   }
 
   async #handleRosterSave(request, response) {
-    if (!this.initDataVerifier.hasToken()) return this.jsonResponder.sendJson(response, 503, { error: "telegram_token_missing" });
     const payload = await this.bodyParser.readJson(request);
-    const profile = this.#verifyRequestProfile(payload.initData || "");
+    const profile = await this.profileResolver.resolveProfile(request, payload);
     if (!profile) return this.jsonResponder.sendJson(response, 401, { error: "invalid_init_data" });
     const month = payload.month || "Сентябрь";
     if (!await this.deadlineGuard.canModifyRoster(month)) return this.jsonResponder.sendJson(response, 423, { error: "tour_started" });
@@ -28,11 +27,5 @@ export class RosterController {
     const slots = await this.priceLocker.lockRosterSlotPrices(payload.slots || [], currentRoster);
     const roster = await this.rosterRepository.saveRoster(profile.id, month, slots);
     return this.jsonResponder.sendJson(response, 200, { ok: true, roster });
-  }
-
-  #verifyRequestProfile(initData) {
-    if (!this.initDataVerifier.hasToken()) return null;
-    const params = new URLSearchParams(initData);
-    return this.initDataVerifier.verifyInitData(params) ? JSON.parse(params.get("user") || "{}") : null;
   }
 }

@@ -1,10 +1,10 @@
 export class TelegramWebhookReplyRouter {
-  constructor({ appUrl, botClient, userMapper, userRepository, logger, summarizer, replyFactory, adminPanel, feedbackController }) {
-    Object.assign(this, { appUrl, botClient, userMapper, userRepository, logger, summarizer, replyFactory, adminPanel, feedbackController });
+  constructor({ appUrl, botClient, userMapper, userRepository, logger, summarizer, replyFactory, adminPanel, supportController }) {
+    Object.assign(this, { appUrl, botClient, userMapper, userRepository, logger, summarizer, replyFactory, adminPanel, supportController });
   }
   async createReply(update) {
-    const feedbackReply = await this.feedbackController?.createReply(update);
-    if (feedbackReply) return feedbackReply;
+    const supportReply = await this.supportController?.createReply(update);
+    if (supportReply) return supportReply;
     const adminReply = await this.adminPanel.createReply(update);
     if (adminReply) return adminReply;
     if (update.callback_query) return this.#handleCallback(update.callback_query);

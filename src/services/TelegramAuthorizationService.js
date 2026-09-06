@@ -1,12 +1,17 @@
 import { AuthProfileCache } from "./AuthProfileCache.js";
 import { TelegramProfileFormatter } from "./TelegramProfileFormatter.js";
+import { WebLoginAuthorizationService } from "./WebLoginAuthorizationService.js";
 
 export class TelegramAuthorizationService {
-  constructor(profileCache = new AuthProfileCache(), formatter = new TelegramProfileFormatter()) {
-    Object.assign(this, { profileCache, formatter });
+  constructor(profileCache = new AuthProfileCache(), formatter = new TelegramProfileFormatter(), webLoginService = new WebLoginAuthorizationService(profileCache)) {
+    Object.assign(this, { profileCache, formatter, webLoginService });
   }
 
   async verifyAuthorization() {
+    const webLoginStatus = await this.webLoginService.verifyAuthorizationFromUrl();
+    if (webLoginStatus) return webLoginStatus;
+    const cachedProfile = sessionStorage.getItem("avto-fantasy-web-login") && this.profileCache.loadProfile();
+    if (cachedProfile?.userId) return { authorized: true, profile: cachedProfile };
     const webApp = window.Telegram?.WebApp;
     webApp?.ready();
     const telegramProfile = this.formatter.createProfileFromTelegramUser(webApp?.initDataUnsafe?.user);

@@ -1,7 +1,11 @@
+import { RequestAuthorizationHeaderFactory } from "./RequestAuthorizationHeaderFactory.js";
+
 export class RosterSubmissionApiClient {
+  constructor(headerFactory = new RequestAuthorizationHeaderFactory()) { this.headerFactory = headerFactory; }
+
   async loadSavedRoster(month) {
     const response = await fetch(`/api/roster?month=${encodeURIComponent(month)}`, {
-      headers: { "x-telegram-init-data": this.#getTelegramInitData() },
+      headers: this.headerFactory.createAuthorizationHeaders(),
     });
 
     if (!response.ok) return null;
@@ -9,14 +13,12 @@ export class RosterSubmissionApiClient {
   }
 
   async submitConfirmedRoster(slots, month) {
-    const body = JSON.stringify({ initData: this.#getTelegramInitData(), month, slots });
+    const body = JSON.stringify({ initData: window.Telegram?.WebApp?.initData || "", month, slots });
     const response = await fetch("/api/roster", {
-      method: "POST", headers: { "Content-Type": "application/json; charset=utf-8" }, body,
+      method: "POST", headers: this.headerFactory.createJsonHeaders(), body,
     });
 
     if (!response.ok) throw new Error("roster_submit_failed");
     return response.json();
   }
-
-  #getTelegramInitData() { return window.Telegram?.WebApp?.initData || ""; }
 }

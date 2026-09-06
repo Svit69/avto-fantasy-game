@@ -18,8 +18,9 @@ export class AppController {
   async initializeApplication() {
     this.shellRenderer.renderApplicationShell(this.rootElement);
     const authStatus = await new AuthGateController(this.rootElement).verifyApplicationAuthorization();
-    if (!authStatus.authorized) return;
+    if (!authStatus.authorized) return this.shellRenderer.completeLoading();
     await this.#initializeAuthorizedApplication(authStatus.profile);
+    this.shellRenderer.completeLoading();
   }
   async #initializeAuthorizedApplication(authProfile) {
     const players = new PlayerFactory().createPlayersFromCatalog(await new PlayerCatalogApiClient(INITIAL_PLAYERS).loadPlayerCatalog()); const selectionStats = new PlayerSelectionStatsCoordinator(); const tourPoints = new PlayerTourPointsCoordinator(); await Promise.all([selectionStats.applySelectionStats(players, this.#getSelectedMonth()), tourPoints.applyTourPoints(players, this.#getSelectedMonth())]);
@@ -46,5 +47,4 @@ export class AppController {
     const calendarPresenter = new PlayerProfileCalendarPresenter(new FantasyCalendarApiClient(), this.#getSelectedMonth.bind(this));
     new PlayerLongPressController(this.rootElement, players, teamRoster, new PlayerProfileModalView(), calendarPresenter).connectPlayerProfileActions();
   }
-  #getSelectedMonth() { return this.rootElement.querySelector(".month-select")?.value || "Сентябрь"; }
-}
+  #getSelectedMonth() { return this.rootElement.querySelector(".month-select")?.value || "Сентябрь"; } }

@@ -11,7 +11,7 @@ export class PlayerMarketRowView {
       data-player-profile="${player.getId()}" ${clubLocked ? `data-club-limit-team="${player.getTeam()}"` : ""}
       ${disabled ? `aria-disabled="true"` : ""}>
       <div class="market-player-cell">
-        <span class="market-player-avatar"><img src="${versionAssetUrl(player.getImage())}" alt="${player.getFullName()}" />${selected ? "<i>✓</i>" : ""}</span>
+        <span class="market-player-avatar"><img src="${versionAssetUrl(player.getImage())}" alt="${player.getFullName()}" loading="lazy" decoding="async" draggable="false" />${selected ? "<i>✓</i>" : ""}</span>
         <span><b>${player.getLastName().toUpperCase()}</b><small>${player.getTeam().toUpperCase()}</small></span>
       </div>
       <div class="market-stats-scroll">

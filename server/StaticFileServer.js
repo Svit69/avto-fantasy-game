@@ -28,7 +28,9 @@ export class StaticFileServer {
 
   #getCacheControl(filePath) {
     const extension = path.extname(filePath).toLowerCase();
-    return [".html", ".js"].includes(extension) ? "no-store" : "no-cache, must-revalidate";
+    if ([".html", ".js", ".css"].includes(extension)) return "no-store";
+    if ([".png", ".jpg", ".jpeg", ".svg", ".webp", ".woff", ".woff2", ".ttf"].includes(extension)) return "public, max-age=86400";
+    return "no-cache, must-revalidate";
   }
 
   #sendNotFound(response) {

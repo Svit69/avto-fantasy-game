@@ -19,6 +19,7 @@ export class AuthRequiredModalView {
 
   #formatMessage(reason) {
     if (reason === "invalid_init_data") return "Telegram не подтвердил подпись запуска. Откройте мини-приложение заново из бота.";
+    if (reason === "invalid_web_login") return "Запасная ссылка устарела или была повреждена. Попросите новую ссылку в боте.";
     if (reason === "network_error") return "Не удалось проверить авторизацию. Проверьте соединение и откройте приложение заново.";
     return "Регистрация в боте уже может быть пройдена, но приложение должно быть запущено именно кнопкой Mini App внутри Telegram.";
   }
