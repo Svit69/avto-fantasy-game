@@ -1,7 +1,10 @@
+import { KhlMatchDataJsonNormalizer } from "./KhlMatchDataJsonNormalizer.js";
 import { PostgresKhlCollectionStore } from "./PostgresKhlCollectionStore.js";
 
 export class PostgresKhlMatchDataRepository {
-  constructor(database) { this.store = new PostgresKhlCollectionStore(database); }
+  constructor(database, normalizer = new KhlMatchDataJsonNormalizer()) {
+    Object.assign(this, { normalizer, store: new PostgresKhlCollectionStore(database) });
+  }
 
   async readDatabase() {
     const [matches, events, pointEntries, playerStats, runs, snapshots] = await Promise.all([
@@ -24,8 +27,5 @@ export class PostgresKhlMatchDataRepository {
     return match ? database[key].filter((item) => item.matchId === match.id) : [];
   }
 
-  #normalize(database) {
-    return { matches: database.matches || [], events: database.events || [], pointEntries: database.pointEntries || [],
-      playerStats: database.playerStats || [], runs: database.runs || [], snapshots: database.snapshots || [] };
-  }
+  #normalize(database) { return this.normalizer.normalizeDatabase(database); }
 }

@@ -10,7 +10,7 @@ export class PostgresKhlCollectionStore {
   }
   async replaceDatabase(database) {
     await this.database.transaction(async (client) => {
-      await Promise.all(KHL_COLLECTION_TABLES.map((table) => client.query(`delete from ${table}`)));
+      for (const table of KHL_COLLECTION_TABLES) await client.query(`delete from ${table}`);
       await this.#insertAll(client, database);
     });
   }
@@ -19,7 +19,7 @@ export class PostgresKhlCollectionStore {
   }
   async replaceMatchCollections(matchId, collections) {
     await this.database.transaction(async (client) => {
-      await Promise.all(["khl_events", "khl_point_entries", "khl_player_stats"].map((table) => client.query(`delete from ${table} where match_id=$1`, [matchId])));
+      for (const table of ["khl_events", "khl_point_entries", "khl_player_stats"]) await client.query(`delete from ${table} where match_id=$1`, [matchId]);
       await this.#insertAll(client, { events: collections.events || [], pointEntries: collections.pointEntries || [], playerStats: collections.playerStats || [] });
     });
   }
