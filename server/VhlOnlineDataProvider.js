@@ -1,6 +1,7 @@
 import { VhlOnlineFantasyEventFactory } from "./VhlOnlineFantasyEventFactory.js";
 import { VhlOnlineHtmlDataSource } from "./VhlOnlineHtmlDataSource.js";
 import { VhlOnlineMatchDetailsParser } from "./VhlOnlineMatchDetailsParser.js";
+import { VhlOnlineGoalieStatsParser } from "./VhlOnlineGoalieStatsParser.js";
 import { VhlOnlineStatsRowParser } from "./VhlOnlineStatsRowParser.js";
 import { VhlOnlineTeamTabResolver } from "./VhlOnlineTeamTabResolver.js";
 import { VhlOnlineUrlResolver } from "./VhlOnlineUrlResolver.js";
@@ -8,18 +9,21 @@ import { VhlOnlineUrlResolver } from "./VhlOnlineUrlResolver.js";
 export class VhlOnlineDataProvider {
   constructor({ onlineGameId, players, identity = {} }) {
     Object.assign(this, { onlineGameId, players, identity, urlResolver: new VhlOnlineUrlResolver(), htmlSource: new VhlOnlineHtmlDataSource(),
-      matchParser: new VhlOnlineMatchDetailsParser(), tabResolver: new VhlOnlineTeamTabResolver(), rowParser: new VhlOnlineStatsRowParser() });
+      matchParser: new VhlOnlineMatchDetailsParser(), goalieParser: new VhlOnlineGoalieStatsParser(), tabResolver: new VhlOnlineTeamTabResolver(), rowParser: new VhlOnlineStatsRowParser() });
   }
 
   async getMatch() {
     const html = await this.#loadHtml();
-    return { ...this.matchParser.parseMatch(html, { ...this.identity, gameId: this.onlineGameId }), ...this.identity, league: "ВХЛ" };
+    this.match ||= { ...this.matchParser.parseMatch(html, { ...this.identity, gameId: this.onlineGameId }), ...this.identity, league: "ВХЛ" };
+    return this.match;
   }
 
   async getPlayByPlay() {
     const html = await this.#loadHtml();
+    const match = await this.getMatch();
     const rows = this.rowParser.parseRows(this.tabResolver.extractTeamBlock(html, "Горняк-УГМК"), "Горняк-УГМК");
-    return new VhlOnlineFantasyEventFactory(this.players).createRawEvents(rows);
+    const goalieRows = this.goalieParser.parseRows(html, match, "Горняк-УГМК");
+    return new VhlOnlineFantasyEventFactory(this.players).createRawEvents([...rows, ...goalieRows]);
   }
 
   async #loadHtml() {

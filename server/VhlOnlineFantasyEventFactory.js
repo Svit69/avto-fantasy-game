@@ -18,7 +18,8 @@ export class VhlOnlineFantasyEventFactory {
 
   #createEventCounts(row) {
     return { goal: row.goals, assist: row.assists, shotOnGoal: row.shotsOnGoal,
-      penalty: row.penalties, blockedShot: row.blockedShots, hit: row.hits };
+      penalty: row.penalties, blockedShot: row.blockedShots, hit: row.hits,
+      save: row.saves, goalAgainst: row.goalsAgainst };
   }
 
   #createEvent(player, row, eventType, index) {
