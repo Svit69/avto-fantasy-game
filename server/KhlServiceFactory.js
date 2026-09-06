@@ -1,19 +1,16 @@
 import path from "node:path";
-import { INITIAL_PLAYERS } from "../src/data/players.js";
 import { KhlFixtureDataProvider } from "./KhlFixtureDataProvider.js";
 import { KhlJsonDataProvider } from "./KhlJsonDataProvider.js";
-import { KhlMatchDataRepository } from "./KhlMatchDataRepository.js";
 import { KhlMatchIngestionService } from "./KhlMatchIngestionService.js";
 import { KhlMatchScopePolicy } from "./KhlMatchScopePolicy.js";
 import { KhlOfficialDataProvider } from "./KhlOfficialDataProvider.js";
-import { PlayerCatalogRepository } from "./PlayerCatalogRepository.js";
-import { TeamBrandResolver } from "./TeamBrandResolver.js";
+import { StorageDriverFactory } from "./StorageDriverFactory.js";
 
 export class KhlServiceFactory {
-  constructor(rootDirectory) { this.rootDirectory = rootDirectory; }
-  createRepository() { return new KhlMatchDataRepository(this.#resolve(process.env.KHL_DATABASE_PATH || "storage/khl-match-data.json")); }
+  constructor(rootDirectory) { this.rootDirectory = rootDirectory; this.storageFactory = new StorageDriverFactory(this.#resolve.bind(this)); }
+  createRepository() { return this.storageFactory.createMatchDataRepository(); }
   createFixtureRoot() { return this.#resolve(process.env.KHL_FIXTURE_PATH || "storage/khl-fixtures"); }
-  createPlayerCatalogRepository() { return new PlayerCatalogRepository(this.#resolve(process.env.PLAYER_DATABASE_PATH || "storage/players.json"), INITIAL_PLAYERS, new TeamBrandResolver()); }
+  createPlayerCatalogRepository() { return this.storageFactory.createPlayerCatalogRepository(); }
   createScopePolicy() { return new KhlMatchScopePolicy(); }
 
   createDataProvider() {
