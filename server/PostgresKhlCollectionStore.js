@@ -8,6 +8,11 @@ export class PostgresKhlCollectionStore {
     const result = await this.database.query(`select payload from ${tableName}`);
     return this.mapper.toPayloads(result.rows);
   }
+  async listByMatchIds(tableName, matchIds) {
+    if (!matchIds.length) return [];
+    const result = await this.database.query(`select payload from ${tableName} where match_id = any($1::text[])`, [matchIds]);
+    return this.mapper.toPayloads(result.rows);
+  }
   async replaceDatabase(database) {
     await this.database.transaction(async (client) => {
       for (const table of KHL_COLLECTION_TABLES) await client.query(`delete from ${table}`);

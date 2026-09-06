@@ -22,6 +22,10 @@ export class RosterRepository {
 
   async listRosters() { return this.#readRosters(); }
 
+  async listRostersByMonth(month) {
+    return (await this.#readRosters()).filter((roster) => roster.month === month);
+  }
+
   #isSameRosterScope(roster, nextRoster) { return roster.userId === nextRoster.userId && roster.month === nextRoster.month; }
 
   async #readRosters() {

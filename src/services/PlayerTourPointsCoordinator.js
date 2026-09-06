@@ -4,8 +4,9 @@ export class PlayerTourPointsCoordinator {
   constructor(apiClient = new PlayerTourStatsApiClient()) { this.apiClient = apiClient; }
 
   async applyTourPoints(players, month) {
-    const stats = await Promise.all(players.map((player) => this.#loadPlayerStats(player, month)));
-    stats.forEach((stat, index) => players[index].applyTourStats(stat));
+    const stats = await this.apiClient.loadMonthlyPlayerTourStats(month);
+    const statsByPlayerId = this.#createStatsMap(stats);
+    players.forEach((player) => player.applyTourStats(statsByPlayerId.get(player.getId()) || this.#createEmptyStats(player, month)));
     return stats;
   }
 
@@ -16,7 +17,11 @@ export class PlayerTourPointsCoordinator {
     });
   }
 
-  async #loadPlayerStats(player, month) {
-    return this.apiClient.loadPlayerTourStats(player.getId(), month);
+  #createStatsMap(stats) {
+    return new Map(stats.map((stat) => [stat.playerId, stat]));
+  }
+
+  #createEmptyStats(player, month) {
+    return this.apiClient.createEmptyStats(player.getId(), month);
   }
 }

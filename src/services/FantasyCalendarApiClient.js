@@ -1,11 +1,25 @@
 export class FantasyCalendarApiClient {
+  static cache = null;
+  static ttlMs = 60 * 1000;
+
   async loadFantasyCalendar() {
+    if (this.#hasFreshCache()) return FantasyCalendarApiClient.cache.promise;
+    FantasyCalendarApiClient.cache = { expiresAt: Date.now() + FantasyCalendarApiClient.ttlMs, promise: this.#fetchFantasyCalendar() };
+    return FantasyCalendarApiClient.cache.promise;
+  }
+
+  #hasFreshCache() {
+    return FantasyCalendarApiClient.cache?.expiresAt > Date.now();
+  }
+
+  async #fetchFantasyCalendar() {
     try {
       const response = await fetch(`/api/calendar?stamp=${Date.now()}`, { cache: "no-store" });
       if (!response.ok) return this.#createEmptyCalendar();
       const payload = await response.json();
       return this.#normalizeCalendarPayload(payload);
     } catch {
+      FantasyCalendarApiClient.cache = null;
       return this.#createEmptyCalendar();
     }
   }

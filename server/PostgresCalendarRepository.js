@@ -9,10 +9,7 @@ export class PostgresCalendarRepository {
   async listCalendar() {
     const storedTours = await this.tours.listRecords();
     const storedMatches = await this.matches.listRecords();
-    const calendar = { tours: this.#merge(this.seedTours, storedTours), matches: this.#merge(this.seedMatches, storedMatches) };
-    await Promise.all([...calendar.tours.map((tour) => this.tours.upsertRecord(tour.id, tour)),
-      ...calendar.matches.map((match) => this.matches.upsertRecord(match.id, match))]);
-    return calendar;
+    return { tours: this.#merge(this.seedTours, storedTours), matches: this.#merge(this.seedMatches, storedMatches) };
   }
 
   async listTours() { return (await this.listCalendar()).tours; }

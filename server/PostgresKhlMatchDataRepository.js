@@ -14,6 +14,8 @@ export class PostgresKhlMatchDataRepository {
     return { matches, events, pointEntries, playerStats, runs, snapshots };
   }
 
+  async listMatches() { return this.store.list("khl_matches"); }
+  async listStatsByMatchIds(matchIds) { return this.store.listByMatchIds("khl_player_stats", matchIds.map(String)); }
   async saveDatabase(database) { await this.store.replaceDatabase(this.#normalize(database)); }
   async upsertMatch(match) { await this.store.upsertMatch(match); return match; }
   async replaceMatchCollections(matchId, collections) { await this.store.replaceMatchCollections(matchId, collections); }

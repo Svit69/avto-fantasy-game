@@ -19,4 +19,9 @@ export class PostgresRosterRepository {
     const result = await this.database.query("select payload from rosters order by month, user_id");
     return this.mapper.toPayloads(result.rows);
   }
+
+  async listRostersByMonth(month) {
+    const result = await this.database.query("select payload from rosters where month=$1 order by user_id", [month]);
+    return this.mapper.toPayloads(result.rows);
+  }
 }
