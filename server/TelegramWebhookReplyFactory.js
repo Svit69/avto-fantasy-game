@@ -1,7 +1,10 @@
 import { FantasyScoringGuideText } from "./FantasyScoringGuideText.js";
+import { TelegramRegistrationText } from "./TelegramRegistrationText.js";
 
 export class TelegramWebhookReplyFactory {
-  constructor(scoringGuide = new FantasyScoringGuideText()) { this.scoringGuide = scoringGuide; }
+  constructor(scoringGuide = new FantasyScoringGuideText(), registrationText = new TelegramRegistrationText()) {
+    Object.assign(this, { scoringGuide, registrationText });
+  }
 
   createAgreementMessage(chatId) {
     const text = "Перед регистрацией ознакомьтесь с <a href=\"https://s-promo.ru/politika-konfidenczialnosti/\">Политикой конфиденциальности</a>.";
@@ -10,7 +13,7 @@ export class TelegramWebhookReplyFactory {
   }
 
   createContactRequestMessage(chatId, appUrl) {
-    return { method: "sendMessage", chat_id: chatId, text: "Поделитесь номером телефона для регистрации.",
+    return { method: "sendMessage", chat_id: chatId, text: this.registrationText.createContactRequestText(), parse_mode: "HTML",
       reply_markup: { keyboard: this.#createMainKeyboard(appUrl, true), resize_keyboard: true, one_time_keyboard: true } };
   }
 
