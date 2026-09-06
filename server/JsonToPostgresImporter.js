@@ -1,5 +1,9 @@
+import { RosterJsonNormalizer } from "./RosterJsonNormalizer.js";
+
 export class JsonToPostgresImporter {
-  constructor(storageFactory, jsonReader) { Object.assign(this, { storageFactory, jsonReader }); }
+  constructor(storageFactory, jsonReader, rosterNormalizer = new RosterJsonNormalizer()) {
+    Object.assign(this, { storageFactory, jsonReader, rosterNormalizer });
+  }
 
   async importAll() {
     const metrics = {};
@@ -27,8 +31,9 @@ export class JsonToPostgresImporter {
 
   async #upsertRosters(rosters) {
     const repository = this.storageFactory.createRosterRepository();
-    for (const roster of rosters) await repository.saveRoster(roster.userId, roster.month, roster.slots || []);
-    return rosters.length;
+    const normalizedRosters = this.rosterNormalizer.normalizeRosters(rosters);
+    for (const roster of normalizedRosters) await repository.saveRoster(roster.userId, roster.month, roster.slots);
+    return normalizedRosters.length;
   }
 
   async #upsertCalendar(calendar) {
