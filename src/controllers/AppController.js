@@ -31,7 +31,7 @@ export class AppController {
     const viewFactory = new ApplicationViewFactory();
     const rosterDomRenderer = viewFactory.createRosterDomRenderer(this.rootElement, teamRoster);
     rosterDomRenderer.renderRosterSections(); new DeadlineCountdownController(this.rootElement).connectCountdownUpdates();
-    new ManagerMenuController(this.rootElement).connectManagerMenuActions();
+    new ManagerMenuController(this.rootElement, this.#getSelectedMonth.bind(this)).connectManagerMenuActions();
     await new MonthSelectAvailabilityController(this.rootElement, calendarApiClient, deadlinePolicy.tourSchedulePolicy).applyAvailableTourOptions();
     persistence.connectMonthRosterLoading(this.rootElement, players, teamRoster, rosterDomRenderer, this.#getSelectedMonth.bind(this)); selectionStats.connectMonthSelectionStatsLoading(this.rootElement, players, this.#getSelectedMonth.bind(this)); tourPoints.connectMonthTourPointsLoading(this.rootElement, players, rosterDomRenderer, this.#getSelectedMonth.bind(this));
     new RosterSelectionController(this.rootElement, teamRoster, rosterDomRenderer, rosterApiClient, this.#getSelectedMonth.bind(this), () => selectionStats.applySelectionStats(players, this.#getSelectedMonth())).connectRosterActions();

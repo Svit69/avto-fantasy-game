@@ -12,7 +12,7 @@ export class ManagerMenuView {
           <strong>${profile.managerName || "Менеджер"}</strong>
         </section>
         <section>
-          <span>Место в текущем месяце:</span>
+          <span>Место в текущем туре:</span>
           <strong>${profile.monthlyPlace || "—"}</strong>
         </section>
       </aside>

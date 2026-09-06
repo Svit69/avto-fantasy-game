@@ -2,8 +2,9 @@ import { TelegramManagerProfileService } from "../services/TelegramManagerProfil
 import { ManagerMenuView } from "../views/ManagerMenuView.js";
 
 export class ManagerMenuController {
-  constructor(rootElement) {
+  constructor(rootElement, getSelectedMonth = () => "Сентябрь") {
     this.rootElement = rootElement;
+    this.getSelectedMonth = getSelectedMonth;
     this.profileService = new TelegramManagerProfileService();
     this.menuView = new ManagerMenuView();
   }
@@ -19,7 +20,7 @@ export class ManagerMenuController {
 
   async #openManagerMenu() {
     const root = this.rootElement.querySelector("[data-manager-menu-root]");
-    root.innerHTML = this.menuView.render(await this.profileService.loadManagerProfile());
+    root.innerHTML = this.menuView.render(await this.profileService.loadManagerProfile(this.getSelectedMonth()));
   }
 
   #closeManagerMenu() {

@@ -30,4 +30,4 @@
 .loading-screen h1 { margin: 0; font: 42px/0.9 "Maratype", Impact, sans-serif; text-transform: uppercase; text-align: center; }
 .loading-progress { width: min(280px, 76vw); height: 8px; overflow: hidden; background: rgba(253, 255, 255, 0.12); }
 .loading-progress span { display: block; width: 0; height: 100%; background: linear-gradient(90deg, #840F0E, #E01822); transition: width 180ms ease; }
-.loading-screen strong { font: 24px/1 "Heading Now 27 Extrabold", Impact, sans-serif; }
+.loading-screen strong { font: 900 24px/1 Arial, Helvetica, sans-serif; font-variant-numeric: tabular-nums; }
