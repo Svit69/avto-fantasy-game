@@ -14,12 +14,12 @@ export class TelegramWebhookReplyFactory {
 
   createContactRequestMessage(chatId, appUrl) {
     return { method: "sendMessage", chat_id: chatId, text: this.registrationText.createContactRequestText(), parse_mode: "HTML",
-      reply_markup: { keyboard: this.#createMainKeyboard(appUrl, true), resize_keyboard: true, one_time_keyboard: true } };
+      reply_markup: this.#createPersistentKeyboard(appUrl, true) };
   }
 
   createMiniAppMessage(chatId, appUrl) {
-    return { method: "sendMessage", chat_id: chatId, text: "Регистрация завершена. Запустите мини-приложение кнопкой ниже.",
-      reply_markup: { inline_keyboard: this.#createRegisteredInlineKeyboard(appUrl) } };
+    return { method: "sendMessage", chat_id: chatId, text: "Регистрация завершена. Кнопки ниже останутся под рукой.",
+      reply_markup: this.#createPersistentKeyboard(appUrl, false) };
   }
 
   createScoringGuideMessage(chatId) {
@@ -28,14 +28,12 @@ export class TelegramWebhookReplyFactory {
 
   #createMainKeyboard(appUrl, includeContactRequest) {
     const rows = includeContactRequest ? [[{ text: "Поделиться номером", request_contact: true }]] : [];
-    return [...rows, [{ text: "Открыть приложение", web_app: { url: appUrl } }],
-      [{ text: "Как считаются очки" }, { text: "Обратная связь" }], [{ text: "Не открывается приложение" }]];
+    return [...rows, [{ text: "Открыть приложение", web_app: { url: appUrl } }, { text: "Как считаются очки" }],
+      [{ text: "Обратная связь" }, { text: "Не открывается приложение" }]];
   }
 
-  #createRegisteredInlineKeyboard(appUrl) {
-    return [[{ text: "Открыть приложение", web_app: { url: appUrl } }],
-      [{ text: "Как считаются очки", callback_data: "score_guide" }],
-      [{ text: "Обратная связь", callback_data: "feedback:start" }],
-      [{ text: "Не открывается приложение", callback_data: "fallback_site" }]];
+  #createPersistentKeyboard(appUrl, includeContactRequest) {
+    return { keyboard: this.#createMainKeyboard(appUrl, includeContactRequest),
+      resize_keyboard: true, is_persistent: true, one_time_keyboard: false };
   }
 }
