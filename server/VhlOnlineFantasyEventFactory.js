@@ -1,11 +1,13 @@
 import { KhlProtocolPlayerMatcher } from "./KhlProtocolPlayerMatcher.js";
 
 export class VhlOnlineFantasyEventFactory {
-  constructor(players) { this.matcher = new KhlProtocolPlayerMatcher(players, "ВХЛ"); }
+  constructor(players, sourceVersion = "vhl-online-html-v1") {
+    Object.assign(this, { matcher: new KhlProtocolPlayerMatcher(players, "ВХЛ"), sourceVersion });
+  }
 
-  createRawEvents(rows) {
+  createRawEvents(rows, matcher = this.matcher) {
     return rows.flatMap((row) => {
-      const player = this.matcher.findPlayer(row);
+      const player = matcher.findPlayer(row);
       return player ? this.#createPlayerEvents(player, row) : [];
     });
   }
@@ -23,6 +25,6 @@ export class VhlOnlineFantasyEventFactory {
   }
 
   #createEvent(player, row, eventType, index) {
-    return { id: `${row.team}:${row.number}:${eventType}:${index + 1}`, eventType, playerId: player.id, teamId: row.team, sourceVersion: "vhl-online-html-v1" };
+    return { id: `${row.team}:${row.number}:${eventType}:${index + 1}`, eventType, playerId: player.id, teamId: row.team, sourceVersion: this.sourceVersion };
   }
 }

@@ -1,5 +1,6 @@
 import { VhlOnlineDataProvider } from "./VhlOnlineDataProvider.js";
-import { VhlOnlineUrlResolver } from "./VhlOnlineUrlResolver.js";
+import { VhlProtocolSourceResolver } from "./VhlProtocolSourceResolver.js";
+import { VhlReportDataProvider } from "./VhlReportDataProvider.js";
 import { VhlOnlineCalendarMatchResolver } from "./VhlOnlineCalendarMatchResolver.js";
 
 export class AdminVhlOnlineProtocolImporter {
@@ -10,9 +11,9 @@ export class AdminVhlOnlineProtocolImporter {
 
   async importProtocol(source) {
     try {
-      const onlineGameId = new VhlOnlineUrlResolver().resolveGameId(source.text);
-      if (!onlineGameId) return this.#renderInvalidInputAndKeepWaiting(source);
-      const result = await this.#ingestOnlineProtocol(onlineGameId);
+      const protocolSource = new VhlProtocolSourceResolver().resolveSource(source.text);
+      if (!protocolSource) return this.#renderInvalidInputAndKeepWaiting(source);
+      const result = await this.#ingestProtocol(protocolSource);
       if (!result.ok) return this.protocolView.renderImportRejected(source.chatId, result);
       return this.protocolView.renderImportResult(source.chatId, result);
     } catch (error) {
@@ -21,13 +22,18 @@ export class AdminVhlOnlineProtocolImporter {
     }
   }
 
-  async #ingestOnlineProtocol(onlineGameId) {
+  async #ingestProtocol(protocolSource) {
     const playerCatalogRepository = this.khlServiceFactory.createPlayerCatalogRepository();
-    const [players, calendarMatch] = await Promise.all([playerCatalogRepository.listPlayers(), this.calendarResolver.findMatchByOnlineGameId(onlineGameId)]);
-    const identity = this.calendarResolver.createProviderIdentity(calendarMatch, onlineGameId);
-    const provider = new VhlOnlineDataProvider({ onlineGameId, players, identity });
-    const result = await this.khlServiceFactory.createIngestionService(provider).ingestMatch(identity.tournamentId || "vhl-online", onlineGameId);
+    const [players, calendarMatch] = await Promise.all([playerCatalogRepository.listPlayers(), this.calendarResolver.findMatchByOnlineGameId(protocolSource.gameId)]);
+    const identity = this.calendarResolver.createProviderIdentity(calendarMatch, protocolSource.gameId);
+    const provider = this.#createProvider(protocolSource, players, identity);
+    const result = await this.khlServiceFactory.createIngestionService(provider).ingestMatch(identity.tournamentId || "vhl-online", protocolSource.gameId);
     return this.#enrichPlayerStats(result, players);
+  }
+
+  #createProvider(protocolSource, players, identity) {
+    if (protocolSource.type === "report") return new VhlReportDataProvider({ source: protocolSource, players, identity });
+    return new VhlOnlineDataProvider({ onlineGameId: protocolSource.gameId, players, identity });
   }
 
   #enrichPlayerStats(result, players) {

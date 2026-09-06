@@ -2,11 +2,11 @@ export class AdminProtocolPanelView {
   constructor(keyboardFactory) { this.keyboardFactory = keyboardFactory; }
 
   renderLeaguePrompt(chatId) {
-    return this.#message(chatId, "Загрузка протокола матча\nВыберите лигу. КХЛ и МХЛ принимают PDF, ВХЛ принимает ссылку на online.vhlru.ru.", this.keyboardFactory.createLeagueKeyboard());
+    return this.#message(chatId, "Загрузка протокола матча\nВыберите лигу. КХЛ и МХЛ принимают PDF, ВХЛ принимает ссылку на online.vhlru.ru или vhlru.ru/report.", this.keyboardFactory.createLeagueKeyboard());
   }
 
   renderFilePrompt(chatId, league) {
-    if (league === "ВХЛ") return this.#message(chatId, "Лига: ВХЛ\nОтправьте ссылку или id онлайн-протокола. Например: https://online.vhlru.ru/online/899183.html", this.keyboardFactory.createProtocolWaitingKeyboard());
+    if (league === "ВХЛ") return this.#message(chatId, "Лига: ВХЛ\nОтправьте id онлайн-протокола или ссылку:\nhttps://online.vhlru.ru/online/899183.html\nhttps://vhlru.ru/report/1430/?idgame=904003", this.keyboardFactory.createProtocolWaitingKeyboard());
     return this.#message(chatId, `Лига: ${league}\nОтправьте PDF-протокол матча документом. Имя файла может быть вида game-898099-ru.pdf.`, this.keyboardFactory.createProtocolWaitingKeyboard());
   }
 
