@@ -1,5 +1,7 @@
 import path from "node:path";
 import { CALENDAR_MATCHES, CALENDAR_TOURS } from "../src/data/calendarSeed.js";
+import { CompositeNotificationPlanner } from "./CompositeNotificationPlanner.js";
+import { DailyPlayerPointsNotificationPlanner } from "./DailyPlayerPointsNotificationPlanner.js";
 import { DraftNotificationDispatcher } from "./DraftNotificationDispatcher.js";
 import { DraftNotificationMessageFactory } from "./DraftNotificationMessageFactory.js";
 import { DraftNotificationPlanner } from "./DraftNotificationPlanner.js";
@@ -10,6 +12,7 @@ import { NotificationRateLimiter } from "./NotificationRateLimiter.js";
 import { RosterChangeNotificationService } from "./RosterChangeNotificationService.js";
 import { RosterRepository } from "./RosterRepository.js";
 import { UserRepository } from "./UserRepository.js";
+import { KhlServiceFactory } from "./KhlServiceFactory.js";
 
 export class ServerNotificationFactory {
   constructor(rootDirectory, botClient, logger) { Object.assign(this, { rootDirectory, botClient, logger }); }
@@ -26,7 +29,13 @@ export class ServerNotificationFactory {
 
   #createPlanner() {
     const rosterRepository = new RosterRepository(this.#storagePath(process.env.ROSTER_DATABASE_PATH || "storage/rosters.json"));
-    return new DraftNotificationPlanner(rosterRepository, new DraftNotificationMessageFactory(), Number(process.env.NOTIFICATION_WINDOW_MS || 3900000));
+    const windowMs = Number(process.env.NOTIFICATION_WINDOW_MS || 3900000);
+    const serviceFactory = new KhlServiceFactory(this.rootDirectory);
+    return new CompositeNotificationPlanner([
+      new DraftNotificationPlanner(rosterRepository, new DraftNotificationMessageFactory(), windowMs),
+      new DailyPlayerPointsNotificationPlanner({ rosterRepository, matchDataRepository: serviceFactory.createRepository(),
+        playerCatalogRepository: serviceFactory.createPlayerCatalogRepository(), windowMs }),
+    ]);
   }
 
   #createDispatcher() {
