@@ -12,7 +12,7 @@ export class TelegramAuthController {
     const params = new URLSearchParams(await this.bodyParser.readText(request));
     if (!this.initDataVerifier.verifyInitData(params)) return this.jsonResponder.sendJson(response, 401, { error: "invalid_init_data" });
     const user = await this.#upsertTelegramUser(params);
-    return this.jsonResponder.sendJson(response, 200, { managerName: user.name, monthlyPlace: "—", userId: user.id, nameSource: "telegram" });
+    return this.#sendProfile(response, user, "telegram");
   }
 
   async #upsertTelegramUser(params) {
@@ -25,6 +25,10 @@ export class TelegramAuthController {
     const payload = this.webLoginTokenService.verifyToken(token);
     const user = payload && await this.userRepository.findUserById(payload.userId);
     if (user?.status !== "active") return this.jsonResponder.sendJson(response, 401, { error: "invalid_web_login" });
-    return this.jsonResponder.sendJson(response, 200, { managerName: user.name, monthlyPlace: "—", userId: user.id, nameSource: "web_login" });
+    return this.#sendProfile(response, user, "web_login");
+  }
+
+  #sendProfile(response, user, nameSource) {
+    return this.jsonResponder.sendJson(response, 200, { managerName: user.name, monthlyPlace: "—", userId: user.id, nameSource });
   }
 }

@@ -1,6 +1,7 @@
 import path from "node:path";
 import { AdminAccessPolicy } from "./AdminAccessPolicy.js"; import { AdminConversationStateStore } from "./AdminConversationStateStore.js"; import { AdminKeyboardFactory } from "./AdminKeyboardFactory.js"; import { AdminPendingActionController } from "./AdminPendingActionController.js"; import { AdminProtocolPanelView } from "./AdminProtocolPanelView.js";
 import { AdminPanelRouteHandler } from "./AdminPanelRouteHandler.js"; import { AdminPanelView } from "./AdminPanelView.js"; import { AdminPlayerMutationService } from "./AdminPlayerMutationService.js"; import { AdminRouteParser } from "./AdminRouteParser.js"; import { AdminRosterReportView } from "./AdminRosterReportView.js";
+import { AuthorizedTelegramAppUrlFactory } from "./AuthorizedTelegramAppUrlFactory.js";
 import { CalendarStorageFactory } from "./CalendarStorageFactory.js"; import { FantasyCalendarController } from "./FantasyCalendarController.js";
 import { HealthController } from "./HealthController.js"; import { HttpApplication } from "./HttpApplication.js"; import { HttpRequestLogger } from "./HttpRequestLogger.js"; import { JsonResponder } from "./JsonResponder.js";
 import { KhlManualImportController } from "./KhlManualImportController.js"; import { KhlMatchDataController } from "./KhlMatchDataController.js"; import { KhlServiceFactory } from "./KhlServiceFactory.js"; import { AdminProtocolImportService } from "./AdminProtocolImportService.js";
@@ -12,6 +13,7 @@ import { TelegramFallbackLinkController } from "./TelegramFallbackLinkController
 import { TelegramWebhookInfoController } from "./TelegramWebhookInfoController.js"; import { TelegramWebhookReplyFactory } from "./TelegramWebhookReplyFactory.js"; import { TelegramUpdateSummarizer } from "./TelegramUpdateSummarizer.js";
 import { ServerNotificationFactory } from "./ServerNotificationFactory.js"; import { StorageDriverFactory } from "./StorageDriverFactory.js";
 import { TelegramFallbackLinkView } from "./TelegramFallbackLinkView.js"; import { TelegramRequestProfileResolver } from "./TelegramRequestProfileResolver.js"; import { TelegramSupportController } from "./TelegramSupportController.js"; import { WebLoginTokenService } from "./WebLoginTokenService.js";
+import { TelegramMiniAppReplyService } from "./TelegramMiniAppReplyService.js";
 export class ServerApplicationFactory {
   constructor(rootDirectory, logger) { Object.assign(this, { rootDirectory, logger }); }
   createApplication() { const base = this.#createBaseDependencies(); const storage = this.#createStorageDependencies(base); return new HttpApplication(this.#createControllers(base, storage)); }
@@ -25,7 +27,9 @@ export class ServerApplicationFactory {
     const calendarRepository = driverFactory.createCalendarRepository(); const opponentTeamRepository = driverFactory.createOpponentTeamRepository();
     const rosterRepository = driverFactory.createRosterRepository(); const khlMatchDataRepository = driverFactory.createMatchDataRepository();
     const webLoginTokenService = new WebLoginTokenService(process.env.TELEGRAM_BOT_TOKEN);
-    return { userMapper: new TelegramUserMapper(), userRepository, playerCatalogRepository, calendarRepository, opponentTeamRepository, rosterRepository, khlMatchDataRepository, khlServiceFactory, webLoginTokenService, profileResolver: new TelegramRequestProfileResolver({ ...base, userRepository, webLoginTokenService }), priceLocker: new RosterSlotPriceLocker(playerCatalogRepository), adminPanel: this.#createAdminPanel(base.botClient, userRepository, playerCatalogRepository, rosterRepository), supportController: this.#createSupportController(base, userRepository, webLoginTokenService) };
+    const appUrlFactory = new AuthorizedTelegramAppUrlFactory(webLoginTokenService);
+    const miniAppReplyService = new TelegramMiniAppReplyService({ appUrl: base.appUrl, appUrlFactory, replyFactory: new TelegramWebhookReplyFactory() });
+    return { userMapper: new TelegramUserMapper(), userRepository, playerCatalogRepository, calendarRepository, opponentTeamRepository, rosterRepository, khlMatchDataRepository, khlServiceFactory, webLoginTokenService, appUrlFactory, miniAppReplyService, profileResolver: new TelegramRequestProfileResolver({ ...base, userRepository, webLoginTokenService }), priceLocker: new RosterSlotPriceLocker(playerCatalogRepository), adminPanel: this.#createAdminPanel(base.botClient, userRepository, playerCatalogRepository, rosterRepository), supportController: this.#createSupportController(base, userRepository, webLoginTokenService) };
   } #createControllers(base, storage) {
     return { jsonResponder: base.jsonResponder, logger: this.logger, staticFileServer: new StaticFileServer(this.rootDirectory),
       requestLogger: new HttpRequestLogger(this.logger), authController: new TelegramAuthController({ ...base, ...storage }),

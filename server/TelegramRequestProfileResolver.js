@@ -4,7 +4,7 @@ export class TelegramRequestProfileResolver {
   }
 
   async resolveProfile(request, payload = {}) {
-    return this.#resolveTelegramProfile(request, payload) || await this.#resolveWebProfile(request);
+    return await this.#resolveWebProfile(request) || this.#resolveTelegramProfile(request, payload);
   }
 
   #resolveTelegramProfile(request, payload) {

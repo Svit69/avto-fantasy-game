@@ -4,10 +4,10 @@ export class RequestAuthorizationHeaderFactory {
   }
 
   createAuthorizationHeaders() {
-    const telegramInitData = window.Telegram?.WebApp?.initData;
-    if (telegramInitData) return { "x-telegram-init-data": telegramInitData };
     const webToken = sessionStorage.getItem(this.webTokenKey);
-    return webToken ? { "x-web-login": webToken } : {};
+    if (webToken) return { "x-web-login": webToken };
+    const telegramInitData = window.Telegram?.WebApp?.initData;
+    return telegramInitData ? { "x-telegram-init-data": telegramInitData } : {};
   }
 
   createJsonHeaders() {

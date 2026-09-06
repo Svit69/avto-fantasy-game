@@ -10,12 +10,8 @@ export class TelegramFallbackLinkController {
   }
 
   async #createCallbackReply(callback) {
-    await this.#answerCallback(callback.id);
+    await this.view.answerCallback(callback.id);
     return this.#createLinkMessage(callback.message.chat.id, callback.from?.id);
-  }
-
-  #answerCallback(callbackId) {
-    return this.view.answerCallback(callbackId);
   }
 
   #createMessageReply(message) {

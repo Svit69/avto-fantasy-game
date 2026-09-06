@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 
 export class WebLoginTokenService {
-  constructor(secret, ttlMs = 24 * 60 * 60 * 1000) {
+  constructor(secret, ttlMs = 30 * 24 * 60 * 60 * 1000) {
     Object.assign(this, { secret, ttlMs });
   }
 
