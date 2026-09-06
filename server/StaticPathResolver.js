@@ -1,9 +1,10 @@
-import fs from "node:fs/promises";
 import path from "node:path";
+import { StaticAssetVariantResolver } from "./StaticAssetVariantResolver.js";
 
 export class StaticPathResolver {
   constructor(rootDirectory) {
     this.rootDirectory = rootDirectory;
+    this.assetVariantResolver = new StaticAssetVariantResolver(rootDirectory);
     this.allowedRootNames = new Set(["assets", "src", "styles", "public", "index.html"]);
   }
 
@@ -11,14 +12,8 @@ export class StaticPathResolver {
     const requestedPath = pathname === "/" ? "/index.html" : decodeURIComponent(pathname);
     if (requestedPath === "/favicon.ico") return this.#resolveRootPath("/assets/avto_logo.png");
     if (!this.#isAllowedPublicPath(requestedPath)) return null;
-    const preferredAssetPath = await this.#resolvePreferredAssetPath(requestedPath);
+    const preferredAssetPath = await this.assetVariantResolver.resolveAssetPath(requestedPath);
     return preferredAssetPath || this.#resolveRootPath(requestedPath);
-  }
-
-  async #resolvePreferredAssetPath(requestedPath) {
-    if (!requestedPath.startsWith("/assets/")) return null;
-    const publicAssetPath = this.#resolveRootPath(`/public${requestedPath}`);
-    return await this.#fileExists(publicAssetPath) ? publicAssetPath : null;
   }
 
   #resolveRootPath(requestedPath) {
@@ -29,14 +24,5 @@ export class StaticPathResolver {
   #isAllowedPublicPath(requestedPath) {
     const rootName = requestedPath.split("/").filter(Boolean)[0];
     return this.allowedRootNames.has(rootName);
-  }
-
-  async #fileExists(filePath) {
-    try {
-      await fs.access(filePath);
-      return true;
-    } catch {
-      return false;
-    }
   }
 }
