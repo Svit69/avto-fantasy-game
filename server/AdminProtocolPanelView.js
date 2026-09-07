@@ -16,8 +16,9 @@ export class AdminProtocolPanelView {
 
   renderCancelled(chatId) { return this.#message(chatId, "Загрузка протокола отменена.", [[{ text: "В меню", callback_data: "admin:menu" }]]); }
 
-  renderImportFailed(chatId) {
-    return this.#message(chatId, "Не удалось обработать протокол. Проверьте файл или ссылку и попробуйте ещё раз.", [[{ text: "В меню", callback_data: "admin:menu" }]]);
+  renderImportFailed(chatId, failure = {}) {
+    const text = `Не удалось обработать протокол.\nКод: ${failure.code || "unknown"}\nПричина: ${failure.description || "Неизвестная ошибка"}\n\nМожно отправить файл ещё раз или отменить загрузку.`;
+    return this.#message(chatId, text, this.keyboardFactory.createProtocolWaitingKeyboard());
   }
 
   renderImportRejected(chatId, result) {

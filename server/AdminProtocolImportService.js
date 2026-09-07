@@ -2,10 +2,11 @@ import { KhlProtocolPdfDataProvider } from "./KhlProtocolPdfDataProvider.js";
 import { TelegramDocumentFileDownloader } from "./TelegramDocumentFileDownloader.js";
 import { AdminVhlOnlineProtocolImporter } from "./AdminVhlOnlineProtocolImporter.js";
 import { ProtocolImportIdentityFactory } from "./ProtocolImportIdentityFactory.js";
+import { ProtocolImportErrorClassifier } from "./ProtocolImportErrorClassifier.js";
 export class AdminProtocolImportService {
   constructor({ botClient, khlServiceFactory, protocolView, logger, stateStore, calendarRepository }) {
     Object.assign(this, { botClient, khlServiceFactory, protocolView, logger, stateStore, downloader: new TelegramDocumentFileDownloader(botClient),
-      identityFactory: new ProtocolImportIdentityFactory(),
+      identityFactory: new ProtocolImportIdentityFactory(), errorClassifier: new ProtocolImportErrorClassifier(),
       vhlImporter: new AdminVhlOnlineProtocolImporter({ khlServiceFactory, protocolView, logger, stateStore, calendarRepository }) });
   }
   async importProtocolDocument(source) {
@@ -14,10 +15,13 @@ export class AdminProtocolImportService {
     try {
       const pdfBuffer = await this.downloader.downloadDocument(source.document);
       const result = await this.#ingestProtocol(source, pdfBuffer);
+      if (!result.ok) return this.protocolView.renderImportRejected(source.chatId, result);
       return this.protocolView.renderImportResult(source.chatId, result);
     } catch (error) {
-      this.logger.warn("admin_protocol_import_failed", { chatId: source.chatId, errorMessage: error.message });
-      return this.protocolView.renderImportFailed(source.chatId);
+      const failure = this.errorClassifier.classifyError(error);
+      this.logger.warn("admin_protocol_import_failed", { ...this.#createLogContext(source), errorCode: failure.code, errorMessage: error.message, stack: error.stack });
+      this.stateStore.waitForProtocol(source.chatId, source.pending.league);
+      return this.protocolView.renderImportFailed(source.chatId, failure);
     }
   }
   async #ingestProtocol(source, pdfBuffer) {
@@ -29,6 +33,9 @@ export class AdminProtocolImportService {
     return this.#enrichPlayerStats(result, players);
   }
   #renderInvalidFileAndKeepWaiting(source) { this.stateStore.waitForProtocol(source.chatId, source.pending.league); return this.protocolView.renderInvalidFile(source.chatId); }
+  #createLogContext(source) {
+    return { chatId: source.chatId, league: source.pending?.league, fileName: source.document?.file_name, mimeType: source.document?.mime_type, caption: source.caption };
+  }
   #enrichPlayerStats(result, players) {
     const names = new Map(players.map((player) => [player.id, `${player.lastName} ${player.firstName}`]));
     return { ...result, playerStats: result.playerStats.map((stat) => ({ ...stat, playerName: names.get(stat.playerId) || stat.playerId })) };
