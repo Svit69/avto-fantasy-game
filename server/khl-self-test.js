@@ -11,7 +11,6 @@ import { KhlProtocolPdfDataProvider } from "./KhlProtocolPdfDataProvider.js";
 import { KhlReplayRunner } from "./KhlReplayRunner.js";
 import { PlayerCatalogRepository } from "./PlayerCatalogRepository.js";
 import { TeamBrandResolver } from "./TeamBrandResolver.js";
-
 const root = path.resolve(".");
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), "khl-self-test-"));
 const repository = new KhlMatchDataRepository(path.join(temp, "khl.json"));
@@ -23,6 +22,8 @@ const service = new KhlMatchIngestionService({
 });
 await service.ingestMatch("1369", "898228");
 await service.ingestMatch("1369", "898228");
+const events = await repository.listEventsByGameId("898228");
+if (events.some((event) => event.matchId !== "1369-898228")) throw new Error("khl_event_match_id_self_test_failed");
 const stats = await repository.listStatsByGameId("898228");
 const tryamkin = stats.find((stat) => stat.playerId === "tryamkin");
 if (tryamkin?.fantasyPoints !== 80 || stats.length !== 1) throw new Error("khl_tryamkin_self_test_failed");

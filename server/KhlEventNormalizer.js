@@ -8,7 +8,7 @@ export class KhlEventNormalizer {
   }
 
   #normalizeRawEvent(match, raw) {
-    const event = { eventId: raw.eventId || raw.id || null, tournamentId: match.tournamentId, gameId: match.gameId,
+    const event = { eventId: raw.eventId || raw.id || null, matchId: match.id, tournamentId: match.tournamentId, gameId: match.gameId,
       period: raw.period ?? null, gameTime: raw.gameTime || raw.time || null, eventType: this.#normalizeType(raw.eventType || raw.type),
       playerId: String(raw.playerId || raw.khlPlayerId || ""), secondaryPlayerId: raw.secondaryPlayerId ? String(raw.secondaryPlayerId) : null,
       teamId: raw.teamId ? String(raw.teamId) : null, role: raw.role || null, isScoringEvent: Boolean(raw.isScoringEvent),
