@@ -29,7 +29,7 @@ export class KhlMatchIngestionService {
   #createPointEntries(match, events, resolver) {
     return events.flatMap((event) => this.mapper.createFantasyEvents(event).map((fantasyEvent) => {
       const player = resolver.findPlayerByKhlId(fantasyEvent.khlPlayerId);
-      return player ? { id: `${fantasyEvent.eventId}:${fantasyEvent.eventType}:${player.id}`, matchId: match.id, playerId: player.id, eventId: fantasyEvent.eventId, eventType: fantasyEvent.eventType, points: this.pointValuePolicy.resolveEventPoints(player, fantasyEvent.eventType), status: "active", updatedAt: new Date().toISOString() } : null;
+      return player ? { id: `${match.id}:${fantasyEvent.eventId}:${fantasyEvent.eventType}:${player.id}`, matchId: match.id, playerId: player.id, eventId: fantasyEvent.eventId, eventType: fantasyEvent.eventType, points: this.pointValuePolicy.resolveEventPoints(player, fantasyEvent.eventType), status: "active", updatedAt: new Date().toISOString() } : null;
     }).filter(Boolean));
   }
 
