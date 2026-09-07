@@ -13,7 +13,8 @@ export class KhlEventNormalizer {
       playerId: String(raw.playerId || raw.khlPlayerId || ""), secondaryPlayerId: raw.secondaryPlayerId ? String(raw.secondaryPlayerId) : null,
       teamId: raw.teamId ? String(raw.teamId) : null, role: raw.role || null, isScoringEvent: Boolean(raw.isScoringEvent),
       sourceVersion: raw.sourceVersion || null, rawPayload: raw };
-    return { ...event, eventKey: this.keyFactory.createEventKey(event), sourceHash: this.keyFactory.createSourceHash(raw) };
+    const eventKey = this.keyFactory.createEventKey(event);
+    return { ...event, id: eventKey, eventKey, sourceHash: this.keyFactory.createSourceHash(raw) };
   }
 
   #normalizeType(type) {

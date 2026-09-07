@@ -30,8 +30,8 @@ export class PostgresKhlCollectionStore {
   }
   async #insertAll(client, database) {
     for (const match of database.matches || []) await this.#upsertSingle(client, "khl_matches", match.id, match);
-    for (const item of database.events || []) await this.#upsertMatchItem(client, "khl_events", item.id, item.matchId, item);
-    for (const item of database.pointEntries || []) await this.#upsertMatchItem(client, "khl_point_entries", item.id, item.matchId, item);
+    for (const item of database.events || []) await this.#upsertMatchItem(client, "khl_events", this.#resolveItemId(item), item.matchId, item);
+    for (const item of database.pointEntries || []) await this.#upsertMatchItem(client, "khl_point_entries", this.#resolveItemId(item), item.matchId, item);
     for (const item of database.playerStats || []) await this.#upsertPlayerStat(client, item);
     for (const item of database.runs || []) await this.#upsertSingle(client, "khl_runs", item.id || crypto.randomUUID(), item);
     for (const item of database.snapshots || []) await this.#upsertSingle(client, "khl_snapshots", item.id || crypto.randomUUID(), item);
@@ -40,8 +40,10 @@ export class PostgresKhlCollectionStore {
     return client.query(`insert into ${table} (id,payload) values ($1,$2::jsonb) on conflict (id) do update set payload=excluded.payload`, [String(id), this.mapper.toJson(payload)]);
   }
   #upsertMatchItem(client, table, id, matchId, payload) {
-    return client.query(`insert into ${table} (id,match_id,payload) values ($1,$2,$3::jsonb) on conflict (id) do update set payload=excluded.payload`, [String(id), matchId, this.mapper.toJson(payload)]);
+    return client.query(`insert into ${table} (id,match_id,payload) values ($1,$2,$3::jsonb)
+      on conflict (id) do update set match_id=excluded.match_id,payload=excluded.payload`, [String(id), matchId, this.mapper.toJson(payload)]);
   }
+  #resolveItemId(item) { return item.id || item.eventKey || item.sourceHash || `${item.matchId}:${crypto.randomUUID()}`; }
   #upsertPlayerStat(client, payload) {
     return client.query(`insert into khl_player_stats (match_id,player_id,payload) values ($1,$2,$3::jsonb)
       on conflict (match_id,player_id) do update set payload=excluded.payload`, [payload.matchId, payload.playerId, this.mapper.toJson(payload)]);
