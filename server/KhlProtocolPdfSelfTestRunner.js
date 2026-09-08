@@ -15,11 +15,18 @@ export class KhlProtocolPdfSelfTestRunner {
     const identity = { tournamentId: "1369", gameId: "898099", homeTeamId: "190", league: "КХЛ" };
     const provider = new KhlProtocolPdfDataProvider({ pdfBuffer: await fs.readFile(pdfPath), players, identity });
     await new KhlMatchIngestionService({ dataProvider: provider, repository, playerCatalogRepository: this.playerCatalogRepository, scopePolicy: new KhlMatchScopePolicy("190") }).ingestMatch("1369", "898099");
-    await this.#assertSprongShotsOnGoal(repository);
+    await this.#assertKnownShotsOnGoal(repository);
   }
 
-  async #assertSprongShotsOnGoal(repository) {
-    const sprong = (await repository.listStatsByGameId("898099")).find((stat) => stat.playerId === "sprong");
-    if (sprong && sprong.shotsOnGoal !== 6) throw new Error("khl_pdf_shots_on_goal_self_test_failed");
+  async #assertKnownShotsOnGoal(repository) {
+    const stats = await repository.listStatsByGameId("898099");
+    this.#assertPlayerShots(stats, "sprong", 6);
+    this.#assertPlayerShots(stats, "karpukhin", 3);
+    this.#assertPlayerShots(stats, "gushchin", 2);
+  }
+
+  #assertPlayerShots(stats, playerId, expectedShots) {
+    const playerStats = stats.find((stat) => stat.playerId === playerId);
+    if (playerStats && playerStats.shotsOnGoal !== expectedShots) throw new Error(`khl_pdf_shots_on_goal_self_test_failed:${playerId}`);
   }
 }
