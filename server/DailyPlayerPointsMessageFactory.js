@@ -10,7 +10,7 @@ export class DailyPlayerPointsMessageFactory {
   }
 
   #renderStats(row) {
-    const labels = [["goals", "гол"], ["assists", "пас"], ["shotsOnGoal", "бр."], ["blockedShots", "блок"], ["hits", "сил."],
+    const labels = [["goals", "гол"], ["assists", "пас"], ["shotsOnGoal", "бс."], ["blockedShots", "блок"], ["hits", "сил."],
       ["saves", "сейв"], ["goalsAgainst", "проп."], ["penalties", "уд."]];
     return labels.filter(([key]) => Number(row[key] || 0)).map(([key, label]) => `${row[key]} ${label}`).join(", ") || "без событий";
   }

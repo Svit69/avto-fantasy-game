@@ -1,4 +1,12 @@
+import { KhlProtocolSkaterColumnMap } from "./KhlProtocolSkaterColumnMap.js";
+import { KhlProtocolTableNumberReader } from "./KhlProtocolTableNumberReader.js";
+import { KhlProtocolRowGroupFactory } from "./KhlProtocolRowGroupFactory.js";
+
 export class KhlProtocolSkaterTableParser {
+  constructor(columnMap = new KhlProtocolSkaterColumnMap(), groupFactory = new KhlProtocolRowGroupFactory()) {
+    Object.assign(this, { groupFactory, numberReader: new KhlProtocolTableNumberReader(columnMap) });
+  }
+
   parseSkaterRows(content, teamName) {
     return content.pages.flatMap((page) => this.#parsePageRows(page, teamName));
   }
@@ -8,7 +16,7 @@ export class KhlProtocolSkaterTableParser {
       return item.text === teamName && item.x < 130 && page.some((header) => header.y === item.y && header.text === "Ш");
     });
     if (!label) return [];
-    const groupedRows = this.#groupItemsByY(page.filter((item) => item.y < label.y && item.y > label.y - 210));
+    const groupedRows = this.groupFactory.groupItemsByY(page.filter((item) => item.y < label.y && item.y > label.y - 210));
     return [...groupedRows.values()].map((items) => this.#parseRow(items, teamName)).filter(Boolean);
   }
 
@@ -22,31 +30,16 @@ export class KhlProtocolSkaterTableParser {
   }
 
   #readStats(items) {
-    const goals = this.#readNumber(items, 156, 167);
+    const goals = this.numberReader.readColumnNumber(items, "goals");
     return {
       goals,
-      assists: this.#readNumber(items, 169, 178),
-      penalties: this.#readNumber(items, 206, 216),
-      shotsOnGoal: Math.max(this.#readNumber(items, 410, 421) - goals, 0),
-      blockedShots: this.#readNumber(items, 438, 449),
-      hits: this.#readNumber(items, 456, 469),
-      takeaways: this.#readNumber(items, 476, 487),
-      interceptions: this.#readNumber(items, 493, 505),
+      assists: this.numberReader.readColumnNumber(items, "assists"),
+      penalties: this.numberReader.readColumnNumber(items, "penalties"),
+      shotsOnGoal: Math.max(this.numberReader.readColumnNumber(items, "shotsOnGoal") - goals, 0),
+      blockedShots: this.numberReader.readColumnNumber(items, "blockedShots"),
+      hits: this.numberReader.readColumnNumber(items, "hits"),
+      takeaways: this.numberReader.readColumnNumber(items, "takeaways"),
+      interceptions: this.numberReader.readColumnNumber(items, "interceptions"),
     };
-  }
-
-  #readText(items, minX, maxX) {
-    return items.filter((item) => item.x >= minX && item.x <= maxX).map((item) => item.text).join(" ").trim();
-  }
-
-  #readNumber(items, minX, maxX) {
-    return Number(this.#readText(items, minX, maxX).match(/-?\d+/)?.[0] || 0);
-  }
-
-  #groupItemsByY(items) {
-    return items.reduce((grouped, item) => {
-      grouped.set(item.y, [...(grouped.get(item.y) || []), item]);
-      return grouped;
-    }, new Map());
   }
 }
