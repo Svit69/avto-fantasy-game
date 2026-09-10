@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "buildCommand": "npm run check",
+  "functions": {
+    "api/index.js": {
+      "includeFiles": [
+        "index.html",
+        "src/**",
+        "server/**",
+        "styles/**",
+        "assets/**",
+        "public/**",
+        "migrations/**"
+      ]
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.js"
+    }
+  ]
+}
