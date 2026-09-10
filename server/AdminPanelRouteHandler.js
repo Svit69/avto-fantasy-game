@@ -10,6 +10,7 @@ export class AdminPanelRouteHandler {
     if (route.type === "player") return this.view.renderPlayer(source.chatId, await this.playerCatalogRepository.findPlayerById(route.playerId));
     if (route.type === "price") return this.#requestPriceInput(source.chatId, route.playerId);
     if (route.type === "team") return this.#requestTeamInput(source.chatId, route.playerId);
+    if (route.type.startsWith("vhl_online")) return this.vhlOnlineRouteHandler.executeRoute(source);
     if (route.type === "protocol") return this.protocolView.renderLeaguePrompt(source.chatId);
     if (route.type === "protocol_league") return this.#requestProtocolFile(source.chatId, route.playerId);
     if (route.type === "custom_team") return this.#requestCustomTeamInput(source.chatId, route.playerId);
@@ -22,6 +23,7 @@ export class AdminPanelRouteHandler {
     if (source.pending.type === "price") return this.mutationService.updatePlayerPrice(source.chatId, source.pending.playerId, Number(source.text));
     if (source.pending.type === "team") return this.mutationService.updatePlayerTeam(source.chatId, source.pending.playerId, source.text.trim());
     if (source.pending.type === "protocol") return this.protocolImportService.importProtocolDocument(source);
+    if (source.pending.type === "vhl_online_protocol") return this.vhlOnlineRouteHandler.handlePendingInput(source);
     return null;
   }
   async #renderRosterReport(chatId, month, page = 0) {

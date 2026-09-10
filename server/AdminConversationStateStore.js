@@ -15,6 +15,10 @@ export class AdminConversationStateStore {
     this.states.set(String(chatId), { type: "protocol", league });
   }
 
+  waitForVhlOnlineProtocolId(chatId, matchId) {
+    this.states.set(String(chatId), { type: "vhl_online_protocol", matchId });
+  }
+
   clearState(chatId) {
     this.states.delete(String(chatId));
   }

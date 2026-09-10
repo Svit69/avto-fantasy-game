@@ -1,8 +1,8 @@
 import { VhlOnlineDataProvider } from "./VhlOnlineDataProvider.js";
 
 export class VhlOnlinePollingService {
-  constructor({ calendarRepository, khlServiceFactory, selector, logger }) {
-    Object.assign(this, { calendarRepository, khlServiceFactory, selector, logger });
+  constructor({ calendarRepository, khlServiceFactory, selector, logger, adminNotifier = null }) {
+    Object.assign(this, { calendarRepository, khlServiceFactory, selector, logger, adminNotifier });
   }
 
   async pollActiveMatches() {
@@ -16,8 +16,11 @@ export class VhlOnlinePollingService {
 
   async #ingestMatch(match) {
     const players = await this.khlServiceFactory.createPlayerCatalogRepository().listPlayers();
+    await this.adminNotifier?.notifyMatchStarted(match);
     const provider = new VhlOnlineDataProvider({ onlineGameId: match.onlineGameId, players, identity: { tournamentId: match.tourId } });
     const result = await this.khlServiceFactory.createIngestionService(provider).ingestMatch(match.tourId, match.onlineGameId);
+    await this.adminNotifier?.notifyInterimResultCollected(match, result);
+    await this.adminNotifier?.notifyFinalDataCollected(match, result);
     this.logger.info("vhl_online_match_ingested", { matchId: match.id, onlineGameId: match.onlineGameId, ok: result.ok });
     return result;
   }

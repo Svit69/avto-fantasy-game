@@ -14,9 +14,15 @@ export class PostgresCalendarRepository {
 
   async listTours() { return (await this.listCalendar()).tours; }
   async listMatches() { return (await this.listCalendar()).matches; }
+  async updateMatchOnlineProtocolId(matchId, onlineProtocolId) {
+    const match = (await this.listMatches()).find((item) => item.id === matchId);
+    if (!match) throw new Error("calendar_match_not_found");
+    return this.matches.upsertRecord(matchId, { ...match, onlineProtocolId: String(onlineProtocolId) });
+  }
 
   #merge(seedRecords, storedRecords) {
+    const storedById = new Map(storedRecords.map((record) => [record.id, record]));
     const seedIds = new Set(seedRecords.map((record) => record.id));
-    return [...seedRecords, ...storedRecords.filter((record) => !seedIds.has(record.id))];
+    return [...seedRecords.map((record) => storedById.get(record.id) || record), ...storedRecords.filter((record) => !seedIds.has(record.id))];
   }
 }

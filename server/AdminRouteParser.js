@@ -6,6 +6,7 @@ export class AdminRouteParser {
     if (update.message?.text?.startsWith("/users")) return this.#parseMessage(update.message, { type: "users" });
     if (update.message?.text?.startsWith("/players")) return this.#parseMessage(update.message, { type: "players", page: 0 });
     if (update.message?.text?.startsWith("/rosters")) return this.#parseRosterMessage(update.message);
+    if (update.message?.text?.startsWith("/vhl_online")) return this.#parseMessage(update.message, { type: "vhl_online" });
     return null;
   }
 

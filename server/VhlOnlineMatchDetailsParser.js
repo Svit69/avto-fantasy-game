@@ -1,7 +1,8 @@
 import { HtmlTextCleaner } from "./HtmlTextCleaner.js";
+import { VhlOnlineScoreParser } from "./VhlOnlineScoreParser.js";
 
 export class VhlOnlineMatchDetailsParser {
-  constructor(cleaner = new HtmlTextCleaner()) { this.cleaner = cleaner; }
+  constructor(cleaner = new HtmlTextCleaner(), scoreParser = new VhlOnlineScoreParser()) { Object.assign(this, { cleaner, scoreParser }); }
 
   parseMatch(html, identity = {}) {
     const title = this.cleaner.stripTags(html.match(/<title>(.*?)<\/title>/s)?.[1] || "");
@@ -10,7 +11,7 @@ export class VhlOnlineMatchDetailsParser {
     return { tournamentId: String(identity.tournamentId || "vhl-online"), gameId: String(identity.gameId || ""),
       homeTeamId: "", awayTeamId: "", homeTeam: homeTeam || "", awayTeam: awayTeam || "",
       opponentTeam: this.#resolveOpponent(homeTeam, awayTeam), arena: this.#parseArena(html), league: "ВХЛ",
-      status: this.#parseStatus(html), scheduledAt: this.#parseDate(date), sourceGameNumber: gameNumber || "",
+      status: this.#parseStatus(html), scheduledAt: this.#parseDate(date), score: this.scoreParser.parseScore(html), sourceGameNumber: gameNumber || "",
       createdAt: new Date().toISOString() };
   }
 

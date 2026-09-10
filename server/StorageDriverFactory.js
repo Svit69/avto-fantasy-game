@@ -3,6 +3,7 @@ import { OPPONENT_TEAMS } from "../src/data/opponentTeams.js";
 import { CALENDAR_MATCHES, CALENDAR_TOURS } from "../src/data/calendarSeed.js";
 import { FantasyCalendarRepository } from "./FantasyCalendarRepository.js";
 import { KhlMatchDataRepository } from "./KhlMatchDataRepository.js";
+import { NotificationSentRepository } from "./NotificationSentRepository.js";
 import { OpponentTeamRepository } from "./OpponentTeamRepository.js";
 import { PlayerCatalogRepository } from "./PlayerCatalogRepository.js";
 import { PostgresCalendarRepository } from "./PostgresCalendarRepository.js";
@@ -24,7 +25,10 @@ export class StorageDriverFactory {
   createUserRepository() { return this.isPostgresEnabled() ? new PostgresUserRepository(this.getDatabase()) : new UserRepository(this.resolveStoragePath(process.env.USER_DATABASE_PATH || "storage/users.json")); }
   createRosterRepository() { return this.isPostgresEnabled() ? new PostgresRosterRepository(this.getDatabase()) : new RosterRepository(this.resolveStoragePath(process.env.ROSTER_DATABASE_PATH || "storage/rosters.json")); }
   createMatchDataRepository() { return this.isPostgresEnabled() ? new PostgresKhlMatchDataRepository(this.getDatabase()) : new KhlMatchDataRepository(this.resolveStoragePath(process.env.KHL_DATABASE_PATH || "storage/khl-match-data.json")); }
-  createNotificationSentRepository() { return this.isPostgresEnabled() ? new PostgresNotificationSentRepository(this.getDatabase()) : null; }
+  createNotificationSentRepository() {
+    return this.isPostgresEnabled() ? new PostgresNotificationSentRepository(this.getDatabase())
+      : new NotificationSentRepository(this.resolveStoragePath(process.env.NOTIFICATION_DATABASE_PATH || "storage/notifications.json"));
+  }
 
   createPlayerCatalogRepository() {
     const args = [INITIAL_PLAYERS, new TeamBrandResolver()];

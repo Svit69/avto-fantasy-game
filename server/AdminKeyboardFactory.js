@@ -3,6 +3,7 @@ export class AdminKeyboardFactory {
     return [[{ text: "Зарегистрированные пользователи", callback_data: "admin:users" }],
       [{ text: "База хоккеистов", callback_data: "admin:players:0" }],
       [{ text: "Составы по турам", callback_data: "admin:rosters" }],
+      [{ text: "ВХЛ online id", callback_data: "admin:vhl_online" }],
       [{ text: "Загрузить протокол матча", callback_data: "admin:protocol" }]];
   }
 
