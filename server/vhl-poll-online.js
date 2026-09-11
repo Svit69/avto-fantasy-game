@@ -16,7 +16,7 @@ const logger = new ServerLogger();
 const storage = new CalendarStorageFactory((filePath) => path.join(rootDirectory, filePath));
 const driverFactory = new StorageDriverFactory((filePath) => path.join(rootDirectory, filePath));
 const adminNotifier = new VhlOnlineAdminNotifier({ botClient: new TelegramBotClient(process.env.TELEGRAM_BOT_TOKEN, logger),
-  adminIds: (process.env.TELEGRAM_ADMIN_IDS || "").split(","), notificationRepository: driverFactory.createNotificationSentRepository() });
+  adminIds: (process.env.TELEGRAM_ADMIN_IDS || "").split(","), notificationRepository: driverFactory.createNotificationSentRepository(), logger });
 const service = new VhlOnlinePollingService({ calendarRepository: storage.createCalendarRepository(),
   khlServiceFactory: new KhlServiceFactory(rootDirectory), selector: new VhlOnlineActiveMatchSelector(), logger, adminNotifier });
 const pollIntervalMs = Number(process.env.VHL_ONLINE_POLL_INTERVAL_MS || 120000);

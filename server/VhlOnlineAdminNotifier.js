@@ -1,11 +1,12 @@
 import { VhlOnlineAdminNotificationTextFactory } from "./VhlOnlineAdminNotificationTextFactory.js";
 
 export class VhlOnlineAdminNotifier {
-  constructor({ botClient, adminIds, notificationRepository, textFactory = new VhlOnlineAdminNotificationTextFactory() }) {
-    Object.assign(this, { botClient, adminIds: adminIds.map(String).filter(Boolean), notificationRepository, textFactory });
+  constructor({ botClient, adminIds, notificationRepository, logger = null, textFactory = new VhlOnlineAdminNotificationTextFactory() }) {
+    Object.assign(this, { botClient, adminIds: adminIds.map(String).filter(Boolean), notificationRepository, logger, textFactory });
   }
 
   async notifyMatchStarted(match) {
+    if (!match.isLivePollingWindow) return;
     return this.#sendOnce(`vhl:${match.id}:start`, this.textFactory.createMatchStartedText(match));
   }
 
@@ -26,7 +27,11 @@ export class VhlOnlineAdminNotifier {
 
   async #sendToAdminOnce(adminId, notificationKey, text) {
     if (await this.notificationRepository.hasNotificationBeenSent(adminId, notificationKey)) return;
-    await this.botClient.callMethod("sendMessage", { chat_id: adminId, text });
-    await this.notificationRepository.markNotificationAsSent(adminId, notificationKey);
+    try {
+      await this.botClient.callMethod("sendMessage", { chat_id: adminId, text });
+      await this.notificationRepository.markNotificationAsSent(adminId, notificationKey);
+    } catch (error) {
+      this.logger?.warn("vhl_online_admin_notification_failed", { adminId, notificationKey, errorMessage: error.message });
+    }
   }
 }
