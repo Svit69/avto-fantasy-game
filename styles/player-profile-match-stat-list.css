@@ -1,0 +1,25 @@
+.profile-match-stat-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(19, 32, 36, 0.08);
+}
+
+.profile-match-stat-list dt,
+.profile-match-stat-list dd {
+  margin: 0;
+}
+
+.profile-match-tile em {
+  display: inline-grid;
+  min-width: 48px;
+  min-height: 24px;
+  place-items: center;
+  border-radius: 4px;
+  background: #18d8d0;
+  color: #132024;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 800;
+}

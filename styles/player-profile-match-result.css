@@ -1,0 +1,40 @@
+.profile-match-result {
+  display: grid;
+  gap: 14px;
+  padding: 18px 22px 20px;
+}
+
+.profile-match-score {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-match-score span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-match-score span:first-child {
+  justify-content: flex-end;
+}
+
+.profile-match-score img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.profile-match-score strong,
+.profile-match-stat-list dd {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.profile-match-stat-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}

@@ -25,6 +25,6 @@ export class PlayerTourStatsApiClient {
 
   createEmptyStats(playerId, month) {
     return { playerId, month, matches: 0, goals: 0, assists: 0, penalties: 0, shotsOnGoal: 0,
-      blockedShots: 0, hits: 0, takeaways: 0, interceptions: 0, saves: 0, goalsAgainst: 0, fantasyPoints: 0 };
+      blockedShots: 0, hits: 0, takeaways: 0, interceptions: 0, saves: 0, goalsAgainst: 0, fantasyPoints: 0, matchStats: [] };
   }
 }

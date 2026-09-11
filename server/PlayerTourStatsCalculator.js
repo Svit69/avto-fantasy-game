@@ -1,12 +1,16 @@
 import { MonthlyImportedMatchSelector } from "./MonthlyImportedMatchSelector.js";
+import { PlayerMatchStatsCalculator } from "./PlayerMatchStatsCalculator.js";
 
 export class PlayerTourStatsCalculator {
-  constructor(matchSelector = new MonthlyImportedMatchSelector()) { this.matchSelector = matchSelector; }
+  constructor(matchSelector = new MonthlyImportedMatchSelector(), matchStatsCalculator = new PlayerMatchStatsCalculator(matchSelector)) {
+    Object.assign(this, { matchSelector, matchStatsCalculator });
+  }
 
   createMonthlyPlayerStats({ playerId, month, calendar, matchDatabase }) {
     const matches = this.#findMonthImportedMatches(month, calendar, matchDatabase.matches || []);
     const playerStats = this.#findPlayerStats(playerId, matches, matchDatabase.playerStats || []);
-    return { playerId, month, ...this.#sumPlayerStats(playerStats), matches: playerStats.length };
+    return { playerId, month, ...this.#sumPlayerStats(playerStats), matches: playerStats.length,
+      matchStats: this.matchStatsCalculator.createPlayerMatchStats({ playerId, month, calendar, matchDatabase }) };
   }
 
   #findMonthImportedMatches(month, calendar, importedMatches) {

@@ -34,6 +34,6 @@ export class KhlMatchIngestionService {
   }
 
   #createMatchRecord(match, tournamentId, gameId) {
-    return { id: `${tournamentId}-${gameId}`, tournamentId: String(tournamentId), gameId: String(gameId), homeTeamId: String(match.homeTeamId || ""), awayTeamId: String(match.awayTeamId || ""), homeTeam: match.homeTeam || "", awayTeam: match.awayTeam || "", opponentTeam: match.opponentTeam || "", arena: match.arena || "", league: match.league || "КХЛ", status: match.status || "scheduled", scheduledAt: match.scheduledAt || null, createdAt: match.createdAt || new Date().toISOString() };
+    return { id: `${tournamentId}-${gameId}`, tournamentId: String(tournamentId), gameId: String(gameId), homeTeamId: String(match.homeTeamId || ""), awayTeamId: String(match.awayTeamId || ""), homeTeam: match.homeTeam || "", awayTeam: match.awayTeam || "", opponentTeam: match.opponentTeam || "", arena: match.arena || "", league: match.league || "КХЛ", score: match.score || null, status: match.status || "scheduled", scheduledAt: match.scheduledAt || null, createdAt: match.createdAt || new Date().toISOString() };
   }
 }
