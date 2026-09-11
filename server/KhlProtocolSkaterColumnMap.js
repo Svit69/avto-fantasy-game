@@ -2,7 +2,7 @@ export class KhlProtocolSkaterColumnMap {
   constructor() {
     this.columns = Object.freeze({
       goals: [156, 167],
-      assists: [169, 178],
+      assists: [168, 175],
       penalties: [206, 216],
       shotsOnGoal: [421, 432],
       blockedShots: [445, 456],
