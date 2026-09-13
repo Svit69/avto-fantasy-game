@@ -11,7 +11,9 @@ export class PlayerMatchStatsCalculator {
     const calendarMatches = this.#findMonthCalendarMatches(month, calendar);
     const statsByMatchId = new Map((matchDatabase.playerStats || [])
       .filter((stat) => stat.playerId === playerId).map((stat) => [stat.matchId, stat]));
-    return importedMatches.map((match) => this.#createMatchStats(match, statsByMatchId.get(match.id), calendarMatches));
+    return importedMatches
+      .filter((match) => statsByMatchId.has(match.id))
+      .map((match) => this.#createMatchStats(match, statsByMatchId.get(match.id), calendarMatches));
   }
 
   #createMatchStats(match, stats = {}, calendarMatches) {
