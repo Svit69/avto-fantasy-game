@@ -6,7 +6,12 @@ export class VhlOnlineScoreParser {
   }
 
   parseScore(html) {
-    return this.#parseDetailedScore(html) || this.#parseCalendarScore(html);
+    return this.#parseScoreboard(html) || this.#parseDetailedScore(html) || this.#parseCalendarScore(html);
+  }
+
+  #parseScoreboard(html) {
+    const scoreHtml = html.match(/game__score"[\s\S]*?>([\s\S]*?)<\/div>/)?.[1] || "";
+    return this.#createScore(this.cleaner.stripTags(scoreHtml).match(/(\d+)\s*:\s*(\d+)/));
   }
 
   #parseDetailedScore(html) {
@@ -16,7 +21,7 @@ export class VhlOnlineScoreParser {
 
   #parseCalendarScore(html) {
     const text = this.cleaner.stripTags(html);
-    return this.#createScore(text.match(/ГОР\s*(\d+)\s*:\s*(\d+)\s*ЧЕЛ/));
+    return this.#createScore(text.match(/(\d+)\s*:\s*(\d+)/));
   }
 
   #createScore(match) {

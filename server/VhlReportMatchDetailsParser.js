@@ -1,14 +1,15 @@
 import { HtmlTextCleaner } from "./HtmlTextCleaner.js";
+import { VhlReportScoreParser } from "./VhlReportScoreParser.js";
 
 export class VhlReportMatchDetailsParser {
-  constructor(cleaner = new HtmlTextCleaner()) { this.cleaner = cleaner; }
+  constructor(cleaner = new HtmlTextCleaner(), scoreParser = new VhlReportScoreParser()) { Object.assign(this, { cleaner, scoreParser }); }
 
   parseMatch(html, identity = {}) {
     const [homeTeam, awayTeam] = this.#parseTeamNames(html);
     return { tournamentId: String(identity.tournamentId || "vhl-report"), gameId: String(identity.gameId || ""),
       homeTeamId: "", awayTeamId: "", homeTeam, awayTeam, opponentTeam: this.#resolveOpponent(homeTeam, awayTeam),
       arena: "", league: "ВХЛ", status: "finished", scheduledAt: identity.scheduledAt || this.#parseDate(html),
-      createdAt: new Date().toISOString() };
+      score: this.scoreParser.parseScore(html), createdAt: new Date().toISOString() };
   }
 
   #parseTeamNames(html) {
