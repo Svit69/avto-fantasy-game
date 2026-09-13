@@ -1,7 +1,8 @@
 .profile-match-stat-list div {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 14px;
   padding-top: 12px;
   border-top: 1px solid rgba(19, 32, 36, 0.08);
 }
@@ -9,6 +10,17 @@
 .profile-match-stat-list dt,
 .profile-match-stat-list dd {
   margin: 0;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.profile-match-stat-list dt {
+  color: rgba(19, 32, 36, 0.82);
+}
+
+.profile-match-stat-list dd {
+  min-width: 44px;
+  text-align: right;
 }
 
 .profile-match-tile em {

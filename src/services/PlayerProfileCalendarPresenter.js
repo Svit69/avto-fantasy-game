@@ -1,8 +1,9 @@
 import { PlayerTourStatsApiClient } from "./PlayerTourStatsApiClient.js";
+import { PlayerCalendarMatchSelector } from "./PlayerCalendarMatchSelector.js";
 
 export class PlayerProfileCalendarPresenter {
-  constructor(calendarApiClient, getSelectedMonth, statsApiClient = new PlayerTourStatsApiClient()) {
-    Object.assign(this, { calendarApiClient, getSelectedMonth, statsApiClient });
+  constructor(calendarApiClient, getSelectedMonth, statsApiClient = new PlayerTourStatsApiClient(), matchSelector = new PlayerCalendarMatchSelector()) {
+    Object.assign(this, { calendarApiClient, getSelectedMonth, statsApiClient, matchSelector });
     this.calendar = null; this.profileCalendar = null;
   }
 
@@ -15,8 +16,7 @@ export class PlayerProfileCalendarPresenter {
 
   async findPlayerMonthMatches(player) {
     const calendar = this.profileCalendar || await this.#loadCalendar();
-    const tourIds = new Set(calendar.tours.filter((tour) => tour.month === this.getSelectedMonth()).map((tour) => tour.id));
-    return calendar.matches.filter((match) => tourIds.has(match.tourId) && [match.homeTeam, match.awayTeam].includes(player.getTeam()));
+    return this.matchSelector.selectPlayerMonthMatches(player, calendar, this.getSelectedMonth());
   }
 
   renderMatchDetails(profileView, player, match) {

@@ -1,10 +1,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { PlayerCatalogMerger } from "./PlayerCatalogMerger.js";
+import { PlayerTeamHistoryService } from "./PlayerTeamHistoryService.js";
 
 export class PlayerCatalogRepository {
   constructor(filePath, seedPlayers, teamBrandResolver) {
-    Object.assign(this, { filePath, seedPlayers, teamBrandResolver, merger: new PlayerCatalogMerger() });
+    Object.assign(this, { filePath, seedPlayers, teamBrandResolver, merger: new PlayerCatalogMerger(), teamHistoryService: new PlayerTeamHistoryService() });
   }
 
   async listPlayers() {
@@ -14,20 +15,16 @@ export class PlayerCatalogRepository {
     return players;
   }
 
-  async findPlayerById(playerId) {
-    return (await this.listPlayers()).find((player) => player.id === playerId) || null;
-  }
+  async findPlayerById(playerId) { return (await this.listPlayers()).find((player) => player.id === playerId) || null; }
 
-  async updatePlayerPrice(playerId, price) {
-    return this.#updatePlayer(playerId, (player) => ({ ...player, price }));
-  }
+  async updatePlayerPrice(playerId, price) { return this.#updatePlayer(playerId, (player) => ({ ...player, price })); }
 
-  async updatePlayerTeam(playerId, team) {
-    return this.#updatePlayer(playerId, (player) => ({ ...player, team, ...this.teamBrandResolver.resolveTeamAssets(team) }));
-  }
+  async updatePlayerTeam(playerId, team) { return this.#updatePlayer(playerId, (player) => this.#createTransferredPlayer(player, team)); }
 
-  async markPlayerLeftGame(playerId) {
-    return this.#updatePlayer(playerId, (player) => ({ ...player, status: "left_game" }));
+  async markPlayerLeftGame(playerId) { return this.#updatePlayer(playerId, (player) => ({ ...player, status: "left_game" })); }
+
+  #createTransferredPlayer(player, team) {
+    return this.teamHistoryService.createPlayerWithTransferredTeam(player, team, this.teamBrandResolver.resolveTeamAssets(team));
   }
 
   async #updatePlayer(playerId, updatePlayer) {

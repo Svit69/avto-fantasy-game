@@ -15,6 +15,7 @@ export class Player extends FantasyEntity {
   getLastName() { return this.#data.lastName; }
 
   getTeam() { return this.#data.team; }
+  getKnownTeams() { return [...new Set([this.#data.team, ...(this.#data.teamHistory || [])].filter(Boolean))]; }
   getLeague() { return this.#data.league; }
 
   getTeamLogo() { return this.#data.teamLogo; }

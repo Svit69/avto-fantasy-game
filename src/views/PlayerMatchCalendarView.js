@@ -1,21 +1,17 @@
 import { MatchDateTimeFormatter } from "../services/MatchDateTimeFormatter.js";
+import { PlayerCalendarMatchSelector } from "../services/PlayerCalendarMatchSelector.js";
 import { AssetImageView } from "./AssetImageView.js";
 import { PlayerMatchResultDetailView } from "./PlayerMatchResultDetailView.js";
 
 export class PlayerMatchCalendarView {
-  constructor(dateTimeFormatter = new MatchDateTimeFormatter(), imageView = new AssetImageView(), resultView = new PlayerMatchResultDetailView()) {
-    Object.assign(this, { dateTimeFormatter, imageView, resultView });
+  constructor(dateTimeFormatter = new MatchDateTimeFormatter(), imageView = new AssetImageView(), resultView = new PlayerMatchResultDetailView(), matchSelector = new PlayerCalendarMatchSelector()) {
+    Object.assign(this, { dateTimeFormatter, imageView, resultView, matchSelector });
   }
 
   render(player, calendar, selectedMonth) {
-    const matches = this.#findPlayerMonthMatches(player, calendar, selectedMonth);
+    const matches = this.matchSelector.selectPlayerMonthMatches(player, calendar, selectedMonth);
     if (!matches.length) return this.#renderEmptyCalendar(selectedMonth);
     return `<article class="profile-panel profile-calendar-panel"><h3>Календарь</h3>${this.#renderMatchTiles(player, calendar, matches)}${this.#renderMatchDetails(player, matches[0])}<a href="#">Узнать как считаются очки</a></article>`;
-  }
-
-  #findPlayerMonthMatches(player, calendar, selectedMonth) {
-    const tourIds = new Set(calendar.tours.filter((tour) => tour.month === selectedMonth).map((tour) => tour.id));
-    return calendar.matches.filter((match) => tourIds.has(match.tourId) && [match.homeTeam, match.awayTeam].includes(player.getTeam()));
   }
 
   #renderMatchTiles(player, calendar, matches) {
@@ -24,7 +20,7 @@ export class PlayerMatchCalendarView {
 
   #renderMatchTile(player, calendar, match, index) {
     const opponent = this.#getOpponentForPlayer(player, match); const details = this.#getTeamDetails(match, opponent);
-    const selected = index === 0 ? " is-selected" : ""; const venue = match.homeTeam === player.getTeam() ? "Д" : "Г";
+    const selected = index === 0 ? " is-selected" : ""; const venue = this.#isPlayerHomeTeam(player, match) ? "Д" : "Г";
     return `<button class="profile-match-tile${selected}" data-profile-match-index="${index}" type="button"><span>${this.#findTourTitle(calendar, match.tourId)}</span>${this.#renderTileScore(match)}${this.#renderLogo(details.logoPath, opponent)}<strong>${details.shortName} (${venue})</strong></button>`;
   }
 
@@ -41,7 +37,9 @@ export class PlayerMatchCalendarView {
   }
 
   #renderTileScore(match) { return match.playerMatchStats ? `<em>${match.playerMatchStats.fantasyPoints} ФО</em>` : ""; }
-  #getOpponentForPlayer(player, match) { return match.homeTeam === player.getTeam() ? match.awayTeam : match.homeTeam; }
+  #getOpponentForPlayer(player, match) { return this.#isPlayerHomeTeam(player, match) ? match.awayTeam : match.homeTeam; }
+  #isPlayerHomeTeam(player, match) { return this.#createKnownTeams(player).includes(match.homeTeam); }
+  #createKnownTeams(player) { return typeof player.getKnownTeams === "function" ? player.getKnownTeams() : [player.getTeam()]; }
   #findTourTitle(calendar, tourId) { return calendar.tours.find((tour) => tour.id === tourId)?.title ?? "Тур"; }
   #getTeamDetails(match, teamName, player) { return match.homeTeam === teamName ? match.homeTeamDetails || this.#getPlayerTeamDetails(player, teamName) : match.awayTeamDetails || this.#getPlayerTeamDetails(player, teamName); }
   #getPlayerTeamDetails(player, teamName) { return { shortName: teamName, logoPath: player?.getTeamLogo?.() || "/assets/avto_logo.png" }; }

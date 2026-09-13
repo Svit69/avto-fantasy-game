@@ -7,8 +7,8 @@ export class KhlProtocolPlayerMatcher {
   }
 
   findPlayer(row) {
-    const teamPlayers = this.players.filter((player) => this.#sameTeam(player.team, row.team));
-    return this.#findPlayerByName(teamPlayers, row) || this.#findTrustedPlayerByNumber(teamPlayers, row);
+    const teamPlayers = this.players.filter((player) => this.#hasTeamInHistory(player, row.team));
+    return this.#findPlayerByName(teamPlayers, row) || this.#findTrustedPlayerByNumber(teamPlayers, row) || this.#findUniquePlayerByName(row);
   }
 
   #findPlayerByName(teamPlayers, row) {
@@ -17,6 +17,19 @@ export class KhlProtocolPlayerMatcher {
 
   #findTrustedPlayerByNumber(teamPlayers, row) {
     return teamPlayers.find((player) => this.nameMatcher.canTrustNumber(player, row)) || null;
+  }
+
+  #findUniquePlayerByName(row) {
+    const matchedPlayers = this.players.filter((player) => this.nameMatcher.isSamePlayer(player, row.name));
+    return matchedPlayers.length === 1 ? matchedPlayers[0] : null;
+  }
+
+  #hasTeamInHistory(player, rowTeam) {
+    return this.#createKnownTeams(player).some((team) => this.#sameTeam(team, rowTeam));
+  }
+
+  #createKnownTeams(player) {
+    return [...new Set([player.team, ...(player.teamHistory || [])].filter(Boolean))];
   }
 
   #sameTeam(playerTeam, rowTeam) {
