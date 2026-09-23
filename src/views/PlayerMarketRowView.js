@@ -18,7 +18,7 @@ export class PlayerMarketRowView {
       </div>
       <div class="market-stats-scroll">
         <span><b>${player.getFormattedPrice()}</b><small>${this.#formatPosition(player.getPosition())}</small></span>
-        <span>${player.getPoints()}</span><span>${player.getSelectionPercent()}%</span><span>0</span><span>0</span>
+        <span>${this.#renderPoints(player, teamRoster)}</span><span>${player.getSelectionPercent()}%</span><span>0</span><span>0</span>
       </div>
     </button>`;
   }
@@ -31,6 +31,8 @@ export class PlayerMarketRowView {
     const codes = { нападающий: "НАП", защитник: "ЗАЩ", вратарь: "ВРТ" };
     return codes[position] ?? position;
   }
+
+  #renderPoints(player, teamRoster) { return teamRoster.getTourAccessState()?.isLocked ? player.getPoints() : "—"; }
 
   #renderAvatar(player) {
     return this.imageView.renderPlayerImage({ src: player.getImage(), alt: player.getFullName() });

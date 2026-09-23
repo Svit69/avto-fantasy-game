@@ -19,7 +19,8 @@ export class RosterDomRenderer {
     const slot = this.teamRoster.getSlotByIndex(slotIndex);
 
     if (!slot || !slotElement) return;
-    slotElement.innerHTML = this.slotRenderer.renderSlotContent(slot, orderIndex);
+    const showPoints = this.teamRoster.getTourAccessState()?.isLocked;
+    slotElement.innerHTML = this.slotRenderer.renderSlotContent(slot, orderIndex, showPoints);
   }
 
   renderFooter() {

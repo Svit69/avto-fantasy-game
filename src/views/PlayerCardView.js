@@ -14,8 +14,8 @@ export class PlayerCardView {
         ${this.removeButtonView.render(slotIndex, props.editable)}
         ${this.imageView.renderAsset({ className: "card-layer card-bottom-layer", src: "/assets/card_bottom_layer.png", loading: "eager", decoding: "sync", priority: "high" })}
         <div class="card-live-layer">
-          <div class="card-score-block">
-            <div class="card-points">${props.points}</div>
+          <div class="card-score-block ${props.showPoints === false ? "is-points-hidden" : ""}">
+            <div class="card-points">${props.showPoints === false ? "" : props.points}</div>
             <div class="card-position">${this.#formatPosition(props.position)}</div>
           </div>
           ${this.imageView.renderPlayerImage({ className: "card-player-image", src: props.image, alt: `${props.name} ${props.secondName}`, loading: "eager", priority: "high" })}

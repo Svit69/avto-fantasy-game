@@ -18,6 +18,8 @@
   line-height: 0.95;
 }
 
+.card-score-block.is-points-hidden .card-points { display: none; }
+
 .card-position {
   padding: 1px 5px 4px;
   background: rgba(0, 0, 0, 0.24);

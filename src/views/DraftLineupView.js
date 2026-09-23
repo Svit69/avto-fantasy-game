@@ -8,7 +8,7 @@ export class DraftLineupView {
   render(teamRoster) {
     return Object.entries(POSITION_LABELS).map(([key, label], index) => {
       const slots = this.#selectSlotsByPosition(teamRoster, key);
-      return this.#renderTacticalLine(key, label, slots, index);
+      return this.#renderTacticalLine(key, label, slots, index, teamRoster.getTourAccessState()?.isLocked);
     }).join("");
   }
 
@@ -18,20 +18,20 @@ export class DraftLineupView {
     });
   }
 
-  #renderTacticalLine(positionKey, label, slots, lineIndex) {
+  #renderTacticalLine(positionKey, label, slots, lineIndex, showPoints) {
     return `
       <section class="lineup-section lineup-${positionKey}">
         <h2 class="line-label">${this.#formatLineLabel(label, lineIndex)}</h2>
         <div class="rink-marker"></div>
-        <div class="lineup-grid">${this.#renderSlots(slots)}</div>
+        <div class="lineup-grid">${this.#renderSlots(slots, showPoints)}</div>
       </section>
     `;
   }
 
-  #renderSlots(slots) {
+  #renderSlots(slots, showPoints) {
     return slots.map((slot, index) => {
       const slotIndex = slot.getIndex();
-      const slotContent = this.rosterSlotDomRenderer.renderSlotContent(slot, index);
+      const slotContent = this.rosterSlotDomRenderer.renderSlotContent(slot, index, showPoints);
       return `<div class="lineup-slot" data-roster-slot="${slotIndex}" data-slot-order="${index}">${slotContent}</div>`;
     }).join("");
   }
