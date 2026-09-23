@@ -2,11 +2,10 @@ import { INITIAL_PLAYERS } from "../data/players.js";
 import { PlayerSelectionState } from "../models/PlayerSelectionState.js";
 import { ApplicationShellRenderer } from "../services/ApplicationShellRenderer.js";
 import { ApplicationViewFactory } from "../services/ApplicationViewFactory.js"; import { FantasyCalendarApiClient } from "../services/FantasyCalendarApiClient.js";
-import { MarketStatsScrollSynchronizer } from "../services/MarketStatsScrollSynchronizer.js";
+import { MarketStatsScrollSynchronizer } from "../services/MarketStatsScrollSynchronizer.js"; import { InitialTourSelectionService } from "../services/InitialTourSelectionService.js";
 import { PlayerCatalogApiClient } from "../services/PlayerCatalogApiClient.js";
 import { PlayerFactory } from "../services/PlayerFactory.js"; import { PlayerProfileCalendarPresenter } from "../services/PlayerProfileCalendarPresenter.js"; import { PlayerSelectionStatsCoordinator } from "../services/PlayerSelectionStatsCoordinator.js"; import { PlayerTourPointsCoordinator } from "../services/PlayerTourPointsCoordinator.js";
-import { RosterFactory } from "../services/RosterFactory.js";
-import { RosterPersistenceCoordinator } from "../services/RosterPersistenceCoordinator.js";
+import { RosterFactory } from "../services/RosterFactory.js"; import { RosterPersistenceCoordinator } from "../services/RosterPersistenceCoordinator.js";
 import { RosterSubmissionApiClient } from "../services/RosterSubmissionApiClient.js";
 import { TourDeadlinePolicy } from "../services/TourDeadlinePolicy.js";
 import { PlayerProfileModalView } from "../views/PlayerProfileModalView.js"; import { AuthGateController } from "./AuthGateController.js"; import { DeadlineCountdownController } from "./DeadlineCountdownController.js";
@@ -23,9 +22,10 @@ export class AppController {
     this.shellRenderer.completeLoading();
   }
   async #initializeAuthorizedApplication(authProfile) {
-    const players = new PlayerFactory().createPlayersFromCatalog(await new PlayerCatalogApiClient(INITIAL_PLAYERS).loadPlayerCatalog()); const selectionStats = new PlayerSelectionStatsCoordinator(); const tourPoints = new PlayerTourPointsCoordinator(); await Promise.all([selectionStats.applySelectionStats(players, this.#getSelectedMonth()), tourPoints.applyTourPoints(players, this.#getSelectedMonth())]);
     const rosterFactory = new RosterFactory(); const rosterApiClient = new RosterSubmissionApiClient();
     const calendarApiClient = new FantasyCalendarApiClient(); const deadlinePolicy = new TourDeadlinePolicy();
+    await new InitialTourSelectionService(calendarApiClient, rosterApiClient, deadlinePolicy.tourSchedulePolicy).applyInitialTourSelection(this.rootElement.querySelector(".month-select"));
+    const players = new PlayerFactory().createPlayersFromCatalog(await new PlayerCatalogApiClient(INITIAL_PLAYERS).loadPlayerCatalog()); const selectionStats = new PlayerSelectionStatsCoordinator(); const tourPoints = new PlayerTourPointsCoordinator(undefined, calendarApiClient); await Promise.all([selectionStats.applySelectionStats(players, this.#getSelectedMonth()), tourPoints.applyTourPoints(players, this.#getSelectedMonth())]);
     const persistence = new RosterPersistenceCoordinator(rosterFactory, rosterApiClient, calendarApiClient, deadlinePolicy);
     const teamRoster = await persistence.createInitialRoster(players, this.#getSelectedMonth());
     const viewFactory = new ApplicationViewFactory();
