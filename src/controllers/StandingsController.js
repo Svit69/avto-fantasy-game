@@ -16,7 +16,6 @@ export class StandingsController {
     if (event.target.closest("[data-open-standings]")) return this.#openStandings();
     if (event.target.closest("[data-close-standings]")) return this.#closeStandings();
     if (event.target.closest("[data-back-standings]")) return this.#renderStandings();
-    if (event.target.closest("[data-scroll-current-standing]")) return this.#scrollToCurrentUser();
     if (event.target.closest("[data-view-manager-roster]")) return this.#openManagerRoster(event);
   }
 
@@ -32,9 +31,6 @@ export class StandingsController {
     this.#getRoot().innerHTML = "";
   }
 
-  #scrollToCurrentUser() {
-    this.rootElement.querySelector(".standings-row.is-current-user")?.scrollIntoView({ block: "center", behavior: "smooth" });
-  }
   #openManagerRoster(event) {
     const userId = event.target.closest("[data-view-manager-roster]").dataset.viewManagerRoster;
     const entry = this.standings?.entries.find((item) => item.userId === userId);
