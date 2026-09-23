@@ -1,17 +1,20 @@
 import { PlayerTourStatsApiClient } from "./PlayerTourStatsApiClient.js";
 import { PlayerCalendarMatchSelector } from "./PlayerCalendarMatchSelector.js";
+import { PlayerStatsTourResolver } from "./PlayerStatsTourResolver.js";
 
 export class PlayerProfileCalendarPresenter {
-  constructor(calendarApiClient, getSelectedMonth, statsApiClient = new PlayerTourStatsApiClient(), matchSelector = new PlayerCalendarMatchSelector()) {
-    Object.assign(this, { calendarApiClient, getSelectedMonth, statsApiClient, matchSelector });
+  constructor(calendarApiClient, getSelectedMonth, statsApiClient = new PlayerTourStatsApiClient(), matchSelector = new PlayerCalendarMatchSelector(), statsTourResolver = new PlayerStatsTourResolver()) {
+    Object.assign(this, { calendarApiClient, getSelectedMonth, statsApiClient, matchSelector, statsTourResolver });
     this.calendar = null; this.profileCalendar = null;
   }
 
   async renderPlayerProfile(profileView, player, selected) {
     const month = this.getSelectedMonth();
-    const [calendar, tourStats] = await Promise.all([this.#loadCalendar(), this.statsApiClient.loadPlayerTourStats(player.getId(), month)]);
+    const calendar = await this.#loadCalendar();
+    const statsMonth = this.statsTourResolver.resolveStatsMonth(calendar, month);
+    const tourStats = await this.statsApiClient.loadPlayerTourStats(player.getId(), statsMonth);
     this.profileCalendar = this.#attachPlayerMatchStats(calendar, tourStats);
-    return profileView.render(player, selected, this.profileCalendar, month, tourStats);
+    return profileView.render(player, selected, this.profileCalendar, month, tourStats, statsMonth);
   }
 
   async findPlayerMonthMatches(player) {

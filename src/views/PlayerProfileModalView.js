@@ -8,8 +8,8 @@ export class PlayerProfileModalView {
     Object.assign(this, { calendarView, pastTourView, imageView, statStripView });
   }
 
-  render(player, selected, calendar, selectedMonth, tourStats) {
-    const statsTitle = this.#resolveStatsTitle(calendar, selectedMonth);
+  render(player, selected, calendar, selectedMonth, tourStats, statsMonth = selectedMonth) {
+    const statsTitle = this.#resolveStatsTitle(calendar, selectedMonth, statsMonth);
     return `
       <div class="player-profile-scrim" data-close-player-profile></div>
       <section class="player-profile-modal" role="dialog" aria-modal="true" aria-label="${player.getFullName()}">
@@ -41,7 +41,8 @@ export class PlayerProfileModalView {
     const labels = { нападающий: "НАП", защитник: "ЗАЩ", вратарь: "ВРТ" };
     return labels[position] ?? position;
   }
-  #resolveStatsTitle(calendar, month) {
+  #resolveStatsTitle(calendar, month, statsMonth) {
+    if (statsMonth !== month) return "Прошлый тур";
     const tour = calendar.tours.find((item) => item.month === month);
     const now = Date.now(); const started = Date.parse(tour?.deadlineAt || tour?.startsAt) <= now;
     return started && Date.parse(tour?.endsAt || tour?.deadlineAt) >= now ? "Текущий тур" : "Прошлый тур";
