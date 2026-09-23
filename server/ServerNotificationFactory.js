@@ -1,10 +1,8 @@
 import path from "node:path";
-import { CompositeNotificationPlanner } from "./CompositeNotificationPlanner.js";
-import { DailyPlayerPointsNotificationPlanner } from "./DailyPlayerPointsNotificationPlanner.js";
 import { DraftNotificationDispatcher } from "./DraftNotificationDispatcher.js";
 import { DraftNotificationMessageFactory } from "./DraftNotificationMessageFactory.js";
-import { DraftNotificationPlanner } from "./DraftNotificationPlanner.js";
 import { DraftNotificationWorker } from "./DraftNotificationWorker.js";
+import { NotificationPlannerFactory } from "./NotificationPlannerFactory.js";
 import { NotificationSentRepository } from "./NotificationSentRepository.js";
 import { NotificationRateLimiter } from "./NotificationRateLimiter.js";
 import { RosterChangeNotificationService } from "./RosterChangeNotificationService.js";
@@ -16,21 +14,12 @@ export class ServerNotificationFactory {
   createDraftNotificationWorker() {
     const storage = this.#createStorageFactory(); const userRepository = storage.createUserRepository();
     const calendarRepository = storage.createCalendarRepository();
-    return new DraftNotificationWorker({ userRepository, calendarRepository, planner: this.#createPlanner(), dispatcher: this.#createDispatcher(), logger: this.logger });
+    return new DraftNotificationWorker({ userRepository, calendarRepository,
+      planner: new NotificationPlannerFactory(storage).createPlanner(), dispatcher: this.#createDispatcher(), logger: this.logger });
   }
 
   createRosterChangeNotificationService(userRepository, rosterRepository) {
     return new RosterChangeNotificationService({ userRepository, rosterRepository, dispatcher: this.#createDispatcher(), messageFactory: new DraftNotificationMessageFactory() });
-  }
-
-  #createPlanner() {
-    const storage = this.#createStorageFactory(); const rosterRepository = storage.createRosterRepository();
-    const windowMs = Number(process.env.NOTIFICATION_WINDOW_MS || 3900000);
-    return new CompositeNotificationPlanner([
-      new DraftNotificationPlanner(rosterRepository, new DraftNotificationMessageFactory(), windowMs),
-      new DailyPlayerPointsNotificationPlanner({ rosterRepository, matchDataRepository: storage.createMatchDataRepository(),
-        playerCatalogRepository: storage.createPlayerCatalogRepository(), windowMs }),
-    ]);
   }
 
   #createDispatcher() {

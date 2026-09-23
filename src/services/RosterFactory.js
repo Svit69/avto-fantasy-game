@@ -2,6 +2,7 @@ import { RosterSlot } from "../models/RosterSlot.js";
 import { TeamRoster } from "../models/TeamRoster.js";
 import { RosterLifecycle, ROSTER_MODES } from "../models/RosterLifecycle.js";
 import { RosterPlayerPriceOverride } from "../models/RosterPlayerPriceOverride.js";
+import { FANTASY_ROSTER_RULES } from "../config/FantasyRosterRules.js";
 
 export class RosterFactory {
   createDefaultRoster(players) {
@@ -11,7 +12,7 @@ export class RosterFactory {
   createEmptyRoster(mode = ROSTER_MODES.draft) {
     const positions = ["нападающий", "нападающий", "нападающий", "защитник", "защитник", "вратарь"];
     const slots = positions.map((position, index) => new RosterSlot(position, null, index));
-    return new TeamRoster(80, slots, new RosterLifecycle(mode));
+    return new TeamRoster(FANTASY_ROSTER_RULES.budgetLimit, slots, new RosterLifecycle(mode));
   }
 
   createRosterFromSavedRoster(players, savedRoster, mode = ROSTER_MODES.confirmed) {
@@ -19,7 +20,7 @@ export class RosterFactory {
     const slots = savedRoster.slots.map((slot) => new RosterSlot(
       slot.position, this.#findSavedPlayer(players, slot), slot.slotIndex,
     ));
-    return new TeamRoster(80, slots, new RosterLifecycle(mode));
+    return new TeamRoster(FANTASY_ROSTER_RULES.budgetLimit, slots, new RosterLifecycle(mode));
   }
 
   #findSavedPlayer(players, slot) {

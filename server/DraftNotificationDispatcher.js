@@ -19,7 +19,9 @@ export class DraftNotificationDispatcher {
 
   async #dispatchNotificationJob(job) {
     try {
-      const response = await this.botClient.callMethod("sendMessage", { chat_id: job.userId, text: job.text });
+      const payload = { chat_id: job.userId, text: job.text };
+      if (job.replyMarkup) payload.reply_markup = job.replyMarkup;
+      const response = await this.botClient.callMethod("sendMessage", payload);
       if (!response.ok) return false;
       await this.sentRepository.markNotificationAsSent(job.userId, job.key);
       this.logger.info("draft_notification_sent", { userId: job.userId, key: job.key });

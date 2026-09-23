@@ -1,6 +1,7 @@
 import { RosterLifecycle } from "./RosterLifecycle.js";
+import { FANTASY_ROSTER_RULES } from "../config/FantasyRosterRules.js";
 export class TeamRoster {
-  static CLUB_PLAYER_LIMIT = 3;
+  static CLUB_PLAYER_LIMIT = FANTASY_ROSTER_RULES.clubPlayerLimit;
   #budgetLimit;
   #slots;
   #lifecycle;
