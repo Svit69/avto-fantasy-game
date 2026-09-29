@@ -1,6 +1,6 @@
+import { DocumentScrollLock } from "../services/DocumentScrollLock.js";
 export class PlayerLongPressController {
-  constructor(rootElement, players, teamRoster, profileView, calendarPresenter) {
-    Object.assign(this, { rootElement, players, teamRoster, profileView, calendarPresenter });
+  constructor(rootElement, players, teamRoster, profileView, calendarPresenter, scrollLock = new DocumentScrollLock()) { Object.assign(this, { rootElement, players, teamRoster, profileView, calendarPresenter, scrollLock });
     this.longPressTimer = null; this.pointerStart = null; this.shouldSuppressNextClick = false; this.currentProfilePlayer = null; this.currentProfileMatches = [];
   }
   connectPlayerProfileActions() {
@@ -33,12 +33,12 @@ export class PlayerLongPressController {
   async #openProfile(playerId) {
     const player = this.players.find((candidate) => candidate.getId() === playerId);
     if (!player) return;
-    this.shouldSuppressNextClick = true; document.body.classList.add("is-profile-open");
+    this.shouldSuppressNextClick = true; this.scrollLock.lock("is-profile-open");
     this.currentProfilePlayer = player; const selected = this.teamRoster.getSelectedPlayerIds().includes(playerId);
     this.#getProfileRoot().innerHTML = await this.calendarPresenter.renderPlayerProfile(this.profileView, player, selected);
     this.currentProfileMatches = await this.calendarPresenter.findPlayerMonthMatches(player);
   }
-  #closeProfile() { document.body.classList.remove("is-profile-open"); this.#getProfileRoot().innerHTML = ""; }
+  #closeProfile() { this.scrollLock.unlock(); this.#getProfileRoot().innerHTML = ""; }
   #getProfileRoot() { return this.rootElement.querySelector("[data-player-profile-root]"); }
   #cancelPendingOpening() { clearTimeout(this.longPressTimer); this.longPressTimer = null; this.pointerStart = null; }
   #selectProfileMatch(matchTile) {

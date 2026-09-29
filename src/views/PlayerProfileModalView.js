@@ -20,16 +20,16 @@ export class PlayerProfileModalView {
           </div>
           <button type="button" data-close-player-profile aria-label="Закрыть">×</button>
         </header>
-        ${this.#renderActionRow(player, selected)}
-        ${this.statStripView.render(player)}
-        <div class="profile-body">${this.calendarView.render(player, calendar, selectedMonth)}${this.pastTourView.render(player, tourStats, statsTitle)}</div>
+        <div class="player-profile-content">
+          ${this.#renderActionRow(player, selected)}
+          ${this.statStripView.render(player)}
+          <div class="profile-body">${this.calendarView.render(player, calendar, selectedMonth)}${this.pastTourView.render(player, tourStats, statsTitle)}</div>
+        </div>
       </section>`;
   }
-
   #renderAvatar(player) {
     return this.imageView.renderPlayerImage({ src: player.getImage(), alt: player.getFullName(), loading: "eager", priority: "high" });
   }
-
   #renderActionRow(player, selected) {
     const selectData = selected ? "" : `data-select-player="${player.getId()}"`;
     return `<button class="profile-action-row" type="button" ${selectData} ${selected ? "disabled" : ""}>

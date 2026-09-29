@@ -5,3 +5,8 @@ body.is-roster-confirmation-open,
 body.is-scoring-guide-open {
   overflow: hidden;
 }
+
+body.is-document-scroll-locked {
+  position: fixed;
+  width: 100%;
+}

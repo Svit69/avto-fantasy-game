@@ -1,0 +1,18 @@
+.player-profile-modal {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.profile-hero {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.player-profile-content {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
