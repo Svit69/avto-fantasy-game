@@ -26,6 +26,7 @@
 }
 
 .card-name {
+  translate: 0 5%;
   font-family: "Heading Now 35 Medium", "Arial Narrow", Impact, sans-serif;
   color: #241C14;
   font-size: clamp(18px, 4.85vw, 28px);
