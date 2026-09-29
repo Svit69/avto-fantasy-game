@@ -40,6 +40,7 @@
 .manager-menu span { color: var(--text-muted); font-size: 13px; text-transform: uppercase; }
 
 .manager-menu strong { font-size: 24px; line-height: 1.1; }
+.manager-menu .manager-menu-help button { width: 100%; min-height: 48px; padding: 0 14px; border-color: rgba(240, 31, 45, 0.68); font-size: 15px; font-weight: 800; text-align: left; }
 
 @keyframes manager-menu-enter {
   from { transform: translateX(-100%); }

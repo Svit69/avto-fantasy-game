@@ -10,7 +10,7 @@ import { RosterSubmissionApiClient } from "../services/RosterSubmissionApiClient
 import { TourDeadlinePolicy } from "../services/TourDeadlinePolicy.js";
 import { PlayerProfileModalView } from "../views/PlayerProfileModalView.js"; import { AuthGateController } from "./AuthGateController.js"; import { DeadlineCountdownController } from "./DeadlineCountdownController.js";
 import { ManagerMenuController } from "./ManagerMenuController.js"; import { MonthSelectAvailabilityController } from "./MonthSelectAvailabilityController.js";
-import { OnboardingController } from "./OnboardingController.js"; import { PlayerLongPressController } from "./PlayerLongPressController.js"; import { PlayerSelectionController } from "./PlayerSelectionController.js"; import { StandingsController } from "./StandingsController.js";
+import { ApplicationHelpController } from "./ApplicationHelpController.js"; import { OnboardingController } from "./OnboardingController.js"; import { PlayerLongPressController } from "./PlayerLongPressController.js"; import { PlayerSelectionController } from "./PlayerSelectionController.js"; import { StandingsController } from "./StandingsController.js";
 import { RosterSelectionController } from "./RosterSelectionController.js";
 export class AppController {
   constructor(rootElement, shellRenderer = new ApplicationShellRenderer()) { Object.assign(this, { rootElement, shellRenderer }); }
@@ -36,7 +36,7 @@ export class AppController {
     persistence.connectMonthRosterLoading(this.rootElement, players, teamRoster, rosterDomRenderer, this.#getSelectedMonth.bind(this)); selectionStats.connectMonthSelectionStatsLoading(this.rootElement, players, this.#getSelectedMonth.bind(this)); tourPoints.connectMonthTourPointsLoading(this.rootElement, players, rosterDomRenderer, this.#getSelectedMonth.bind(this));
     new RosterSelectionController(this.rootElement, teamRoster, rosterDomRenderer, rosterApiClient, this.#getSelectedMonth.bind(this), () => selectionStats.applySelectionStats(players, this.#getSelectedMonth())).connectRosterActions();
     this.#connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory); this.#connectPlayerProfiles(players, teamRoster); new StandingsController(this.rootElement, this.#getSelectedMonth.bind(this), players).connectStandingsActions();
-    new OnboardingController(this.rootElement, authProfile?.userId).connectOnboarding();
+    new OnboardingController(this.rootElement, authProfile?.userId).connectOnboarding(); new ApplicationHelpController(this.rootElement).connectHelpActions();
   }
   #connectPlayerSelection(players, teamRoster, rosterDomRenderer, viewFactory) {
     const drawerView = viewFactory.createPlayerSelectionDrawerView();

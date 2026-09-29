@@ -1,10 +1,11 @@
 export class RosterDomRenderer {
-  constructor(rootElement, teamRoster, draftFieldView, footerView, slotRenderer) {
+  constructor(rootElement, teamRoster, draftFieldView, footerView, slotRenderer, confirmationView) {
     this.rootElement = rootElement;
     this.teamRoster = teamRoster;
     this.draftFieldView = draftFieldView;
     this.footerView = footerView;
     this.slotRenderer = slotRenderer;
+    this.confirmationView = confirmationView;
   }
 
   renderRosterSections() {
@@ -26,5 +27,12 @@ export class RosterDomRenderer {
   renderFooter() {
     this.rootElement.querySelector("[data-roster-footer]").innerHTML =
       this.footerView.render(this.teamRoster);
+  }
+
+  renderRosterConfirmation(month) {
+    this.rootElement.querySelector("[data-roster-confirmation-root]").innerHTML =
+      this.confirmationView.render(this.teamRoster.getTourAccessState(), month);
+    document.body.classList.add("is-roster-confirmation-open");
+    this.rootElement.querySelector(".roster-confirmation-actions button")?.focus();
   }
 }

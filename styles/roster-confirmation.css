@@ -1,0 +1,19 @@
+.roster-confirmation-backdrop { position: fixed; inset: 0; z-index: 150; background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(6px); }
+.roster-confirmation { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 14px); z-index: 151; width: min(calc(100vw - 24px), 430px); max-height: calc(100dvh - 28px); overflow-y: auto; transform: translateX(-50%); padding: 24px 20px 18px; color: var(--text-main); background: linear-gradient(160deg, #1D1D1E, #350707 58%, #840F0E); border: 1px solid var(--line); box-shadow: var(--shadow); animation: roster-confirmation-enter 220ms ease-out both; }
+.roster-confirmation-close { position: absolute; top: 12px; right: 12px; width: 44px; height: 44px; border: 1px solid var(--line); color: var(--text-main); background: rgba(253, 255, 255, 0.06); font-size: 28px; }
+.roster-confirmation-kicker { margin: 0 52px 6px 0; color: var(--accent); font-size: 13px; font-weight: 800; text-transform: uppercase; }
+.roster-confirmation h2 { margin: 0 52px 8px 0; font: 30px/1 "HeadingNowTrial-27Extrabold", Impact, sans-serif; text-transform: uppercase; }
+.roster-confirmation-lead { margin: 0; color: rgba(253, 255, 255, 0.8); font-size: 16px; line-height: 1.45; }
+.roster-confirmation-steps { display: grid; gap: 0; margin: 20px 0; padding: 0; list-style: none; counter-reset: confirmation-step; }
+.roster-confirmation-steps li { position: relative; display: grid; gap: 3px; min-height: 58px; padding: 8px 0 10px 42px; border-top: 1px solid var(--line); counter-increment: confirmation-step; }
+.roster-confirmation-steps li::before { content: counter(confirmation-step); position: absolute; left: 0; top: 9px; display: grid; width: 28px; height: 28px; place-items: center; color: #fff; background: var(--accent); font-weight: 900; }
+.roster-confirmation-steps b { font-size: 15px; }
+.roster-confirmation-steps span { color: var(--text-muted); font-size: 14px; line-height: 1.4; }
+.roster-confirmation-actions { display: grid; gap: 10px; }
+.roster-confirmation-actions button { min-height: 50px; border: 1px solid var(--line); color: var(--text-main); background: rgba(253, 255, 255, 0.07); font-weight: 800; }
+.roster-confirmation-actions button:first-child { background: linear-gradient(180deg, #F1212E, #B70412); }
+.roster-confirmation button { cursor: pointer; }
+.roster-confirmation button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.roster-confirmation button:active { opacity: 0.82; }
+@keyframes roster-confirmation-enter { from { opacity: 0; transform: translate(-50%, 18px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@media (prefers-reduced-motion: reduce) { .roster-confirmation { animation: none; } }

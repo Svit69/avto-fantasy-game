@@ -10,12 +10,13 @@ import { PlayerSelectionDrawerView } from "../views/PlayerSelectionDrawerView.js
 import { SelectionSlotStripView } from "../views/SelectionSlotStripView.js";
 import { RosterDomRenderer } from "./RosterDomRenderer.js";
 import { RosterSlotDomRenderer } from "./RosterSlotDomRenderer.js";
+import { RosterConfirmationView } from "../views/RosterConfirmationView.js";
 
 export class ApplicationViewFactory {
   createRosterDomRenderer(rootElement, teamRoster) {
     const slotRenderer = this.createRosterSlotDomRenderer();
     const draftFieldView = this.createDraftFieldView(slotRenderer);
-    return new RosterDomRenderer(rootElement, teamRoster, draftFieldView, new FooterView(), slotRenderer);
+    return new RosterDomRenderer(rootElement, teamRoster, draftFieldView, new FooterView(), slotRenderer, new RosterConfirmationView());
   }
 
   createDraftFieldView(slotRenderer) {

@@ -33,6 +33,7 @@ export class RosterSelectionController {
     await this.afterRosterSubmit();
     this.teamRoster.markConfirmed(); this.#animateRosterLock();
     this.rosterDomRenderer.renderRosterSections();
+    this.rosterDomRenderer.renderRosterConfirmation(this.getSelectedMonth());
   }
 
   #enableRosterEditing() {

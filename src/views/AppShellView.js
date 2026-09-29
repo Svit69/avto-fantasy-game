@@ -18,6 +18,8 @@ export class AppShellView {
         <div data-standings-root></div>
         <div data-auth-root></div>
         <div data-onboarding-root></div>
+        <div data-roster-confirmation-root></div>
+        <div data-scoring-guide-root></div>
       </div>
     `;
   }

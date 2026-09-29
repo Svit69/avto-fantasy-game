@@ -1,5 +1,7 @@
 body.is-drawer-open,
 body.is-profile-open,
-body.is-standings-open {
+body.is-standings-open,
+body.is-roster-confirmation-open,
+body.is-scoring-guide-open {
   overflow: hidden;
 }

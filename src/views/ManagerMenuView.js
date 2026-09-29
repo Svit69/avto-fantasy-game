@@ -15,6 +15,9 @@ export class ManagerMenuView {
           <span>Место в текущем туре:</span>
           <strong>${profile.monthlyPlace || "—"}</strong>
         </section>
+        <section class="manager-menu-help">
+          <button type="button" data-open-scoring-guide>Как начисляются ФО</button>
+        </section>
       </aside>
     `;
   }
