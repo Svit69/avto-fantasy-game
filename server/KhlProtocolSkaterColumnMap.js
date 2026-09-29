@@ -3,7 +3,7 @@ export class KhlProtocolSkaterColumnMap {
     this.columns = Object.freeze(columns || {
       goals: [156, 167],
       assists: [168, 175],
-      penalties: [206, 216],
+      penalties: [211, 228],
       shotsOnGoal: [406, 420],
       blockedShots: [445, 456],
       hits: [456, 469],
@@ -38,6 +38,8 @@ export class KhlProtocolSkaterColumnMap {
     if (index < 0) return null;
     const previous = headers[index - 1]?.x ?? headers[index].x - 10;
     const next = headers[index + 1]?.x ?? headers[index].x + 10;
-    return [Math.floor((previous + headers[index].x) / 2), Math.floor((headers[index].x + next) / 2)];
+    const center = headers[index].x;
+    return [Math.max(Math.floor((previous + center) / 2), center - 9),
+      Math.min(Math.floor((center + next) / 2), center + 9)];
   }
 }

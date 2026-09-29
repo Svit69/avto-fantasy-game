@@ -6,8 +6,10 @@ import { SkaterFantasyPointsCalculator } from "../src/scoring/SkaterFantasyPoint
 
 export class ProtocolImportRegressionSelfTest {
   run() {
-    const row = new KhlProtocolSkaterTableParser().parseSkaterRows(this.#createProtocolContent(), "МХК Авто")[0];
-    this.#assert(row?.appearances === 1 && row.assists === 1 && row.shotsOnGoal === 3 && row.hits === 2 && row.takeaways === 2, "pdf_columns");
+    const rows = new KhlProtocolSkaterTableParser().parseSkaterRows(this.#createProtocolContent(), "МХК Авто");
+    const row = rows.find((item) => item.number === "23");
+    this.#assert(row?.appearances === 1 && row.penalties === 0 && row.assists === 1 && row.shotsOnGoal === 3 && row.hits === 2 && row.takeaways === 2, "pdf_columns");
+    this.#assert(rows.find((item) => item.number === "51")?.penalties === 1, "penalty_minutes");
     const points = new SkaterFantasyPointsCalculator().calculateMatchFantasyPoints({
       position: "защитник", league: "МХЛ", team: "МХК Авто", events: row,
     });
@@ -27,8 +29,10 @@ export class ProtocolImportRegressionSelfTest {
     const header = [["МХК Авто", 50], ["Ш", 160], ["А", 170], ["Штр", 210], ["Б", 398], ["Бс", 410],
       ["Бм", 425], ["БлБ", 450], ["СПр", 465], ["ОТБ", 480], ["ПХТ", 500]].map(([text, x]) => ({ text, x, y: 500 }));
     const player = [["23", 20], ["з", 35], ["Гамзаков Михаил", 60], ["1", 170], ["3", 410], ["1", 425],
-      ["2", 465], ["2", 480], ["12:00", 540]].map(([text, x]) => ({ text, x, y: 490 }));
-    return { pages: [[...header, ...player]] };
+      ["2", 465], ["2", 480], ["12:00", 240]].map(([text, x]) => ({ text, x, y: 490 }));
+    const penalizedPlayer = [["51", 20], ["н", 35], ["Пимин Александр", 60], ["2", 214], ["18:31", 240]]
+      .map(([text, x]) => ({ text, x, y: 480 }));
+    return { pages: [[...header, ...player, ...penalizedPlayer]] };
   }
 
   #assert(condition, name) { if (!condition) throw new Error(`protocol_import_self_test_failed:${name}`); }
