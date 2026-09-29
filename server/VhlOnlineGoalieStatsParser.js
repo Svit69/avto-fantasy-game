@@ -10,7 +10,8 @@ export class VhlOnlineGoalieStatsParser {
     const teamSide = match.homeTeam === teamName ? "home" : "away";
     const opponentShots = teamSide === "home" ? totals.awayShotsOnGoal : totals.homeShotsOnGoal;
     const goalsAgainst = teamSide === "home" ? totals.awayGoals : totals.homeGoals;
-    return [{ ...goalie, team: teamName, position: "вр", saves: Math.max(opponentShots - goalsAgainst, 0), goalsAgainst }];
+    return [{ ...goalie, team: teamName, position: "вр", appearances: 1,
+      saves: Math.max(opponentShots - goalsAgainst, 0), goalsAgainst }];
   }
 
   #findStartingGoalie(html, teamName) {

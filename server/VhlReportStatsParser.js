@@ -30,13 +30,13 @@ export class VhlReportStatsParser {
   }
 
   #createGoalieRow(cells, teamName) {
-    return { team: teamName, number: cells[0], name: cells[1], position: "вр", goalsAgainst: this.#num(cells[7]),
+    return { team: teamName, number: cells[0], name: cells[1], position: "вр", appearances: this.#num(cells[2]), goalsAgainst: this.#num(cells[7]),
       saves: this.#num(cells[8]), assists: this.#num(cells[11]), penalties: Math.ceil(this.#num(cells[13]) / 2) };
   }
 
   #createSkaterRow(cells, title, teamName) {
     const goals = this.#num(cells[3]);
-    return { team: teamName, number: cells[0], name: cells[1], position: title === "Защитники" ? "з" : "н",
+    return { team: teamName, number: cells[0], name: cells[1], position: title === "Защитники" ? "з" : "н", appearances: this.#num(cells[2]),
       goals, assists: this.#num(cells[4]), penalties: Math.ceil(this.#num(cells[7]) / 2),
       shotsOnGoal: Math.max(this.#num(cells[14]) - goals, 0), hits: this.#num(cells[21]), blockedShots: this.#num(cells[22]) };
   }

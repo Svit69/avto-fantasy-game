@@ -16,12 +16,17 @@ export class VhlOnlineStatsRowParser {
     const cells = [...row.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map(([, cell]) => this.cleaner.stripTags(cell));
     const identity = cells[1]?.match(/^(.+?)\((н|з|вр)\)$/u);
     if (cells.length < 12 || !identity) return null;
-    return { team: teamName, number: cells[0], name: identity[1], position: identity[2],
+    return { team: teamName, number: cells[0], name: identity[1], position: identity[2], appearances: this.#hasIceTime(cells.at(-1)) ? 1 : 0,
       goals: this.#toNumber(cells[2]), assists: this.#toNumber(cells[3]), shotsOnGoal: Math.max(this.#toNumber(cells[5]) - this.#toNumber(cells[2]), 0),
       penalties: Math.ceil(this.#toNumber(cells[6]) / 2), blockedShots: this.#toNumber(cells[10]), hits: this.#toNumber(cells[11]) };
   }
 
   #toNumber(value) {
     return Number(String(value || "").replace(",", ".").match(/\d+(?:\.\d+)?/)?.[0] || 0);
+  }
+
+  #hasIceTime(value) {
+    const time = String(value || "").match(/(\d+):(\d+)/);
+    return time ? Number(time[1]) * 60 + Number(time[2]) > 0 : false;
   }
 }

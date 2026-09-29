@@ -14,7 +14,7 @@ export class KhlProtocolFantasyEventFactory {
 
   #createEventCounts(row) {
     return {
-      appearance: 1,
+      appearance: row.appearances ?? 1,
       goal: row.goals || 0,
       assist: row.assists || 0,
       penalty: row.penalties || 0,

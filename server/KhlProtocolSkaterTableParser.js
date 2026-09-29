@@ -27,7 +27,8 @@ export class KhlProtocolSkaterTableParser {
     const position = positionItem?.text || "";
     const name = nameItems.map((item) => item.text).join(" ").trim();
     if (!number || !["н", "з"].includes(position) || !name) return null;
-    return { team: teamName, number, name, position, ...this.#readStats(items, numberReader) };
+    return { team: teamName, number, name, position, appearances: this.#hasIceTime(items) ? 1 : 0,
+      ...this.#readStats(items, numberReader) };
   }
 
   #readStats(items, numberReader) {
@@ -42,5 +43,8 @@ export class KhlProtocolSkaterTableParser {
       takeaways: numberReader.readColumnNumber(items, "takeaways"),
       interceptions: numberReader.readColumnNumber(items, "interceptions"),
     };
+  }
+  #hasIceTime(items) {
+    return items.some((item) => /(?:[1-9]\d*):\d{2}/.test(item.text));
   }
 }

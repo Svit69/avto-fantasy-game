@@ -22,8 +22,12 @@ export class KhlProtocolGoalieTableParser {
     const total = [...items].reverse().find((item) => /\d+\s*-\s*\d+/.test(item.text))?.text.match(/(\d+)\s*-\s*(\d+)/);
     if (!number || position !== "вр" || !name || !total) return null;
     const goalsAgainst = Number(total[1]);
-    return { team: teamName, number, name, position, goalsAgainst, saves: Math.max(Number(total[2]) - goalsAgainst, 0) };
+    return { team: teamName, number, name, position, appearances: this.#hasPlayed(items, total) ? 1 : 0,
+      goalsAgainst, saves: Math.max(Number(total[2]) - goalsAgainst, 0) };
   }
+
+  #hasPlayed(items, total) { return Number(total[1]) + Number(total[2]) > 0
+    || items.some((item) => /(?:[1-9]\d*):\d{2}/.test(item.text)); }
 
   #readText(items, minX, maxX) {
     return items.filter((item) => item.x >= minX && item.x <= maxX).map((item) => item.text).join(" ").trim();
