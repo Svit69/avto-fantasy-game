@@ -21,6 +21,7 @@ export class DraftNotificationDispatcher {
     try {
       const payload = { chat_id: job.userId, text: job.text };
       if (job.replyMarkup) payload.reply_markup = job.replyMarkup;
+      if (job.parseMode) payload.parse_mode = job.parseMode;
       const response = await this.botClient.callMethod("sendMessage", payload);
       if (!response.ok) return false;
       await this.sentRepository.markNotificationAsSent(job.userId, job.key);

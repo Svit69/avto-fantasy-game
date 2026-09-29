@@ -1,21 +1,25 @@
+import { DailyFantasyBreakdownFormatter } from "./DailyFantasyBreakdownFormatter.js";
+
 export class DailyPlayerPointsMessageFactory {
-  createMessage({ managerName, matchDate, playerRows, matches }) {
-    const rows = playerRows.sort((a, b) => b.fantasyPoints - a.fantasyPoints).map((row) => this.#renderPlayerRow(row)).join("\n");
-    const total = playerRows.reduce((sum, row) => sum + row.fantasyPoints, 0);
-    return `Доброе утро, ${managerName || "менеджер"}!\n\nЗа матчи ${this.#formatDate(matchDate)} ваши хоккеисты набрали очки:\n\n${rows}\n\nИтого за день: ${total > 0 ? "+" : ""}${total} ФО.\nМатчи: ${matches.map((match) => `${match.homeTeam} - ${match.awayTeam}`).join("; ")}`;
+  constructor(breakdownFormatter = new DailyFantasyBreakdownFormatter()) { this.breakdownFormatter = breakdownFormatter; }
+
+  createMessage({ playerRows, matches, rosterBefore, rosterAfter }) {
+    const rows = playerRows.sort((first, second) => second.fantasyPoints - first.fantasyPoints)
+      .map((row) => this.#renderPlayerRow(row)).join("\n\n");
+    return `Вчера сыграли ваши хоккеисты:\n\n${rows}\n\nВаш результат в туре: <b>${rosterBefore} → ${rosterAfter} ФО</b>\n${this.#renderMatches(matches)}`;
   }
 
   #renderPlayerRow(row) {
-    return `${row.name}: ${row.fantasyPoints > 0 ? "+" : ""}${row.fantasyPoints} ФО (${this.#renderStats(row)})`;
+    const league = row.match.league || row.player?.league || "";
+    return `<b>${this.#escape(row.name)}${league ? ` · ${this.#escape(league)}` : ""}</b>\n${this.breakdownFormatter.formatBreakdown(row)}\nСреднее за тур: <b>${row.before} → ${row.after} ФО</b>`;
   }
 
-  #renderStats(row) {
-    const labels = [["goals", "гол"], ["assists", "пас"], ["shotsOnGoal", "бс."], ["blockedShots", "блок"], ["hits", "сил."],
-      ["saves", "сейв"], ["goalsAgainst", "проп."], ["penalties", "уд."]];
-    return labels.filter(([key]) => Number(row[key] || 0)).map(([key, label]) => `${row[key]} ${label}`).join(", ") || "без событий";
+  #renderMatches(matches) {
+    const lines = matches.map((match) => `«${this.#escape(match.homeTeam)}» — «${this.#escape(match.awayTeam)}»`);
+    return `${lines.length === 1 ? "Матч" : "Матчи"}: ${lines.join("; ")}`;
   }
 
-  #formatDate(value) {
-    return value.split("-").reverse().join(".");
+  #escape(value) {
+    return String(value || "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
   }
 }

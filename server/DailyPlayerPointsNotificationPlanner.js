@@ -2,12 +2,13 @@ import { DailyDigestTimePolicy } from "./DailyDigestTimePolicy.js";
 import { DailyPlayerPointsDigestBuilder } from "./DailyPlayerPointsDigestBuilder.js";
 import { DailyPlayerPointsMatchSelector } from "./DailyPlayerPointsMatchSelector.js";
 import { DailyPlayerPointsMessageFactory } from "./DailyPlayerPointsMessageFactory.js";
+import { DailyRosterTourImpactCalculator } from "./DailyRosterTourImpactCalculator.js";
 
 export class DailyPlayerPointsNotificationPlanner {
   constructor({ rosterRepository, matchDataRepository, playerCatalogRepository, windowMs }) {
     Object.assign(this, { rosterRepository, matchDataRepository, playerCatalogRepository,
       timePolicy: new DailyDigestTimePolicy(9, windowMs), matchSelector: new DailyPlayerPointsMatchSelector(),
-      digestBuilder: new DailyPlayerPointsDigestBuilder(new DailyPlayerPointsMessageFactory()) });
+      digestBuilder: new DailyPlayerPointsDigestBuilder(new DailyPlayerPointsMessageFactory(), new DailyRosterTourImpactCalculator()) });
   }
 
   async createNotificationJobs(calendar, users, now = Date.now()) {
@@ -18,7 +19,7 @@ export class DailyPlayerPointsNotificationPlanner {
     ]);
     const summaries = this.matchSelector.selectMatches(calendar, matchDatabase, dueWindow.matchDate);
     return this.#activeUsers(users).map((user) => this.digestBuilder.createUserJob(user, rosters, summaries,
-      this.#mapPlayersById(players), dueWindow.notificationDate, dueWindow.matchDate)).filter(Boolean);
+      this.#mapPlayersById(players), dueWindow.notificationDate, dueWindow.matchDate, calendar, matchDatabase)).filter(Boolean);
   }
 
   #activeUsers(users) { return users.filter((user) => user.status !== "blocked"); }
