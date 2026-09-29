@@ -1,4 +1,8 @@
+import { PlayerMatchStatRowFactory } from "./PlayerMatchStatRowFactory.js";
+
 export class PlayerMatchResultDetailView {
+  constructor(statRowFactory = new PlayerMatchStatRowFactory()) { this.statRowFactory = statRowFactory; }
+
   render(player, match, homeLogo, awayLogo) {
     if (!match.playerMatchStats) return null;
     const stats = match.playerMatchStats;
@@ -17,24 +21,8 @@ export class PlayerMatchResultDetailView {
   }
 
   #renderStatRows(player, stats) {
-    return this.#createVisibleStats(player, stats).map((item) => `<div><dt>${item.label}</dt><dd>${item.points} ФО</dd></div>`).join("");
-  }
-
-  #createVisibleStats(player, stats) {
-    if (player.getPosition() === "вратарь") return this.#createGoalkeeperStats(stats);
-    const skaterStats = [{ label: `${stats.goals} гол`, count: stats.goals, points: stats.goals * (player.getPosition() === "защитник" ? 60 : 50) },
-      { label: `${stats.assists} передача`, count: stats.assists, points: stats.assists * (player.getPosition() === "защитник" ? 40 : 30) },
-      { label: `${stats.shotsOnGoal} бросок в створ`, count: stats.shotsOnGoal, points: stats.shotsOnGoal * 5 },
-      { label: `${stats.blockedShots} блок`, count: stats.blockedShots, points: stats.blockedShots * (player.getPosition() === "защитник" ? 10 : 5) },
-      { label: `${stats.hits} силовой приём`, count: stats.hits, points: stats.hits * 5 },
-      { label: `${stats.penalties} штраф`, count: stats.penalties, points: stats.penalties * -10 }];
-    return skaterStats.filter((item) => item.count);
-  }
-
-  #createGoalkeeperStats(stats) {
-    return [{ label: `${stats.saves} сейв`, count: stats.saves, points: stats.saves * 3 },
-      { label: `${stats.goalsAgainst} пропущено`, count: stats.goalsAgainst, points: stats.goalsAgainst * -15 },
-      { label: `${stats.penalties} штраф`, count: stats.penalties, points: stats.penalties * -10 }].filter((item) => item.count);
+    return this.statRowFactory.createRows(player, stats)
+      .map((item) => `<div><dt>${item.label}</dt><dd>${item.points} ФО</dd></div>`).join("");
   }
 
   #renderTotal(stats) {

@@ -1,9 +1,12 @@
 import { LeagueFantasyMultiplierPolicy } from "../src/scoring/LeagueFantasyMultiplierPolicy.js";
+import { RussianCountFormatter } from "../src/formatters/RussianCountFormatter.js";
+import { FantasyEventPresentationCatalog } from "../src/models/FantasyEventPresentationCatalog.js";
 import { KhlFantasyPointValuePolicy } from "./KhlFantasyPointValuePolicy.js";
 
 export class DailyFantasyBreakdownFormatter {
-  constructor(pointPolicy = new KhlFantasyPointValuePolicy(), multiplierPolicy = new LeagueFantasyMultiplierPolicy()) {
-    Object.assign(this, { pointPolicy, multiplierPolicy });
+  constructor(pointPolicy = new KhlFantasyPointValuePolicy(), multiplierPolicy = new LeagueFantasyMultiplierPolicy(),
+    countFormatter = new RussianCountFormatter(), eventCatalog = new FantasyEventPresentationCatalog()) {
+    Object.assign(this, { pointPolicy, multiplierPolicy, countFormatter, eventCatalog });
   }
 
   formatBreakdown(row) {
@@ -17,22 +20,9 @@ export class DailyFantasyBreakdownFormatter {
     const count = Number(row[definition.key] || 0);
     const value = this.pointPolicy.resolveEventPoints({ position: row.position || row.player?.position }, definition.key);
     const points = count * value;
-    return { points, text: `${count} ${this.#selectWord(count, definition.words)}: ${points >= 0 ? "+" : "−"}${Math.abs(points)}` };
-  }
-
-  #selectWord(count, [one, few, many]) {
-    const value = Math.abs(count) % 100; const last = value % 10;
-    if (value > 10 && value < 20) return many;
-    if (last === 1) return one;
-    return last >= 2 && last <= 4 ? few : many;
+    return { points, text: `${this.countFormatter.formatCount(count, definition.words)}: ${points >= 0 ? "+" : "−"}${Math.abs(points)}` };
   }
 
   #formatMultiplier(value) { return String(value).replace(".", ","); }
-  #eventDefinitions() {
-    return [{ key: "goals", words: ["гол", "гола", "голов"] }, { key: "assists", words: ["передача", "передачи", "передач"] },
-      { key: "shotsOnGoal", words: ["бросок в створ", "броска в створ", "бросков в створ"] }, { key: "blockedShots", words: ["блокированный бросок", "блокированных броска", "блокированных бросков"] },
-      { key: "hits", words: ["силовой приём", "силовых приёма", "силовых приёмов"] }, { key: "takeaways", words: ["отбор", "отбора", "отборов"] },
-      { key: "interceptions", words: ["перехват", "перехвата", "перехватов"] }, { key: "saves", words: ["сейв", "сейва", "сейвов"] },
-      { key: "goalsAgainst", words: ["пропущенный гол", "пропущенных гола", "пропущенных голов"] }, { key: "penalties", words: ["минута штрафа", "минуты штрафа", "минут штрафа"] }];
-  }
+  #eventDefinitions() { return this.eventCatalog.listDefinitions(); }
 }

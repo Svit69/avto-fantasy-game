@@ -10,6 +10,7 @@ import { KhlMatchScopePolicy } from "./KhlMatchScopePolicy.js";
 import { KhlProtocolPdfSelfTestRunner } from "./KhlProtocolPdfSelfTestRunner.js";
 import { KhlReplayRunner } from "./KhlReplayRunner.js";
 import { PlayerCatalogRepository } from "./PlayerCatalogRepository.js";
+import { PlayerStatisticsPresentationSelfTest } from "./PlayerStatisticsPresentationSelfTest.js";
 import { ProtocolImportRegressionSelfTest } from "./ProtocolImportRegressionSelfTest.js";
 import { TeamBrandResolver } from "./TeamBrandResolver.js";
 import { VhlParticipationSelfTest } from "./VhlParticipationSelfTest.js";
@@ -44,4 +45,5 @@ if (headerNames.includes("cookie") || headerNames.includes("authorization")) thr
 await new KhlProtocolPdfSelfTestRunner({ temp, playerCatalogRepository: service.playerCatalogRepository }).runIfConfigured(process.env.KHL_TEST_PROTOCOL_PDF_PATH);
 new ProtocolImportRegressionSelfTest().run();
 new VhlParticipationSelfTest().run();
+new PlayerStatisticsPresentationSelfTest().run();
 console.log("KHL self-test passed: Tryamkin = 80 FP");
