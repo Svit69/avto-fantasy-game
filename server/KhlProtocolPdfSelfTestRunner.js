@@ -20,7 +20,7 @@ export class KhlProtocolPdfSelfTestRunner {
 
   async #assertKnownShotsOnGoal(repository) {
     const stats = await repository.listStatsByGameId("898099");
-    this.#assertPlayerShots(stats, "sprong", 6);
+    this.#assertPlayerShots(stats, "sprong", 3);
     this.#assertPlayerShots(stats, "karpukhin", 3);
     this.#assertPlayerShots(stats, "gushchin", 2);
   }

@@ -10,6 +10,7 @@ export class ProtocolImportRegressionSelfTest {
     const row = rows.find((item) => item.number === "23");
     this.#assert(row?.appearances === 1 && row.penalties === 0 && row.assists === 1 && row.shotsOnGoal === 3 && row.hits === 2 && row.takeaways === 2, "pdf_columns");
     this.#assert(rows.find((item) => item.number === "51")?.penalties === 1, "penalty_minutes");
+    this.#assert(rows.find((item) => item.number === "15")?.shotsOnGoal === 1, "goal_shot_deduplication");
     const points = new SkaterFantasyPointsCalculator().calculateMatchFantasyPoints({
       position: "защитник", league: "МХЛ", team: "МХК Авто", events: row,
     });
@@ -32,7 +33,9 @@ export class ProtocolImportRegressionSelfTest {
       ["2", 465], ["2", 480], ["12:00", 240]].map(([text, x]) => ({ text, x, y: 490 }));
     const penalizedPlayer = [["51", 20], ["н", 35], ["Пимин Александр", 60], ["2", 214], ["18:31", 240]]
       .map(([text, x]) => ({ text, x, y: 480 }));
-    return { pages: [[...header, ...player, ...penalizedPlayer]] };
+    const scorer = [["15", 20], ["н", 35], ["Голышев Анатолий", 60], ["2", 160], ["3", 410], ["15:11", 240]]
+      .map(([text, x]) => ({ text, x, y: 470 }));
+    return { pages: [[...header, ...player, ...penalizedPlayer, ...scorer]] };
   }
 
   #assert(condition, name) { if (!condition) throw new Error(`protocol_import_self_test_failed:${name}`); }

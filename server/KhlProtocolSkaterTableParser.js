@@ -37,7 +37,7 @@ export class KhlProtocolSkaterTableParser {
       goals,
       assists: numberReader.readColumnNumber(items, "assists"),
       penalties: Math.ceil(numberReader.readColumnNumber(items, "penalties") / 2),
-      shotsOnGoal: numberReader.readColumnNumber(items, "shotsOnGoal"),
+      shotsOnGoal: Math.max(numberReader.readColumnNumber(items, "shotsOnGoal") - goals, 0),
       blockedShots: numberReader.readColumnNumber(items, "blockedShots"),
       hits: numberReader.readColumnNumber(items, "hits"),
       takeaways: numberReader.readColumnNumber(items, "takeaways"),
