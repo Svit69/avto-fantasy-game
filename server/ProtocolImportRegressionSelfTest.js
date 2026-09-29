@@ -21,6 +21,7 @@ export class ProtocolImportRegressionSelfTest {
     const pdfEvents = new KhlProtocolFantasyEventFactory().createRawEvents([emptyRow], matcher);
     const vhlEvents = new VhlOnlineFantasyEventFactory([player]).createRawEvents([emptyRow], matcher);
     this.#assert([...pdfEvents, ...vhlEvents].filter((event) => event.eventType === "appearance").length === 2, "appearance");
+    this.#assert(pdfEvents.every((event) => event.sourceVersion === "khl-protocol-pdf-v2"), "pdf_version");
     this.#assert(new VhlOnlineFantasyEventFactory([player]).createRawEvents([{ ...emptyRow, appearances: 0 }], matcher).length === 0, "unused_substitute");
     const mapped = new KhlFantasyEventMapper().createFantasyEvents({ eventType: "appearance", eventKey: "test", playerId: player.id });
     this.#assert(mapped[0]?.eventType === "appearances", "appearance_mapping");

@@ -29,6 +29,6 @@ export class KhlProtocolFantasyEventFactory {
   }
 
   #createEvent(player, eventType, row, index) {
-    return { id: `${row.team}:${row.number}:${eventType}:${index + 1}`, eventType, playerId: player.id, teamId: row.team, sourceVersion: "khl-protocol-pdf-v1" };
+    return { id: `${row.team}:${row.number}:${eventType}:${index + 1}`, eventType, playerId: player.id, teamId: row.team, sourceVersion: "khl-protocol-pdf-v2" };
   }
 }

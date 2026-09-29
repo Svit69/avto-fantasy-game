@@ -1,17 +1,19 @@
 import { GoalkeeperFantasyPointsCalculator } from "../src/scoring/GoalkeeperFantasyPointsCalculator.js";
 import { SkaterFantasyPointsCalculator } from "../src/scoring/SkaterFantasyPointsCalculator.js";
 import { ImportedMatchCalendarMatcher } from "./ImportedMatchCalendarMatcher.js";
+import { OutdatedProtocolImportAuditor } from "./OutdatedProtocolImportAuditor.js";
 
 export class StoredPlayerStatsAuditor {
   constructor() {
     this.matcher = new ImportedMatchCalendarMatcher();
     this.skaterCalculator = new SkaterFantasyPointsCalculator();
     this.goalkeeperCalculator = new GoalkeeperFantasyPointsCalculator();
+    this.protocolImportAuditor = new OutdatedProtocolImportAuditor();
   }
 
   audit({ calendar, database, players, now = new Date() }) {
     return [...this.#findMissingImports(calendar.matches || [], database.matches || [], now),
-      ...this.#findInvalidPlayerPoints(database, players)];
+      ...this.#findInvalidPlayerPoints(database, players), ...this.protocolImportAuditor.audit(database.events)];
   }
 
   #findMissingImports(calendarMatches, importedMatches, now) {
