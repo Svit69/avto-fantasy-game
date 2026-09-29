@@ -4,7 +4,7 @@ export class KhlProtocolSkaterColumnMap {
       goals: [156, 167],
       assists: [168, 175],
       penalties: [206, 216],
-      shotsOnGoal: [421, 432],
+      shotsOnGoal: [406, 420],
       blockedShots: [445, 456],
       hits: [456, 469],
       takeaways: [476, 487],
@@ -18,8 +18,8 @@ export class KhlProtocolSkaterColumnMap {
 
   createPageColumnMap(page, headerY) {
     const headers = this.#readHeaderPositions(page, headerY);
-    const pageColumns = Object.fromEntries(Object.entries(this.#createHeaderNames()).map(([columnName, headerName]) => {
-      return [columnName, this.#createRangeAroundHeader(headers, headerName) || this.getRange(columnName)];
+    const pageColumns = Object.fromEntries(Object.entries(this.#createHeaderNames()).map(([columnName, headerNames]) => {
+      return [columnName, this.#createRangeAroundHeader(headers, headerNames) || this.getRange(columnName)];
     }));
     return new KhlProtocolSkaterColumnMap({ ...this.columns, ...pageColumns });
   }
@@ -29,11 +29,12 @@ export class KhlProtocolSkaterColumnMap {
   }
 
   #createHeaderNames() {
-    return { goals: "Ш", assists: "А" };
+    return { goals: ["Ш"], assists: ["А"], penalties: ["Штр"], shotsOnGoal: ["Бс"],
+      blockedShots: ["БлБ"], hits: ["СПр"], takeaways: ["Отб", "ОТБ"], interceptions: ["ПХТ"] };
   }
 
-  #createRangeAroundHeader(headers, headerName) {
-    const index = headers.findIndex((item) => item.text === headerName);
+  #createRangeAroundHeader(headers, headerNames) {
+    const index = headers.findIndex((item) => headerNames.includes(item.text));
     if (index < 0) return null;
     const previous = headers[index - 1]?.x ?? headers[index].x - 10;
     const next = headers[index + 1]?.x ?? headers[index].x + 10;

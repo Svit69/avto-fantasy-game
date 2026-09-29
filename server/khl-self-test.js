@@ -10,6 +10,7 @@ import { KhlMatchScopePolicy } from "./KhlMatchScopePolicy.js";
 import { KhlProtocolPdfSelfTestRunner } from "./KhlProtocolPdfSelfTestRunner.js";
 import { KhlReplayRunner } from "./KhlReplayRunner.js";
 import { PlayerCatalogRepository } from "./PlayerCatalogRepository.js";
+import { ProtocolImportRegressionSelfTest } from "./ProtocolImportRegressionSelfTest.js";
 import { TeamBrandResolver } from "./TeamBrandResolver.js";
 const root = path.resolve(".");
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), "khl-self-test-"));
@@ -40,4 +41,5 @@ const sanitized = JSON.parse(await fs.readFile(path.join(imported.fixtureDirecto
 const headerNames = [...sanitized.log.entries[0].request.headers, ...sanitized.log.entries[0].response.headers].map((header) => header.name.toLowerCase());
 if (headerNames.includes("cookie") || headerNames.includes("authorization")) throw new Error("khl_har_sanitizer_failed");
 await new KhlProtocolPdfSelfTestRunner({ temp, playerCatalogRepository: service.playerCatalogRepository }).runIfConfigured(process.env.KHL_TEST_PROTOCOL_PDF_PATH);
+new ProtocolImportRegressionSelfTest().run();
 console.log("KHL self-test passed: Tryamkin = 80 FP");
