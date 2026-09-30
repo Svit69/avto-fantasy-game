@@ -1,23 +1,22 @@
 import { PlayerMatchStatRowFactory } from "./PlayerMatchStatRowFactory.js";
+import { HockeyMatchScoreFormatter } from "../formatters/HockeyMatchScoreFormatter.js";
 
 export class PlayerMatchResultDetailView {
-  constructor(statRowFactory = new PlayerMatchStatRowFactory()) { this.statRowFactory = statRowFactory; }
+  constructor(statRowFactory = new PlayerMatchStatRowFactory(), scoreFormatter = new HockeyMatchScoreFormatter()) {
+    Object.assign(this, { statRowFactory, scoreFormatter });
+  }
 
   render(player, match, homeLogo, awayLogo) {
     if (!match.playerMatchStats) return null;
     const stats = match.playerMatchStats;
     return `<div class="profile-match-result">
-      <div class="profile-match-score">${this.#renderTeam(match.homeTeam, homeLogo)}<strong>${this.#formatScore(stats)}</strong>${this.#renderTeam(match.awayTeam, awayLogo)}</div>
+      <div class="profile-match-score">${this.#renderTeam(match.homeTeam, homeLogo)}<strong>${this.scoreFormatter.format(stats)}</strong>${this.#renderTeam(match.awayTeam, awayLogo)}</div>
       <dl class="profile-match-stat-list">${this.#renderStatRows(player, stats)}${this.#renderTotal(stats)}</dl>
     </div>`;
   }
 
   #renderTeam(teamName, logoPath) {
     return `<span>${teamName}<img src="${logoPath}" alt="${teamName}"></span>`;
-  }
-
-  #formatScore(stats) {
-    return stats.homeScore == null || stats.awayScore == null ? "счёт уточняется" : `${stats.homeScore} - ${stats.awayScore}`;
   }
 
   #renderStatRows(player, stats) {

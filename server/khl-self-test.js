@@ -9,6 +9,7 @@ import { KhlMatchIngestionService } from "./KhlMatchIngestionService.js";
 import { KhlMatchScopePolicy } from "./KhlMatchScopePolicy.js";
 import { KhlProtocolPdfSelfTestRunner } from "./KhlProtocolPdfSelfTestRunner.js";
 import { KhlReplayRunner } from "./KhlReplayRunner.js";
+import { MatchResultPresentationSelfTest } from "./MatchResultPresentationSelfTest.js";
 import { PlayerCatalogRepository } from "./PlayerCatalogRepository.js";
 import { PlayerStatisticsPresentationSelfTest } from "./PlayerStatisticsPresentationSelfTest.js";
 import { ProtocolImportRegressionSelfTest } from "./ProtocolImportRegressionSelfTest.js";
@@ -46,4 +47,4 @@ await new KhlProtocolPdfSelfTestRunner({ temp, playerCatalogRepository: service.
 new ProtocolImportRegressionSelfTest().run();
 new VhlParticipationSelfTest().run();
 new PlayerStatisticsPresentationSelfTest().run();
-console.log("KHL self-test passed: Tryamkin = 80 FP");
+new MatchResultPresentationSelfTest().run(); console.log("KHL self-test passed: Tryamkin = 80 FP");

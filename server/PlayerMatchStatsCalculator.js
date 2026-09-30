@@ -14,11 +14,12 @@ export class PlayerMatchStatsCalculator {
     const score = this.#createScore(match);
     return { matchId: match.id, calendarMatchId: calendarMatch?.id || "", gameId: match.gameId, homeTeam: match.homeTeam, awayTeam: match.awayTeam,
       homeScore: score?.homeGoals ?? null, awayScore: score?.awayGoals ?? null,
+      decidedBy: score?.decidedBy ?? null,
       status: match.status || "finished", ...this.#createStatFields(stats) };
   }
 
   #createScore(match) {
-    if (match.score) return { homeGoals: Number(match.score.homeGoals), awayGoals: Number(match.score.awayGoals) };
+    if (match.score) return { homeGoals: Number(match.score.homeGoals), awayGoals: Number(match.score.awayGoals), decidedBy: match.score.decidedBy || null };
     if (match.homeScore == null || match.awayScore == null) return null;
     return { homeGoals: Number(match.homeScore), awayGoals: Number(match.awayScore) };
   }
