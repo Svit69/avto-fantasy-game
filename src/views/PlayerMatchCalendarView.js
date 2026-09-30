@@ -12,7 +12,7 @@ export class PlayerMatchCalendarView {
   render(player, calendar, selectedMonth) {
     const matches = this.matchSelector.selectPlayerMonthMatches(player, calendar, selectedMonth);
     if (!matches.length) return this.#renderEmptyCalendar(selectedMonth);
-    return `<article class="profile-panel profile-calendar-panel"><h3>Календарь</h3>${this.#renderMatchTiles(player, calendar, matches)}${this.#renderMatchDetails(player, matches[0])}<a href="#">Узнать как считаются очки</a></article>`;
+    return `<article class="profile-panel profile-calendar-panel"><h3>Календарь</h3>${this.#renderMatchTiles(player, calendar, matches)}${this.#renderMatchDetails(player, matches[0])}<a href="#scoring-guide" data-open-scoring-guide>Узнать как считаются очки</a></article>`;
   }
 
   #renderMatchTiles(player, calendar, matches) {
@@ -44,5 +44,5 @@ export class PlayerMatchCalendarView {
   #getPlayerTeamDetails(player, teamName) { return { shortName: teamName, logoPath: this.#resolveTeamLogo(player, teamName) }; }
   #resolveTeamLogo(player, teamName) { return teamName === "Горняк-УГМК" ? "/assets/gornyak_logo.png" : player?.getTeam?.() === teamName ? player.getTeamLogo() : "/assets/avto_logo.png"; }
   #renderLogo(src, alt) { return this.imageView.renderAsset({ src, alt, fallback: "/assets/avto_logo.png" }); }
-  #renderEmptyCalendar(month) { return `<article class="profile-panel"><h3>Календарь</h3><p>Матчи на ${month} пока не добавлены.</p><a href="#">Узнать как считаются очки</a></article>`; }
+  #renderEmptyCalendar(month) { return `<article class="profile-panel"><h3>Календарь</h3><p>Матчи на ${month} пока не добавлены.</p><a href="#scoring-guide" data-open-scoring-guide>Узнать как считаются очки</a></article>`; }
 }

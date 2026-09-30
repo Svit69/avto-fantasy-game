@@ -1,5 +1,6 @@
 import { RussianCountFormatter } from "../src/formatters/RussianCountFormatter.js";
 import { PlayerMatchStatRowFactory } from "../src/views/PlayerMatchStatRowFactory.js";
+import { PlayerMatchCalendarView } from "../src/views/PlayerMatchCalendarView.js";
 
 export class PlayerStatisticsPresentationSelfTest {
   run() {
@@ -11,5 +12,7 @@ export class PlayerStatisticsPresentationSelfTest {
     if (rows[0]?.label !== "2 отбора" || rows[0]?.points !== 20 || rows[1]?.label !== "3 перехвата") {
       throw new Error("player_match_defensive_stats_failed");
     }
+    const calendarView = new PlayerMatchCalendarView(undefined, undefined, undefined, { selectPlayerMonthMatches: () => [] });
+    if (!calendarView.render({}, {}, "Сентябрь").includes("data-open-scoring-guide")) throw new Error("player_scoring_guide_link_failed");
   }
 }

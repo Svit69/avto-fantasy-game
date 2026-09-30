@@ -12,7 +12,7 @@ export class ApplicationHelpController {
   }
 
   #handleHelpAction(event) {
-    if (event.target.closest("[data-open-scoring-guide]")) return this.#openScoringGuide();
+    if (event.target.closest("[data-open-scoring-guide]")) { event.preventDefault(); return this.#openScoringGuide(); }
     if (event.target.closest("[data-close-scoring-guide]")) return this.#closeScoringGuide();
     if (event.target.closest("[data-close-roster-confirmation]")) return this.#closeRosterConfirmation();
   }
