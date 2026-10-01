@@ -32,6 +32,7 @@ export const MHK_AUTO_NUMBERS = Object.freeze({
   salnikov: 4,
   semeykin: 60,
   yurkov: 53,
+  tokmakov: 49,
   nemytykh: 40,
   bednyagin: 38,
 });

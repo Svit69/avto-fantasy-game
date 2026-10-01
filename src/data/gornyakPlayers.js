@@ -30,7 +30,6 @@ export function createGornyakPlayers(factory) {
     factory.createGornyakPlayer("Никита", "Некрасов", "nekrasov", ROSTER_POSITIONS.defender, 7, "nikita_nekrasov"),
     factory.createGornyakPlayer("Даниил", "Молодцов", "molodtsov", ROSTER_POSITIONS.defender, 6, "daniil_molodtsov"),
     factory.createGornyakPlayer("Валерий", "Ситников", "sitnikov", ROSTER_POSITIONS.defender, 6, "valery_sitnikov"),
-    factory.createGornyakPlayer("Дмитрий", "Токмаков", "tokmakov", ROSTER_POSITIONS.defender, 8, "dmitry_tokmakov"),
     factory.createGornyakPlayer("Ярослав", "Трофимов", "trofimov", ROSTER_POSITIONS.defender, 9, "yaroslav_trofimov"),
     factory.createGornyakPlayer("Георгий", "Кайгородов", "kaigorodov", ROSTER_POSITIONS.defender, 8, "georgy_kaigorodov"),
     factory.createGornyakPlayer("Артем", "Щучинов", "shchuchinov", ROSTER_POSITIONS.defender, 12, "artem_shchuchinov"),

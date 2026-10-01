@@ -29,7 +29,6 @@ export const GORNYAK_NUMBERS = Object.freeze({
   sitnikov: 27,
   sushchev: 18,
   sychev: null,
-  tokmakov: 49,
   trofimov: 72,
   tulinov: 35,
   shchukin: 12,
