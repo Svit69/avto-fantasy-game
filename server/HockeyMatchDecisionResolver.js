@@ -1,7 +1,7 @@
 export class HockeyMatchDecisionResolver {
   resolveFromProtocolText(protocolText) {
     const text = String(protocolText || "");
-    if (/решающ\w*\s+буллит|сер(?:ия|ии)\s+буллит/iu.test(text)) return "shootout";
+    if (/буллит/iu.test(text)) return "shootout";
     if (/овертайм/iu.test(text)) return "overtime";
     return null;
   }

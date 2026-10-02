@@ -2,14 +2,14 @@ import { GoalkeeperFantasyPointsCalculator } from "../src/scoring/GoalkeeperFant
 import { SkaterFantasyPointsCalculator } from "../src/scoring/SkaterFantasyPointsCalculator.js";
 import { CalendarMatchDatabaseFilter } from "./CalendarMatchDatabaseFilter.js";
 import { ImportedMatchCalendarMatcher } from "./ImportedMatchCalendarMatcher.js";
-import { OutdatedProtocolImportAuditor } from "./OutdatedProtocolImportAuditor.js";
+import { MatchImportIntegrityAuditor } from "./MatchImportIntegrityAuditor.js";
 
 export class StoredPlayerStatsAuditor {
   constructor() {
     this.matcher = new ImportedMatchCalendarMatcher();
     this.skaterCalculator = new SkaterFantasyPointsCalculator();
     this.goalkeeperCalculator = new GoalkeeperFantasyPointsCalculator();
-    this.protocolImportAuditor = new OutdatedProtocolImportAuditor();
+    this.protocolImportAuditor = new MatchImportIntegrityAuditor();
     this.databaseFilter = new CalendarMatchDatabaseFilter(this.matcher);
   }
 

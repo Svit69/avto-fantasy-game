@@ -1,5 +1,7 @@
+import { AdminMatchScoreFormatter } from "./AdminMatchScoreFormatter.js";
+
 export class AdminProtocolPanelView {
-  constructor(keyboardFactory) { this.keyboardFactory = keyboardFactory; }
+  constructor(keyboardFactory, scoreFormatter = new AdminMatchScoreFormatter()) { Object.assign(this, { keyboardFactory, scoreFormatter }); }
 
   renderLeaguePrompt(chatId) {
     return this.#message(chatId, "Загрузка протокола матча\nВыберите лигу. КХЛ и МХЛ принимают PDF, ВХЛ принимает ссылку на online.vhlru.ru или vhlru.ru/report.", this.keyboardFactory.createLeagueKeyboard());
@@ -29,7 +31,7 @@ export class AdminProtocolPanelView {
   renderImportResult(chatId, result) {
     const match = result.match;
     const rows = result.playerStats.map((stat) => `${stat.playerName || stat.playerId}: ${stat.fantasyPoints} ФО`).join("\n");
-    return this.#message(chatId, `Протокол обработан\n${match.homeTeam} - ${match.awayTeam}\n${match.scheduledAt || "Дата не найдена"}\n\nФО игроков:\n${rows || "Нет привязанных игроков"}`, [[{ text: "В меню", callback_data: "admin:menu" }]]);
+    return this.#message(chatId, `Протокол обработан\n${match.homeTeam} - ${match.awayTeam}\n${this.scoreFormatter.format(match.score)}\n${match.scheduledAt || "Дата не найдена"}\n\nФО игроков:\n${rows || "Нет привязанных игроков"}`, [[{ text: "В меню", callback_data: "admin:menu" }]]);
   }
 
   #message(chatId, text, inline_keyboard = null) {

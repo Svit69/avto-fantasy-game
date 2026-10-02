@@ -8,7 +8,7 @@ export class KhlProtocolPdfMatchParser {
     const lines = content.text.split("\n").map((line) => line.trim()).filter(Boolean);
     const dateLine = lines.find((line) => /\d{1,2} [а-яё]+ \d{4}/iu.test(line)) || "";
     const [homeTeam, awayTeam] = this.#extractTeams(content, lines);
-    const score = this.scoreParser.parseFinalScore(lines);
+    const score = this.scoreParser.parseFinalScore(lines, content.pages);
     return {
       tournamentId: String(identity.tournamentId || ""),
       gameId: String(identity.gameId || ""),
