@@ -1,4 +1,7 @@
+import { AdminMatchScoreFormatter } from "./AdminMatchScoreFormatter.js";
+
 export class VhlOnlineAdminNotificationTextFactory {
+  constructor(scoreFormatter = new AdminMatchScoreFormatter()) { this.scoreFormatter = scoreFormatter; }
   createMatchStartedText(match) {
     return `ВХЛ онлайн: матч начался\n${this.#createMatchLine(match)}\nid: ${match.onlineGameId}`;
   }
@@ -12,7 +15,7 @@ export class VhlOnlineAdminNotificationTextFactory {
   }
 
   #createMatchLine(match) {
-    const score = match.score ? ` ${match.score.homeGoals}:${match.score.awayGoals}` : "";
+    const score = match.score ? ` ${this.scoreFormatter.formatInline(match.score)}` : "";
     return `${match.homeTeam} - ${match.awayTeam}${score}`;
   }
 }

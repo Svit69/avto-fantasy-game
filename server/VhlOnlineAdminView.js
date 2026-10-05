@@ -17,7 +17,7 @@ export class VhlOnlineAdminView {
   }
 
   renderInvalidProtocolId(chatId) {
-    return this.#message(chatId, "Не удалось распознать id ВХЛ. Отправьте число или ссылку online.vhlru.ru.", [[{ text: "Отменить", callback_data: "admin:cancel" }], this.#menuRow()]);
+    return this.#message(chatId, "ID ВХЛ не открыл матч с выбранными командами и датой. Проверьте номер и выберите матч снова.", [[{ text: "В меню", callback_data: "admin:menu" }]]);
   }
 
   #formatDate(value) {
