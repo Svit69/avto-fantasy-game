@@ -18,11 +18,16 @@ const calendarRepository = {
 const view = { renderInvalidProtocolId: () => ({ invalid: true }), renderRegistrationResult: (_chatId, result) => result };
 const registration = new VhlOnlineProtocolRegistrationService({ calendarRepository, view,
   htmlSource: { loadHtml: async () => "valid page" },
-  matchParser: { parseMatch: () => ({ homeTeam: "Другая команда", awayTeam: "Нефтяник", scheduledAt: "2026-10-04T00:00:00+03:00" }) } });
+  matchParser: { parseMatch: () => ({ homeTeam: "Другая команда", awayTeam: "Нефтяник", scheduledAt: "2026-10-04T00:00:00+03:00" }) },
+  now: () => Date.parse("2026-10-03T00:00:00+03:00") });
 const source = { chatId: "1", text: "904147", pending: { matchId: calendarMatch.id } };
 if (!(await registration.registerOnlineProtocol(source)).invalid || savedId) throw new Error("vhl_wrong_match_accepted");
 registration.matchParser = { parseMatch: () => ({ ...calendarMatch, scheduledAt: calendarMatch.startsAt }) };
-if ((await registration.registerOnlineProtocol(source)).onlineProtocolId !== "904147") throw new Error("vhl_correct_match_rejected");
+if ((await registration.registerOnlineProtocol(source)).verificationStatus !== "verified") throw new Error("vhl_correct_match_rejected");
+registration.htmlSource = { loadHtml: async () => { throw new Error("vhl_online_game_not_found"); } };
+if ((await registration.registerOnlineProtocol({ ...source, text: "904148" })).verificationStatus !== "pending" || savedId !== "904148") throw new Error("vhl_future_match_id_rejected");
+registration.now = () => Date.parse("2026-10-05T00:00:00+03:00");
+if (!(await registration.registerOnlineProtocol({ ...source, text: "905147" })).invalid || savedId !== "904148") throw new Error("vhl_past_missing_id_accepted");
 
 const score = new VhlOnlineScoreParser().parseScore('<div class="game__score">1<span>:</span>2<span>Б</span></div>');
 if (score?.homeGoals !== 1 || score.awayGoals !== 2 || score.decidedBy !== "shootout") throw new Error("vhl_shootout_score_incorrect");

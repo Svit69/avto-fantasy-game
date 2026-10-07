@@ -13,11 +13,12 @@ export class VhlOnlineAdminView {
   }
 
   renderRegistrationResult(chatId, result) {
-    return this.#message(chatId, `Online id ВХЛ сохранён\nМатч: ${result.match.homeTeam} - ${result.match.awayTeam}\nid: ${result.onlineProtocolId}`, [this.#menuRow()]);
+    const status = result.verificationStatus === "pending" ? "Страница пока недоступна. Перед сбором данных проверим команды и дату." : "Матч проверен по странице ВХЛ.";
+    return this.#message(chatId, `Online id ВХЛ сохранён\nМатч: ${result.match.homeTeam} - ${result.match.awayTeam}\nid: ${result.onlineProtocolId}\n${status}`, [this.#menuRow()]);
   }
 
   renderInvalidProtocolId(chatId) {
-    return this.#message(chatId, "ID ВХЛ не открыл матч с выбранными командами и датой. Проверьте номер и выберите матч снова.", [[{ text: "В меню", callback_data: "admin:menu" }]]);
+    return this.#message(chatId, "Не удалось проверить ID ВХЛ: страница другого матча или ошибка загрузки. Проверьте номер и выберите матч снова.", [[{ text: "В меню", callback_data: "admin:menu" }]]);
   }
 
   #formatDate(value) {

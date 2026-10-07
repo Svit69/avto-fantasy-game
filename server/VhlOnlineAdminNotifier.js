@@ -20,6 +20,14 @@ export class VhlOnlineAdminNotifier {
     return this.#sendOnce(`vhl:${match.id}:final`, this.textFactory.createFinalCollectionText(result.match, result));
   }
 
+  async notifyProtocolMismatch(match, sourceMatch) {
+    return this.#sendOnce(`vhl:${match.id}:mismatch:${match.onlineGameId}`, this.textFactory.createProtocolMismatchText(match, sourceMatch));
+  }
+
+  async notifyProtocolUnavailable(match) {
+    return this.#sendOnce(`vhl:${match.id}:unavailable:${match.onlineGameId}`, this.textFactory.createProtocolUnavailableText(match));
+  }
+
   async #sendOnce(notificationKey, text) {
     if (!this.botClient.hasToken() || !this.notificationRepository) return;
     await Promise.all(this.adminIds.map((adminId) => this.#sendToAdminOnce(adminId, notificationKey, text)));

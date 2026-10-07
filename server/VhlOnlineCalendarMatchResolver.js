@@ -18,6 +18,7 @@ export class VhlOnlineCalendarMatchResolver {
       gameId: String(onlineGameId),
       league: calendarMatch.league,
       scheduledAt: calendarMatch.startsAt,
+      expectedMatch: calendarMatch,
     };
   }
 }
