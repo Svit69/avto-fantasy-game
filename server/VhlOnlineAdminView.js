@@ -1,10 +1,21 @@
 export class VhlOnlineAdminView {
-  renderMatchList(chatId, matches) {
-    const keyboard = matches.slice(0, 20).map((match) => [{
+  renderMonthList(chatId, months) {
+    const keyboard = months.map((month) => [{ text: this.#formatMonth(month), callback_data: `admin:vhl_online_month:${month}` }]);
+    return this.#message(chatId, months.length ? "Выберите месяц матчей ВХЛ." : "Матчей ВХЛ в календаре нет.", [...keyboard, this.#menuRow()]);
+  }
+
+  renderMatchList(chatId, month, matches) {
+    const keyboard = matches.map((match) => [{
       text: `${this.#formatDate(match.startsAt)} ${match.homeTeam} - ${match.awayTeam}`,
       callback_data: `admin:vhl_online_match:${match.id}`,
     }]);
-    return this.#message(chatId, "Выберите матч ВХЛ для привязки online id.", [...keyboard, this.#menuRow()]);
+    return this.#message(chatId, `${this.#formatMonth(month)}. Выберите матч ВХЛ для привязки online id.`, [...keyboard,
+      [{ text: "К месяцам", callback_data: "admin:vhl_online" }], this.#menuRow()]);
+  }
+
+  #formatMonth(month) {
+    const label = new Intl.DateTimeFormat("ru-RU", { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${month}-01T00:00:00Z`));
+    return label[0].toUpperCase() + label.slice(1);
   }
 
   renderProtocolIdPrompt(chatId, match) {

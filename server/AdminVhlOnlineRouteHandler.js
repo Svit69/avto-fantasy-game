@@ -4,13 +4,19 @@ export class AdminVhlOnlineRouteHandler {
   }
 
   async executeRoute(source) {
-    if (source.route.type === "vhl_online") return this.view.renderMatchList(source.chatId, await this.matchCatalog.listManagedMatches());
+    if (source.route.type === "vhl_online") return this.view.renderMonthList(source.chatId, await this.matchCatalog.listManagedMonths());
+    if (source.route.type === "vhl_online_month") return this.#showMonthMatches(source.chatId, source.route.playerId);
     if (source.route.type === "vhl_online_match") return this.#requestProtocolId(source.chatId, source.route.playerId);
     return null;
   }
 
   handlePendingInput(source) {
     return source.pending.type === "vhl_online_protocol" ? this.registrationService.registerOnlineProtocol(source) : null;
+  }
+
+  async #showMonthMatches(chatId, month) {
+    const matches = await this.matchCatalog.listMatchesForMonth(month);
+    return matches.length ? this.view.renderMatchList(chatId, month, matches) : this.fallbackView.renderNotFound(chatId);
   }
 
   async #requestProtocolId(chatId, matchId) {
