@@ -39,5 +39,8 @@ try {
   VhlOnlineDataProvider.prototype.getMatch = async () => { throw new Error("vhl_online_game_not_found"); };
   assert.equal((await service.pollActiveMatches())[0].reason, "vhl_online_game_not_found");
   assert.deepEqual(notifications, ["mismatch", "unavailable"]);
+  VhlOnlineDataProvider.prototype.getMatch = async () => { throw new Error("vhl_online_http_404"); };
+  assert.equal((await service.pollActiveMatches())[0].reason, "vhl_online_http_404");
+  assert.deepEqual(notifications, ["mismatch", "unavailable", "unavailable"]);
 } finally { VhlOnlineDataProvider.prototype.getMatch = originalGetMatch; }
 console.log("VHL match identity self-test passed");

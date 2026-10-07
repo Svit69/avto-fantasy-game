@@ -15,7 +15,7 @@ export class VhlOnlinePollingService {
       catch (error) {
         this.logger.warn("vhl_online_match_skipped", { matchId: match.id, onlineGameId: match.onlineGameId, errorMessage: error.message });
         if (error.message === "vhl_match_identity_mismatch") await this.adminNotifier?.notifyProtocolMismatch(match, error.sourceMatch);
-        if (error.message === "vhl_online_game_not_found") await this.adminNotifier?.notifyProtocolUnavailable(match);
+        if (["vhl_online_game_not_found", "vhl_online_http_404"].includes(error.message)) await this.adminNotifier?.notifyProtocolUnavailable(match);
         results.push({ ok: false, reason: error.message, matchId: match.id });
       }
     }
