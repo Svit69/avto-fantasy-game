@@ -18,7 +18,7 @@ export class PlayerCardView {
             <div class="card-points">${props.showPoints === false ? "" : props.points}</div>
             <div class="card-position">${this.#formatPosition(props.position)}</div>
           </div>
-          ${this.imageView.renderPlayerImage({ className: "card-player-image", src: props.image, alt: `${props.name} ${props.secondName}`, loading: "eager", priority: "high" })}
+          <div class="card-player-photo">${this.imageView.renderPlayerImage({ className: "card-player-image", src: props.image, alt: `${props.name} ${props.secondName}`, loading: "eager", priority: "high" })}</div>
         </div>
         ${this.imageView.renderAsset({ className: "card-layer card-top-layer", src: "/assets/card_top_layer.png", loading: "eager", decoding: "sync", priority: "high" })}
         ${this.#renderLeagueLogo(props.leagueLogo)}
