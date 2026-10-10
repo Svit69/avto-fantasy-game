@@ -1,4 +1,4 @@
-const assetVersion = "2026-09-06-webp-assets";
+const assetVersion = "2026-10-10-player-photos";
 
 export function versionAssetUrl(assetUrl) {
   if (!assetUrl || !assetUrl.startsWith("/assets/")) return assetUrl;
