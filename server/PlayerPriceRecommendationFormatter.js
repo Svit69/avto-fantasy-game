@@ -10,8 +10,10 @@ export class PlayerPriceRecommendationFormatter {
       `Цена: ${player.price}к → ${item.suggestedPrice}к (${item.suggestedPrice > player.price ? "повысить" : "снизить"})`,
       ...averages, `Оценка формы: ${item.forecast.toFixed(1)} ФО/матч. Стабильность: ${stability}.`,
       ...(form ? [`Последние игры: ${form.recentPoints.join(" / ")} ФО; ${signal}. Положительных результатов за последние 5 игр: ${Math.round(form.positiveRate * 100)}%.`] : []),
-      `Отдача на 1к: ${advantage > 0 ? "+" : ""}${advantage}% к медиане игроков той же команды и позиции.`,
+      `Отдача на 1к: ${advantage > 0 ? "+" : ""}${advantage}% к взвешенной медиане игроков той же команды и позиции.`,
+      ...(Number.isFinite(item.confidence) ? [`Надёжность оценки: ${Math.round(item.confidence * 100)}%. Сравнение с ${item.peerCount} игроками. Осторожный ориентир: ${item.targetPrice.toFixed(1)}к.`, item.decision] : []),
+      ...(item.dataAgeDays > 21 ? [`Последний матч ${item.lastPlayedAt}: давность данных снижает надёжность оценки.`] : []),
       ...(item.budgetLimit ? [`Расчётная цена: ${item.fairPrice.toFixed(1)}к. Новая цена: ${(item.suggestedPrice / item.budgetLimit * 100).toFixed(1)}% бюджета ${item.budgetLimit}к.`] : []),
-      ...(item.minimumRosterCost ? [`Состав с игроком после рекомендаций: не дороже ${item.minimumRosterCost}к.`] : [])].join("\n");
+      ...(Number.isFinite(item.affordableRosterCost) ? [`Состав с игроком после рекомендаций: не дороже ${item.affordableRosterCost}к.`] : [])].join("\n");
   }
 }

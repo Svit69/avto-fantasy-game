@@ -20,6 +20,7 @@ export class PlayerPricePerformanceCalculator {
     const forecast = baseForecast + recentForm.adjustment;
     const variability = MathUtils.calculateVariability(games.slice(-10).map((game) => game.points));
     return { player, summaries, forecast, recentForm, variability, stability: 1 / (1 + variability), count: uniqueStats.size,
+      dataAgeDays: games.length ? Math.max(0, Math.floor((context.now.getTime() - games.at(-1).playedAt) / 86400000)) : null,
       lastPlayedAt: games.length ? new Date(games.at(-1).playedAt).toISOString().slice(0, 10) : null };
   }
 }

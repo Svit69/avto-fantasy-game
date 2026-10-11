@@ -6,3 +6,6 @@ import "./player-price-review-form-self-test.js";
 import "./player-price-review-budget-self-test.js";
 import "./player-price-review-season-self-test.js";
 import "./player-price-review-assessments-self-test.js";
+import "./player-price-review-confidence-self-test.js";
+import "./player-price-review-planner-self-test.js";
+import "./player-price-review-calibration-self-test.js";

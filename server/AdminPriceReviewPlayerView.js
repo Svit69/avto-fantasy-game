@@ -19,6 +19,7 @@ export class AdminPriceReviewPlayerView {
       budget: "Повышение не проходит по бюджету", recommendation: "Есть рекомендация", insufficient: "Недостаточно данных для цены" };
     const reason = !item.count ? "Нет сыгранных матчей за сезон" : item.count < 3 ? "Предварительная статистика: нужно минимум 3 матча" : reasons[item.reason];
     return [`${item.player.lastName} ${item.player.firstName} · ${item.player.team} · ${item.player.price}к`,
-      averages, `Последний матч: ${item.lastPlayedAt || "нет"}. ${reason}.`].join("\n");
+      averages, `Последний матч: ${item.lastPlayedAt || "нет"}. ${reason}.`,
+      ...(Number.isFinite(item.confidence) ? [`Надёжность: ${Math.round(item.confidence * 100)}%. Ориентир: ${item.targetPrice.toFixed(1)}к. ${item.decision}.`] : [])].join("\n");
   }
 }

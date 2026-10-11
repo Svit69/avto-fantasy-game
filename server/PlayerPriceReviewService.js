@@ -28,7 +28,7 @@ export class PlayerPriceReviewService {
     const counts = protectedReport.evaluations.reduce((result, item) => ({ ...result, [item.reason]: (result[item.reason] || 0) + 1 }), {});
     counts.no_data = performances.filter((item) => !item.count).length;
     counts.short_history = performances.filter((item) => item.count > 0 && item.count < 3).length;
-    const playerAssessments = performances.map((performance, index) => ({ ...performance, reason: protectedReport.evaluations[index].reason }));
+    const playerAssessments = performances.map((performance, index) => ({ ...performance, ...protectedReport.evaluations[index] }));
     return { tours: context.tours, season: context.season, recommendations, coverage, counts, total: players.length, budget: protectedReport.budget, playerAssessments };
   }
 }

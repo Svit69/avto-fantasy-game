@@ -5,7 +5,7 @@ export class PriceReviewRosterOptimizer {
   findOptimalRoster(players, evaluatePlayer = (player) => -player.price, requiredPlayerId = null) {
     const positions = ["нападающий", "защитник", "вратарь"];
     const limits = [3, 2, 1];
-    const eligible = players.filter((player) => positions.includes(player.position) && Number.isFinite(player.price) && player.price > 0);
+    const eligible = players.filter((player) => positions.includes(player.position) && Number.isFinite(player.price) && player.price >= 0);
     const teams = [...new Set(eligible.map((player) => player.team))];
     let initial = { counts: [0, 0, 0], clubs: teams.map(() => 0), players: [], value: 0 };
     if (requiredPlayerId) {

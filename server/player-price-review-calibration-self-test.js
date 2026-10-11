@@ -1,0 +1,27 @@
+import assert from "node:assert/strict";
+import { PlayerPriceReviewTestFixtures } from "./PlayerPriceReviewTestFixtures.js";
+import { PlayerPriceReviewContextResolver } from "./PlayerPriceReviewContextResolver.js";
+import { PlayerPriceReviewMatchSelector } from "./PlayerPriceReviewMatchSelector.js";
+import { PlayerPricePerformanceCalculator } from "./PlayerPricePerformanceCalculator.js";
+import { PlayerPriceRecommendationCalculator } from "./PlayerPriceRecommendationCalculator.js";
+import { PlayerPriceRecommendationFormatter } from "./PlayerPriceRecommendationFormatter.js";
+
+const scenario = new PlayerPriceReviewTestFixtures().createScenario();
+const context = new PlayerPriceReviewContextResolver().resolveContext(scenario.calendar, scenario.now);
+const matches = new PlayerPriceReviewMatchSelector().selectFinishedMatches(scenario.database.matches, context);
+const playerStats = scenario.database.playerStats.map((stat) => stat.playerId === "player-0" ? { ...stat, fantasyPoints: 25 } : stat);
+const performances = scenario.players.map((player) => new PlayerPricePerformanceCalculator().calculatePerformance(player, context, { matches, playerStats }));
+const calculator = new PlayerPriceRecommendationCalculator();
+const moderate = calculator.evaluateRecommendation(performances[0], performances);
+assert.equal(moderate.suggestedPrice, 11, "Allow meaningful moderate undervaluation rather than only extreme gaps");
+assert(moderate.confidence > 0 && moderate.confidence < 1);
+assert(moderate.targetPrice > moderate.suggestedPrice && moderate.targetPrice < moderate.fairPrice);
+assert(moderate.decision.includes("Стабильная"));
+const unchanged = calculator.evaluateRecommendation(performances[2], performances);
+assert.equal(unchanged.reason, "unchanged");
+assert(unchanged.decision && Number.isFinite(unchanged.confidence));
+const stale = calculator.evaluateRecommendation({ ...performances[0], dataAgeDays: 200 }, performances);
+assert(stale.confidence < moderate.confidence && stale.reason === "unchanged");
+const text = new PlayerPriceRecommendationFormatter().formatRecommendation(moderate);
+assert(text.includes("Надёжность оценки") && text.includes("Осторожный ориентир") && !text.includes("\uFFFD"));
+console.log("Player price review calibration self-test passed");
