@@ -5,7 +5,7 @@ export class PlayerPriceBudgetPolicy {
   #optimizer;
   constructor(rules = FANTASY_ROSTER_RULES) { this.rules = rules; this.#optimizer = new PriceReviewRosterOptimizer(rules); }
   createBudgetContext(performances, players = performances.map((item) => item.player)) {
-    const rated = performances.filter((item) => item.forecast > 0 && item.count >= (item.player.position === "вратарь" ? 8 : 5));
+    const rated = performances.filter((item) => item.forecast > 0 && item.count >= 3);
     const reference = this.#optimizer.findOptimalRoster(rated.map((item) => ({ ...item.player, forecast: item.forecast })), (player) => player.forecast);
     return { limit: this.rules.budgetLimit, clubLimit: this.rules.clubPlayerLimit,
       referencePoints: reference?.value || null, minimumBefore: this.#optimizer.findOptimalRoster(players)?.cost ?? null };

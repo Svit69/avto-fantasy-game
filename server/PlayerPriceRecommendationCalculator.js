@@ -17,9 +17,9 @@ export class PlayerPriceRecommendationCalculator {
     const fairPrice = new PlayerPriceBudgetPolicy().calculateFairPrice(performance, Math.max(1, performance.forecast / benchmark), budget);
     const gap = (fairPrice - performance.player.price) * policy.calculateConfidence(performance);
     const direction = Math.sign(gap);
-    const currentRatio = performance.summaries[0].median / performance.player.price / benchmark;
+    const recentRatio = performance.summaries[0].median / performance.player.price / benchmark;
     if (Math.abs(gap) < Math.max(1.5, performance.player.price * 0.2)
-      || (direction > 0 ? currentRatio < 1.1 && (performance.recentForm?.strongGames || 0) < 2 : currentRatio > 0.9 && fairPrice >= performance.player.price * 0.75)) return { reason: "unchanged" };
+      || (direction > 0 ? recentRatio < 1.1 && (performance.recentForm?.strongGames || 0) < 2 : recentRatio > 0.9 && fairPrice >= performance.player.price * 0.75)) return { reason: "unchanged" };
     const suggestedPrice = Math.max(1, performance.player.price + direction);
     if (suggestedPrice === performance.player.price) return { reason: "unchanged" };
     return { reason: "recommendation", ...performance, suggestedPrice, benchmark, gap, fairPrice, budgetLimit: budget?.limit };

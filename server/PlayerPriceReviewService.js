@@ -26,6 +26,9 @@ export class PlayerPriceReviewService {
     const protectedReport = budgetPolicy.protectAffordability(evaluations, performances, budgetContext);
     const recommendations = protectedReport.evaluations.filter((item) => item.reason === "recommendation").sort((first, second) => Math.abs(second.gap) - Math.abs(first.gap));
     const counts = protectedReport.evaluations.reduce((result, item) => ({ ...result, [item.reason]: (result[item.reason] || 0) + 1 }), {});
-    return { tours: context.tours, recommendations, coverage, counts, total: players.length, budget: protectedReport.budget };
+    counts.no_data = performances.filter((item) => !item.count).length;
+    counts.short_history = performances.filter((item) => item.count > 0 && item.count < 3).length;
+    const playerAssessments = performances.map((performance, index) => ({ ...performance, reason: protectedReport.evaluations[index].reason }));
+    return { tours: context.tours, season: context.season, recommendations, coverage, counts, total: players.length, budget: protectedReport.budget, playerAssessments };
   }
 }

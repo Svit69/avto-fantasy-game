@@ -1,5 +1,6 @@
 import { PlayerPriceReviewService } from "./PlayerPriceReviewService.js";
 import { AdminPriceReviewView } from "./AdminPriceReviewView.js";
+import { AdminPriceReviewPlayerView } from "./AdminPriceReviewPlayerView.js";
 
 export class AdminPriceReviewController {
   constructor({ stateStore, service, view = new AdminPriceReviewView(), ...repositories }) {
@@ -8,6 +9,8 @@ export class AdminPriceReviewController {
   async executeRoute(source) {
     this.stateStore.clearState(source.chatId);
     if (source.route.type === "price_review_help") return this.view.renderExplanation(source.chatId);
-    return this.view.renderReport(source.chatId, await this.service.createReviewReport(), source.route.page);
+    const report = await this.service.createReviewReport();
+    if (source.route.type === "price_review_players") return new AdminPriceReviewPlayerView().renderPlayers(source.chatId, report, source.route.page);
+    return this.view.renderReport(source.chatId, report, source.route.page);
   }
 }

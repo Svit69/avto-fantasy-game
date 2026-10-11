@@ -1,0 +1,42 @@
+import assert from "node:assert/strict";
+import { PlayerPriceReviewTestFixtures } from "./PlayerPriceReviewTestFixtures.js";
+import { PlayerPriceReviewService } from "./PlayerPriceReviewService.js";
+import { PlayerPriceReviewContextResolver } from "./PlayerPriceReviewContextResolver.js";
+import { PlayerPricePerformanceCalculator } from "./PlayerPricePerformanceCalculator.js";
+import { AdminPriceReviewPlayerView } from "./AdminPriceReviewPlayerView.js";
+import { AdminPriceReviewController } from "./AdminPriceReviewController.js";
+
+const fixtures = new PlayerPriceReviewTestFixtures();
+const scenario = fixtures.createScenario();
+scenario.database.playerStats = scenario.database.playerStats.filter((stat) => stat.playerId !== "player-2" || !stat.matchId.includes("-10-"));
+const report = await new PlayerPriceReviewService(fixtures.createRepositories(scenario)).createReviewReport();
+const absentThisTour = report.playerAssessments.find((item) => item.player.id === "player-2");
+assert.equal(absentThisTour.count, 5);
+assert.equal(absentThisTour.reason, "unchanged", "Historical player must be assessed without a current-tour appearance");
+assert(absentThisTour.summaries.every((summary) => summary.mean === 20));
+scenario.calendar.tours.push({ id: "tour-12", startsAt: "2026-12-01T00:00:00Z" },
+  { id: "tour-january", startsAt: "2027-01-01T00:00:00Z" }, { id: "old-season", startsAt: "2025-09-01T00:00:00Z" });
+scenario.now = new Date("2027-01-02T00:00:00Z");
+const context = new PlayerPriceReviewContextResolver().resolveContext(scenario.calendar, scenario.now);
+assert.equal(context.season, "2026/2027");
+assert(context.tours.some((tour) => tour.id === "tour-9"), "Do not truncate history to three tours");
+assert(!context.tours.some((tour) => tour.id === "old-season" || tour.id.endsWith("-predseason")));
+const newTourReport = await new PlayerPriceReviewService(fixtures.createRepositories(scenario)).createReviewReport();
+assert(newTourReport.coverage.every((item) => item.sufficient), "Empty new tour must not block season data");
+assert.equal(newTourReport.playerAssessments.find((item) => item.player.id === "player-2").count, 5);
+const player = scenario.players[0];
+const matches = Array.from({ length: 12 }, (_, index) => ({ id: `match-${index}`, tourId: "season",
+  scheduledAt: `2026-09-${String(index + 1).padStart(2, "0")}T10:00:00Z` }));
+const playerStats = matches.map((match, index) => ({ matchId: match.id, playerId: player.id, fantasyPoints: index + 1 })).reverse();
+const performance = new PlayerPricePerformanceCalculator().calculatePerformance(player, context, { matches, playerStats });
+assert.deepEqual(performance.summaries.map((summary) => summary.count), [5, 10, 12]);
+assert.deepEqual(performance.summaries.map((summary) => summary.mean), [10, 7.5, 6.5]);
+assert(Math.abs(performance.forecast - 8.55) < 0.000001);
+assert.equal(performance.lastPlayedAt, "2026-09-12");
+const preliminary = { ...report, playerAssessments: [{ ...absentThisTour, count: 2, reason: "insufficient" }] };
+assert(new AdminPriceReviewPlayerView().renderPlayers(1, preliminary).text.includes("Предварительная статистика"));
+const audit = new AdminPriceReviewPlayerView().renderPlayers(1, report);
+assert(audit.text.includes("Цена без изменений") && audit.text.length < 4096 && !audit.text.includes("\uFFFD"));
+const controller = new AdminPriceReviewController({ stateStore: { clearState: () => {} }, service: { createReviewReport: async () => report } });
+assert((await controller.executeRoute({ chatId: 1, route: { type: "price_review_players", page: 0 } })).text.includes("Все игроки"));
+console.log("Player price review season windows self-test passed");
