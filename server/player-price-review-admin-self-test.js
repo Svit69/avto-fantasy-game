@@ -16,13 +16,14 @@ const service = new PlayerPriceReviewService(fixtures.createRepositories(scenari
 const report = await service.createReviewReport();
 const view = new AdminPriceReviewView();
 assert(new AdminKeyboardFactory().createMenuKeyboard().flat().some((button) => button.callback_data === "admin:price_review:0"));
-const expanded = { ...report, recommendations: Array.from({ length: 10 }, (_, index) => report.recommendations[index % 2]) };
+const expanded = { ...report, recommendations: Array.from({ length: 10 }, () => report.recommendations[0]) };
 const first = view.renderReport(1, expanded);
 assert(first.text.length < 4096 && !first.text.includes("\uFFFD"));
 assert(first.reply_markup.inline_keyboard.flat().some((button) => button.callback_data === "admin:price_review:1"));
-assert(view.renderReport(1, expanded, 99).text.includes("Страница 3/3"));
-assert(view.renderReport(1, expanded, -1).text.includes("Страница 1/3"));
+assert(view.renderReport(1, expanded, 99).text.includes("Страница 4/4"));
+assert(view.renderReport(1, expanded, -1).text.includes("Страница 1/4"));
 assert(view.renderExplanation(1).text.includes("коэффициент лиги"));
+assert(view.renderExplanation(1).text.length < 4096);
 const stateStore = new AdminConversationStateStore();
 const priceController = new AdminPriceReviewController({ stateStore, service });
 const handler = new AdminPanelRouteHandler({ priceReviewController: priceController, stateStore,

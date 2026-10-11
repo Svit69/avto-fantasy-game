@@ -10,7 +10,8 @@ export class PlayerPriceReviewMatchSelector {
       if (!calendarMatch) continue;
       const previous = selected.get(calendarMatch.id);
       if (!previous || this.#readImportTime(imported) >= this.#readImportTime(previous)) {
-        selected.set(calendarMatch.id, { ...imported, calendarMatchId: calendarMatch.id, tourId: calendarMatch.tourId });
+        selected.set(calendarMatch.id, { ...imported, scheduledAt: imported.scheduledAt || calendarMatch.startsAt,
+          calendarMatchId: calendarMatch.id, tourId: calendarMatch.tourId });
       }
     }
     return [...selected.values()].filter((match) => match.status === "finished");

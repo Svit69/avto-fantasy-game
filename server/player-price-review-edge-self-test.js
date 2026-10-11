@@ -20,7 +20,7 @@ assert(!coverageCalculator.calculateTeamCoverage("Автомобилист", con
 const calculator = new PlayerPricePerformanceCalculator();
 const weightedStats = data.playerStats.map((stat) => ({ ...stat, fantasyPoints: stat.matchId.includes("-10-") ? 40 : 10 }));
 const performance = calculator.calculatePerformance(scenario.players[0], context, { ...data, playerStats: weightedStats });
-assert(Math.abs(performance.forecast - 30) < 0.000001, "Normalize available 60/30 weights to 2/3 and 1/3");
+assert(Math.abs(performance.forecast - performance.recentForm.adjustment - 30) < 0.000001, "Normalize available 60/30 weights separately from recent form");
 const sparse = calculator.calculatePerformance(scenario.players[0], context, { ...data, playerStats: [weightedStats[0]] });
 assert.equal(sparse.count, 1);
 assert.equal(sparse.forecast, 10, "Missing current tour does not lower older points to zero");
