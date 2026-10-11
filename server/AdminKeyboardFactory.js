@@ -2,11 +2,11 @@ export class AdminKeyboardFactory {
   createMenuKeyboard() {
     return [[{ text: "Зарегистрированные пользователи", callback_data: "admin:users" }],
       [{ text: "База хоккеистов", callback_data: "admin:players:0" }],
+      [{ text: "Помощник стоимости", callback_data: "admin:price_review:0" }],
       [{ text: "Составы по турам", callback_data: "admin:rosters" }],
       [{ text: "ВХЛ online id", callback_data: "admin:vhl_online" }],
       [{ text: "Загрузить протокол матча", callback_data: "admin:protocol" }]];
   }
-
   createLeagueKeyboard() {
     return [[{ text: "КХЛ", callback_data: "admin:protocol_league:КХЛ" }],
       [{ text: "ВХЛ", callback_data: "admin:protocol_league:ВХЛ" }],

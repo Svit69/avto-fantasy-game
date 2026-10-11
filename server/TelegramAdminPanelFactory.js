@@ -1,4 +1,5 @@
 import { AdminAccessPolicy } from "./AdminAccessPolicy.js";
+import { AdminPriceReviewController } from "./AdminPriceReviewController.js";
 import { AdminPanelRouteHandler } from "./AdminPanelRouteHandler.js";
 import { AdminPlayerMutationService } from "./AdminPlayerMutationService.js";
 import { AdminProtocolImportService } from "./AdminProtocolImportService.js";
@@ -19,6 +20,8 @@ export class TelegramAdminPanelFactory {
     const context = new AdminViewContextFactory().createViewContext();
     const mutationService = this.#createMutationService(context.view, botClient, userRepository, rosterRepository, playerCatalogRepository);
     const routeHandler = new AdminPanelRouteHandler({ ...context, userRepository, playerCatalogRepository, rosterRepository, mutationService,
+      priceReviewController: new AdminPriceReviewController({ stateStore: context.stateStore, playerCatalogRepository, calendarRepository,
+        matchDataRepository: new KhlServiceFactory(this.rootDirectory).createRepository() }),
       protocolImportService: this.#createProtocolImportService(botClient, context, calendarRepository), vhlOnlineRouteHandler: this.#createVhlRouteHandler(context, calendarRepository) });
     return new TelegramAdminPanelController({ accessPolicy: new AdminAccessPolicy((process.env.TELEGRAM_ADMIN_IDS || "").split(",")),
       routeParser: new AdminRouteParser(), routeHandler, stateStore: context.stateStore, botClient, logger: this.logger });
