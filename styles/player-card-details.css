@@ -21,7 +21,7 @@
 .card-score-block.is-points-hidden .card-points { display: none; }
 
 .card-position {
-  padding: 1px 5px 4px;
+  padding: 3px 5px 2px;
   background: rgba(0, 0, 0, 0.24);
   font-size: 10px;
   font-weight: 900;
