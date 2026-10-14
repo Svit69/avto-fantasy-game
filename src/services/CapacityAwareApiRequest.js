@@ -1,7 +1,7 @@
 import { RequestAuthorizationHeaderFactory } from "./RequestAuthorizationHeaderFactory.js";
 
 export class CapacityAwareApiRequest {
-  constructor(fetcher = fetch, wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds))) { Object.assign(this, { fetcher, wait }); }
+  constructor(fetcher = (...args) => globalThis.fetch(...args), wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds))) { Object.assign(this, { fetcher, wait }); }
   async fetchResponse(url, options = {}) {
     const authorization = typeof window === "undefined" ? {} : new RequestAuthorizationHeaderFactory().createAuthorizationHeaders();
     const headers = new Headers(authorization); new Headers(options.headers).forEach((value, key) => headers.set(key, value));
