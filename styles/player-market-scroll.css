@@ -10,7 +10,6 @@
   font-size: 10px;
   text-transform: uppercase;
 }
-
 .market-stats-scroll {
   display: grid;
   align-items: center;
@@ -26,14 +25,11 @@
   user-select: none;
   -webkit-overflow-scrolling: touch;
 }
-
 .market-stats-scroll b { font-size: 17px; }
-
 .market-stats-scroll span {
   justify-items: center;
   text-align: center;
 }
-
 .market-header .market-player-cell {
   padding-left: 8px;
 }
@@ -49,3 +45,6 @@
 .market-row:active:not(.is-disabled) {
   background: rgba(224, 24, 34, 0.28);
 }
+.market-header button { border: 0; padding: 4px 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.market-header button[aria-pressed="true"] { color: #fff; font-weight: 700; }
+.market-header button:focus-visible { outline: 2px solid #e01822; outline-offset: 2px; }

@@ -1,9 +1,13 @@
 import { RosterLimitToastController } from "./RosterLimitToastController.js";
+import { PlayerMarketFilterController } from "./PlayerMarketFilterController.js";
 export class PlayerSelectionController {
   constructor(rootElement, teamRoster, players, rosterDomRenderer, drawerView, state, scrollSynchronizer) {
     Object.assign(this, { rootElement, teamRoster, players, rosterDomRenderer, drawerView, state, scrollSynchronizer }); this.toastController = new RosterLimitToastController(rootElement);
   }
-  connectPlayerSelectionActions() { this.rootElement.addEventListener("click", (event) => this.#handleSelectionAction(event)); this.rootElement.addEventListener("input", (event) => this.#handleRangeInput(event)); }
+  connectPlayerSelectionActions() {
+    this.rootElement.addEventListener("click", (event) => this.#handleSelectionAction(event));
+    new PlayerMarketFilterController({ ...this, tableView: this.drawerView.marketTableView }).connectFilterActions();
+  }
   #handleSelectionAction(event) {
     if (event.target.closest("[data-remove-slot]")) return this.#renderDrawer();
     if (event.target.closest("[data-open-player-panel]") && this.teamRoster.isEditable()) return this.#openPlayerSearch();
@@ -23,9 +27,6 @@ export class PlayerSelectionController {
   #openFilter(event) { this.state.openFilter(event.target.closest("[data-open-filter]").dataset.openFilter); this.#renderDrawer(); }
   #closeFilter() { this.#animateExit(".filter-sheet, .filter-scrim", () => { this.state.closeFilter(); this.#renderDrawer(); }, 130); }
   #closeDrawer() { this.#animateExit(".player-selection-drawer, .drawer-backdrop", () => { this.state.closeDrawer(); this.#renderDrawer(); }); }
-  #handleRangeInput(event) {
-    if (event.target.matches("[data-price-filter-range]")) { this.state.applyFilter("price", event.target.value); this.#updatePriceRangeUi(event.target); }
-  }
   #applyFilter(event) {
     const option = event.target.closest("[data-filter-value]");
     this.state.applyFilter(option.dataset.filterKind, option.dataset.filterValue); this.#closeFilter();
@@ -45,6 +46,5 @@ export class PlayerSelectionController {
     this.scrollSynchronizer.connectSynchronizedStatsScroll(root);
   }
   #animateExit(selector, afterClose, duration = 160) { this.rootElement.querySelectorAll(selector).forEach((element) => element.classList.add("is-leaving")); setTimeout(afterClose, duration); }
-  #updatePriceRangeUi(input) { input.style.setProperty("--price-progress", `${((input.value - input.min) / (input.max - input.min)) * 100}%`); input.previousElementSibling.querySelector("output").value = `до ${input.value}к`; }
   #createContext() { return { teamRoster: this.teamRoster, players: this.players, filters: this.state.filters, activeFilter: this.state.activeFilter, shouldAnimate: this.state.consumeDrawerAnimationFlag() }; }
 }

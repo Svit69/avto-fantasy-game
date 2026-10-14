@@ -16,6 +16,9 @@ try {
   const origin = `http://127.0.0.1:${server.address().port}`;
   assert((await (await fetch(`${origin}/api/health`)).json()).ok);
   assert((await (await fetch(`${origin}/api/ready`)).json()).ok);
+  const seasonResponse = await fetch(`${origin}/api/player-tour-stats?scope=season`);
+  assert.equal(seasonResponse.status, 200);
+  assert(Array.isArray((await seasonResponse.json()).stats));
   assert.equal((await fetch(`${origin}/api/operations`)).status, 403);
   assert.equal((await fetch(`${origin}/api/telegram-bot-info`)).status, 403);
   assert.equal((await fetch(`${origin}/api/telegram-webhook-info`)).status, 403);

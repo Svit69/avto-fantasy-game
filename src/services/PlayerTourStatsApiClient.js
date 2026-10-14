@@ -1,8 +1,9 @@
 import { CapacityAwareApiRequest } from "./CapacityAwareApiRequest.js";
 export class PlayerTourStatsApiClient {
-  async loadMonthlyPlayerTourStats(month) {
+  async loadSeasonPlayerStats() { return this.loadMonthlyPlayerTourStats("", "season"); }
+  async loadMonthlyPlayerTourStats(month, scope = "tour") {
     try {
-      const query = `month=${encodeURIComponent(month)}&stamp=${Date.now()}`;
+      const query = `month=${encodeURIComponent(month)}&scope=${scope}&stamp=${Date.now()}`;
       const response = await new CapacityAwareApiRequest().fetchResponse(`/api/player-tour-stats?${query}`, { cache: "no-store" });
       if (!response.ok) return [];
       const payload = await response.json();

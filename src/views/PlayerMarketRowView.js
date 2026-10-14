@@ -1,10 +1,12 @@
 import { AssetImageView } from "./AssetImageView.js";
+import { PlayerMarketStatsStore } from "../services/PlayerMarketStatsStore.js";
 
 export class PlayerMarketRowView {
   constructor(imageView = new AssetImageView()) { this.imageView = imageView; }
 
   render(player, selectedIds, teamRoster) {
     const selected = selectedIds.includes(player.getId());
+    const stats = PlayerMarketStatsStore.readPlayerStats(player);
     const clubLocked = !selected && !teamRoster.canSelectPlayerFromClub(null, player);
     const slotMissing = !teamRoster.findAvailableSlotForPlayer(null, player);
     const disabled = selected || !player.isAvailableForSelection() || (slotMissing && !clubLocked);
@@ -18,7 +20,7 @@ export class PlayerMarketRowView {
       </div>
       <div class="market-stats-scroll">
         <span><b>${player.getFormattedPrice()}</b><small>${this.#formatPosition(player.getPosition())}</small></span>
-        <span>${this.#renderPoints(player, teamRoster)}</span><span>${player.getSelectionPercent()}%</span><span>0</span><span>0</span>
+        <span>${stats.fantasyPoints}</span><span>${player.getSelectionPercent()}%</span><span>${stats.goals}</span><span>${stats.assists}</span>
       </div>
     </button>`;
   }
@@ -31,8 +33,6 @@ export class PlayerMarketRowView {
     const codes = { нападающий: "НАП", защитник: "ЗАЩ", вратарь: "ВРТ" };
     return codes[position] ?? position;
   }
-
-  #renderPoints(player, teamRoster) { return teamRoster.getTourAccessState()?.isLocked ? player.getPoints() : "—"; }
 
   #renderAvatar(player) {
     return this.imageView.renderPlayerImage({ src: player.getImage(), alt: player.getFullName() });

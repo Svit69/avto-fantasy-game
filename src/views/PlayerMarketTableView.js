@@ -1,4 +1,5 @@
 import { PlayerMarketRowView } from "./PlayerMarketRowView.js";
+import { PlayerMarketQuery } from "../services/PlayerMarketQuery.js";
 
 export class PlayerMarketTableView {
   constructor(rowView = new PlayerMarketRowView()) { this.rowView = rowView; }
@@ -7,27 +8,22 @@ export class PlayerMarketTableView {
     const selectedIds = teamRoster.getSelectedPlayerIds();
     return `
       <div class="player-market">
-        ${this.#renderHeader()}
-        ${this.#filterPlayers(players, filters).map((player) => this.rowView.render(player, selectedIds, teamRoster)).join("")}
+        ${this.#renderHeader(filters)}
+        ${new PlayerMarketQuery().selectPlayers(players, filters).map((player) => this.rowView.render(player, selectedIds, teamRoster)).join("") || '<p role="status">Нет подходящих игроков</p>'}
       </div>
     `;
   }
 
-  #renderHeader() {
+  #renderHeader(filters) {
     return `
       <div class="market-row market-header">
         <div class="market-player-cell">Игрок</div>
         <div class="market-stats-scroll">
-          <span>Цена ↓</span><span>Очки ↕</span><span>Выбравшие ↕</span><span>Голы ↕</span><span>Передачи ↕</span>
+          ${Object.entries({ price: "Цена", fantasyPoints: "Очки", selectionPercent: "Выбравшие", goals: "Голы", assists: "Передачи" }).map(([field, label]) =>
+            `<span><button type="button" data-market-sort="${field}" aria-label="Сортировать: ${label}" aria-pressed="${filters.sortField === field}">${label} ${filters.sortField === field ? (filters.sortDirection === "asc" ? "↑" : "↓") : "↕"}</button></span>`).join("")}
         </div>
       </div>
     `;
   }
 
-  #filterPlayers(players, filters) {
-    return players.filter((player) => player.isAvailableForSelection())
-      .filter((player) => filters.position === "Все" || player.getPosition() === filters.position)
-      .filter((player) => (filters.team === "Все" || player.getTeam() === filters.team) && Number(player.getPrice()) <= Number(filters.maxPrice))
-      .sort((firstPlayer, secondPlayer) => secondPlayer.getPrice() - firstPlayer.getPrice());
-  }
 }
