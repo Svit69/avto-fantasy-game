@@ -8,7 +8,10 @@ export class HttpApplication {
       await this.#routeRequest(request, response);
     } catch (error) {
       this.logger.error("http_request_failed", { method: request.method, url: request.url, errorName: error.name, errorMessage: error.message });
-      this.jsonResponder.sendJson(response, 500, { error: "internal_server_error" });
+      if (response.headersSent || response.destroyed) return;
+      if ([408, 413].includes(error.statusCode)) response.setHeader("Connection", "close");
+      if (error.retryAfter) response.setHeader("Retry-After", String(error.retryAfter));
+      this.jsonResponder.sendJson(response, error.statusCode || 500, { error: error.statusCode ? error.message : "internal_server_error" });
     }
   }
 

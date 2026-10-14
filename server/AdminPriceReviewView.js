@@ -25,7 +25,7 @@ export class AdminPriceReviewView {
     if (navigation.length) rows.push(navigation);
     rows.push([{ text: "Как считается рекомендация", callback_data: "admin:price_review_help" }],
       [{ text: "Статистика всех игроков", callback_data: "admin:price_review_players:0" }],
-      [{ text: "Пересчитать", callback_data: `admin:price_review:${page}` }], [{ text: "В меню", callback_data: "admin:menu" }]);
+      [{ text: "Пересчитать", callback_data: `admin:price_review_refresh:${page}` }], [{ text: "В меню", callback_data: "admin:menu" }]);
     return this.#createReply(chatId, text, rows);
   }
   renderExplanation(chatId) {

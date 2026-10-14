@@ -13,9 +13,10 @@ import { StorageDriverFactory } from "./StorageDriverFactory.js";
 import { TelegramAdminPanelFactory } from "./TelegramAdminPanelFactory.js";
 import { TelegramFallbackLinkView } from "./TelegramFallbackLinkView.js"; import { TelegramRequestProfileResolver } from "./TelegramRequestProfileResolver.js"; import { TelegramSupportController } from "./TelegramSupportController.js"; import { WebLoginTokenService } from "./WebLoginTokenService.js";
 import { TelegramMiniAppReplyService } from "./TelegramMiniAppReplyService.js";
+import { ProtectedHttpApplication } from "./ProtectedHttpApplication.js";
 export class ServerApplicationFactory {
   constructor(rootDirectory, logger) { Object.assign(this, { rootDirectory, logger }); }
-  createApplication() { const base = this.#createBaseDependencies(); const storage = this.#createStorageDependencies(base); return new HttpApplication(this.#createControllers(base, storage)); }
+  createApplication() { const base = this.#createBaseDependencies(); const storage = this.#createStorageDependencies(base); return new ProtectedHttpApplication(new HttpApplication(this.#createControllers(base, storage)), { rootDirectory: this.rootDirectory, logger: this.logger, botClient: base.botClient }); }
   #createBaseDependencies() {
     const bodyParser = new RequestBodyParser(); const jsonResponder = new JsonResponder();
     const botClient = new TelegramBotClient(process.env.TELEGRAM_BOT_TOKEN, this.logger, Number(process.env.TELEGRAM_API_TIMEOUT_MS || 15000));

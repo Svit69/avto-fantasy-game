@@ -1,4 +1,6 @@
 import fs from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { pipeline } from "node:stream/promises";
 import path from "node:path";
 import { StaticCachePolicy } from "./StaticCachePolicy.js";
 import { StaticPathResolver } from "./StaticPathResolver.js";
@@ -15,11 +17,11 @@ export class StaticFileServer {
     const filePath = await this.pathResolver.resolveFilePath(pathname);
     if (!filePath) return this.#sendNotFound(response);
     try {
-      const content = await fs.readFile(filePath);
-      response.writeHead(200, { "Content-Type": this.#getContentType(filePath), "Cache-Control": this.cachePolicy.createCacheControl(filePath, search) });
-      response.end(content);
+      const stat = await fs.stat(filePath);
+      response.writeHead(200, { "Content-Type": this.#getContentType(filePath), "Content-Length": stat.size, "Cache-Control": this.cachePolicy.createCacheControl(filePath, search) });
+      await pipeline(createReadStream(filePath), response);
     } catch {
-      this.#sendNotFound(response);
+      if (!response.headersSent && !response.destroyed) this.#sendNotFound(response);
     }
   }
 

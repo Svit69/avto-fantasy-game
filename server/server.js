@@ -11,8 +11,12 @@ new EnvironmentFileLoader().loadEnvironmentFile(path.join(rootDirectory, ".env")
 const logger = new ServerLogger();
 const port = Number(process.env.PORT || 3000);
 const application = new ServerApplicationFactory(rootDirectory, logger).createApplication();
+if (!process.env.TELEGRAM_WEBHOOK_SECRET) logger.warn("telegram_webhook_secret_missing", { action: "Configure TELEGRAM_WEBHOOK_SECRET and register webhook with secret_token" });
 
-http.createServer((request, response) => application.handleRequest(request, response)).listen(port, () => {
+application.startMonitoring();
+const server = http.createServer({ requestTimeout: 120000, headersTimeout: 60000, keepAliveTimeout: 5000 }, (request, response) => application.handleRequest(request, response));
+server.on("close", () => application.stopMonitoring());
+server.listen(port, process.env.HOST || undefined, () => {
   logger.info("server_started", {
     port,
     hasTelegramToken: Boolean(process.env.TELEGRAM_BOT_TOKEN),

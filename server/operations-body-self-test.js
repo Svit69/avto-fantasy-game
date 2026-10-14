@@ -1,0 +1,21 @@
+import assert from "node:assert/strict";
+import { Readable } from "node:stream";
+import { RequestBodyParser } from "./RequestBodyParser.js";
+import { LimitedResponseBodyReader } from "./LimitedResponseBodyReader.js";
+import { StaticPathResolver } from "./StaticPathResolver.js";
+
+const payload = Buffer.from(JSON.stringify({ name: "Михаил Гамзаков" }));
+const request = Readable.from([payload.subarray(0, 11), payload.subarray(11)]); request.headers = {};
+assert.deepEqual(await new RequestBodyParser().readJson(request), { name: "Михаил Гамзаков" });
+const tooLarge = Readable.from([Buffer.from("яя")]); tooLarge.headers = {};
+await assert.rejects(new RequestBodyParser(3).readText(tooLarge), { statusCode: 413 });
+assert.equal(tooLarge.listenerCount("data"), 0, "Oversized bodies must stop accumulating");
+const declared = Readable.from([]); declared.headers = { "content-length": "100" };
+await assert.rejects(new RequestBodyParser(10).readText(declared), { statusCode: 413 });
+const remote = new LimitedResponseBodyReader();
+assert.equal((await remote.readBuffer(new Response("Привет"), 100)).toString("utf8"), "Привет");
+await assert.rejects(remote.readBuffer(new Response("too large"), 2), /remote_file_too_large/);
+const paths = new StaticPathResolver(process.cwd());
+assert.equal(await paths.resolveFilePath("/assets/..%2f.env"), null);
+assert.equal(await paths.resolveFilePath("/public/..%2fstorage/runtime/telegram-receipts/1.json"), null);
+console.log("Operations body limits and public path self-test passed");

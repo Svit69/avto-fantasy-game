@@ -1,10 +1,11 @@
 import { RequestAuthorizationHeaderFactory } from "./RequestAuthorizationHeaderFactory.js";
+import { CapacityAwareApiRequest } from "./CapacityAwareApiRequest.js";
 
 export class RosterSubmissionApiClient {
   constructor(headerFactory = new RequestAuthorizationHeaderFactory()) { this.headerFactory = headerFactory; }
 
   async loadSavedRoster(month) {
-    const response = await fetch(`/api/roster?month=${encodeURIComponent(month)}`, {
+    const response = await new CapacityAwareApiRequest().fetchResponse(`/api/roster?month=${encodeURIComponent(month)}`, {
       headers: this.headerFactory.createAuthorizationHeaders(),
     });
 
@@ -18,7 +19,7 @@ export class RosterSubmissionApiClient {
       method: "POST", headers: this.headerFactory.createJsonHeaders(), body,
     });
 
-    if (!response.ok) throw new Error("roster_submit_failed");
+    if (!response.ok) throw Object.assign(new Error("roster_submit_failed"), { statusCode: response.status, retryAfter: Number(response.headers.get("Retry-After")) || 5 });
     return response.json();
   }
 }

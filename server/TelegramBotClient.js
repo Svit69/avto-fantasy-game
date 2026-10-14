@@ -1,3 +1,5 @@
+import { TelegramFileDownloader } from "./TelegramFileDownloader.js";
+import { TelegramBotResponseLogger } from "./TelegramBotResponseLogger.js";
 export class TelegramBotClient {
   constructor(token, logger, timeoutMs = 15000) {
     this.token = token;
@@ -12,9 +14,7 @@ export class TelegramBotClient {
   }
 
   async downloadFile(filePath) {
-    const response = await fetch(`https://api.telegram.org/file/bot${this.token}/${filePath}`);
-    if (!response.ok) throw new Error(`telegram_file_download_failed_${response.status}`);
-    return Buffer.from(await response.arrayBuffer());
+    return new TelegramFileDownloader().downloadFile(this.token, filePath);
   }
 
   async callMethod(method, payload) {
@@ -38,15 +38,7 @@ export class TelegramBotClient {
   }
 
   async #logTelegramResponse(method, response) {
-    const body = await response.clone().json().catch(() => ({}));
-    const level = response.ok ? "info" : "warn";
-    this.logger[level]("telegram_api_response", {
-      method,
-      status: response.status,
-      ok: body.ok,
-      errorCode: body.error_code,
-      description: body.description,
-    });
+    await new TelegramBotResponseLogger(this.logger).logResponse(method, response);
   }
 
   createFailurePayload(method, error) {

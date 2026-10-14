@@ -10,6 +10,7 @@ export class StaticPathResolver {
 
   async resolveFilePath(pathname) {
     const requestedPath = pathname === "/" ? "/index.html" : decodeURIComponent(pathname);
+    if (requestedPath.split(/[\\/]/).includes("..")) return null;
     if (requestedPath === "/favicon.ico") return this.#resolveRootPath("/assets/avto_logo.png");
     if (!this.#isAllowedPublicPath(requestedPath)) return null;
     const preferredAssetPath = await this.assetVariantResolver.resolveAssetPath(requestedPath);

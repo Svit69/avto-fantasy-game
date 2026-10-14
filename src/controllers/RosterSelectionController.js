@@ -1,3 +1,5 @@
+import { RosterSubmissionFlow } from "../services/RosterSubmissionFlow.js";
+import { RosterAnimationController } from "./RosterAnimationController.js";
 export class RosterSelectionController {
   constructor(rootElement, teamRoster, rosterDomRenderer, rosterSubmissionApiClient, getSelectedMonth, afterRosterSubmit = async () => {}) {
     Object.assign(this, { rootElement, teamRoster, rosterDomRenderer, rosterSubmissionApiClient, getSelectedMonth, afterRosterSubmit });
@@ -28,12 +30,13 @@ export class RosterSelectionController {
 
   async #submitRoster(confirmButton) {
     if (!this.teamRoster.canConfirmRoster()) return;
-    confirmButton.disabled = true;
-    await this.rosterSubmissionApiClient.submitConfirmedRoster(this.teamRoster.createServerPayload(), this.getSelectedMonth());
-    await this.afterRosterSubmit();
-    this.teamRoster.markConfirmed(); this.#animateRosterLock();
-    this.rosterDomRenderer.renderRosterSections();
-    this.rosterDomRenderer.renderRosterConfirmation(this.getSelectedMonth());
+    return new RosterSubmissionFlow().submitRoster(confirmButton, async () => {
+      await this.rosterSubmissionApiClient.submitConfirmedRoster(this.teamRoster.createServerPayload(), this.getSelectedMonth());
+      await this.afterRosterSubmit();
+      this.teamRoster.markConfirmed(); this.#animateRosterLock();
+      this.rosterDomRenderer.renderRosterSections();
+      this.rosterDomRenderer.renderRosterConfirmation(this.getSelectedMonth());
+    });
   }
 
   #enableRosterEditing() {
@@ -41,10 +44,6 @@ export class RosterSelectionController {
     this.rosterDomRenderer.renderRosterSections();
   }
 
-  #animateRosterLock() { this.#setRosterAnimationClass("is-roster-locking", "is-roster-editing"); }
-  #animateRosterEdit() { this.#setRosterAnimationClass("is-roster-editing", "is-roster-locking"); }
-  #setRosterAnimationClass(nextClass, previousClass) {
-    const field = this.rootElement.querySelector("[data-draft-field]");
-    field?.classList.remove(previousClass); field?.classList.add(nextClass);
-  }
+  #animateRosterLock() { new RosterAnimationController(this.rootElement).animateRosterLock(); }
+  #animateRosterEdit() { new RosterAnimationController(this.rootElement).animateRosterEdit(); }
 }

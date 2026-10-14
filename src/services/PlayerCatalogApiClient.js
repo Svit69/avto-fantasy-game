@@ -1,3 +1,4 @@
+import { CapacityAwareApiRequest } from "./CapacityAwareApiRequest.js";
 export class PlayerCatalogApiClient {
   constructor(fallbackPlayers) {
     this.fallbackPlayers = fallbackPlayers;
@@ -5,7 +6,7 @@ export class PlayerCatalogApiClient {
 
   async loadPlayerCatalog() {
     try {
-      const response = await fetch(`/api/players?stamp=${Date.now()}`, { cache: "no-store" });
+      const response = await new CapacityAwareApiRequest().fetchResponse(`/api/players?stamp=${Date.now()}`, { cache: "no-store" });
       if (!response.ok) return this.fallbackPlayers;
       const payload = await response.json();
       return Array.isArray(payload.players) ? payload.players : this.fallbackPlayers;

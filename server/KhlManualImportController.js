@@ -11,7 +11,7 @@ export class KhlManualImportController {
     if (process.env.KHL_MANUAL_IMPORT_ENABLED !== "true") return this.jsonResponder.sendJson(response, 404, { error: "not_found" });
     if (!this.#isAuthorized(request)) return this.jsonResponder.sendJson(response, 401, { error: "invalid_import_token" });
     if (Number(request.headers["content-length"] || 0) > this.maxBytes) return this.jsonResponder.sendJson(response, 413, { error: "payload_too_large" });
-    const payload = await this.bodyParser.readJson(request);
+    const payload = await this.bodyParser.readJson(request, this.maxBytes);
     if (!payload.match?.tournamentId || !payload.match?.gameId) return this.jsonResponder.sendJson(response, 422, { error: "invalid_khl_payload" });
     const service = this.serviceFactory.createIngestionService(await this.#createDataProvider(payload));
     return this.jsonResponder.sendJson(response, 200, await service.ingestMatch(payload.match.tournamentId, payload.match.gameId));

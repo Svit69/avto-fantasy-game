@@ -1,3 +1,4 @@
+import { CapacityAwareApiRequest } from "./CapacityAwareApiRequest.js";
 export class FantasyCalendarApiClient {
   static cache = null;
   static ttlMs = 60 * 1000;
@@ -14,7 +15,7 @@ export class FantasyCalendarApiClient {
 
   async #fetchFantasyCalendar() {
     try {
-      const response = await fetch(`/api/calendar?stamp=${Date.now()}`, { cache: "no-store" });
+      const response = await new CapacityAwareApiRequest().fetchResponse(`/api/calendar?stamp=${Date.now()}`, { cache: "no-store" });
       if (!response.ok) return this.#createEmptyCalendar();
       const payload = await response.json();
       return this.#normalizeCalendarPayload(payload);

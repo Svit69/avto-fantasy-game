@@ -5,6 +5,7 @@ import { KhlMatchIngestionService } from "./KhlMatchIngestionService.js";
 import { KhlMatchScopePolicy } from "./KhlMatchScopePolicy.js";
 import { KhlOfficialDataProvider } from "./KhlOfficialDataProvider.js";
 import { StorageDriverFactory } from "./StorageDriverFactory.js";
+import { LimitedMatchIngestionService } from "./LimitedMatchIngestionService.js";
 
 export class KhlServiceFactory {
   constructor(rootDirectory) { this.rootDirectory = rootDirectory; this.storageFactory = new StorageDriverFactory(this.#resolve.bind(this)); }
@@ -21,7 +22,7 @@ export class KhlServiceFactory {
   }
 
   createIngestionService(dataProvider = this.createDataProvider()) {
-    return new KhlMatchIngestionService({ dataProvider, repository: this.createRepository(), playerCatalogRepository: this.createPlayerCatalogRepository(), scopePolicy: this.createScopePolicy() });
+    return new LimitedMatchIngestionService(new KhlMatchIngestionService({ dataProvider, repository: this.createRepository(), playerCatalogRepository: this.createPlayerCatalogRepository(), scopePolicy: this.createScopePolicy() }));
   }
 
   #resolve(filePath) { return path.join(this.rootDirectory, filePath); }

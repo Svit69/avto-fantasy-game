@@ -1,4 +1,5 @@
 import { AuthProfileCache } from "./AuthProfileCache.js";
+import { CapacityAwareApiRequest } from "./CapacityAwareApiRequest.js";
 import { TelegramProfileFormatter } from "./TelegramProfileFormatter.js";
 import { WebLoginAuthorizationService } from "./WebLoginAuthorizationService.js";
 
@@ -21,7 +22,7 @@ export class TelegramAuthorizationService {
 
   async #requestVerifiedProfile(initData, telegramProfile) {
     try {
-      const response = await fetch(`/api/telegram-auth?stamp=${Date.now()}`, { method: "POST", body: initData });
+      const response = await new CapacityAwareApiRequest().fetchResponse(`/api/telegram-auth?stamp=${Date.now()}`, { method: "POST", body: initData });
       if (!response.ok) return { authorized: false, reason: "invalid_init_data", profile: telegramProfile };
       const profile = this.#selectDisplayProfile(await response.json(), telegramProfile);
       this.profileCache.saveProfile(profile); return { authorized: true, profile };
