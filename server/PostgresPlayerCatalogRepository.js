@@ -11,7 +11,9 @@ export class PostgresPlayerCatalogRepository {
   async listPlayers() {
     const stored = await this.records.listRecords();
     const players = this.merger.mergeStoredPlayersWithSeedPlayers(stored, this.seedPlayers);
-    if (this.merger.shouldPersistMergedPlayers(stored, players)) await Promise.all(players.map((player) => this.#savePlayer(player)));
+    if (this.merger.shouldPersistMergedPlayers(stored, players)) {
+      for (const player of players) await this.#savePlayer(player);
+    }
     return players;
   }
 
