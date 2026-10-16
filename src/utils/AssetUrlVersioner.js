@@ -1,4 +1,4 @@
-const assetVersion = "2026-10-11-player-photos-2";
+const assetVersion = "2026-10-16-player-photos-20";
 
 export function versionAssetUrl(assetUrl) {
   if (!assetUrl || !assetUrl.startsWith("/assets/")) return assetUrl;
