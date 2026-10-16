@@ -31,6 +31,7 @@ export class DraftNotificationDispatcher {
       if (job.parseMode) payload.parse_mode = job.parseMode;
       const response = await this.botClient.callMethod("sendMessage", payload);
       if (!response.ok) return false;
+      if (job.verifyTelegramResult && !(await response.json()).ok) return false;
       await this.sentRepository.markNotificationAsSent(job.userId, job.key);
       this.logger.info("draft_notification_sent", { userId: job.userId, key: job.key });
       return true;

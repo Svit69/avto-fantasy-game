@@ -5,6 +5,7 @@ export class TelegramUserMapper {
     return new UserEntity({
       id: profile.id,
       name: this.#createManagerName(profile),
+      username: profile.username || "",
       phone,
       email: "",
       avatar: profile.photo_url || "",

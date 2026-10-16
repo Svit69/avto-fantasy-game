@@ -5,8 +5,9 @@
   "private": true,
   "scripts": {
     "start": "node server/server.js",
-    "check": "node --check api/index.js && node --check src/main.js && node --check server/server.js && node --check server/notification-worker.js && node --check server/khl-worker.js && node --check server/khl-import.js && node --check server/khl-replay.js && node --check server/khl-import-pdf.js && node --check server/vhl-import-online.js && node --check server/vhl-poll-online.js && node --check server/player-stats-audit.js && node server/khl-self-test.js && node server/vhl-protocol-validation-self-test.js && node server/vhl-match-identity-self-test.js && node server/vhl-admin-navigation-self-test.js && node server/player-price-review-self-test.js && node server/operations-self-test.js && node server/player-video-self-test.js",
+    "check": "node --check api/index.js && node --check src/main.js && node --check server/server.js && node --check server/notification-worker.js && node --check server/khl-worker.js && node --check server/khl-import.js && node --check server/khl-replay.js && node --check server/khl-import-pdf.js && node --check server/vhl-import-online.js && node --check server/vhl-poll-online.js && node --check server/player-stats-audit.js && node server/khl-self-test.js && node server/vhl-protocol-validation-self-test.js && node server/vhl-match-identity-self-test.js && node server/vhl-admin-navigation-self-test.js && node server/player-price-review-self-test.js && node server/operations-self-test.js && node server/player-video-self-test.js && node server/tour-result-self-test.js",
     "test:videos": "node server/player-video-self-test.js",
+    "test:results": "node server/tour-result-self-test.js",
     "test:operations": "node server/operations-self-test.js",
     "monitor:probe": "node server/health-probe.js",
     "test:prices": "node server/player-price-review-self-test.js",

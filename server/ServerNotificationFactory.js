@@ -28,6 +28,11 @@ export class ServerNotificationFactory {
       planner: new PlayerVideoNotificationPlanner({ rosterRepository: storage.createRosterRepository(), playerCatalogRepository: storage.createPlayerCatalogRepository() }),
       dispatcher: this.#createDispatcher(), logger: this.logger });
   }
+  createTourResultNotificationWorker() {
+    const storage = this.#createStorageFactory();
+    return new DraftNotificationWorker({ userRepository: storage.createUserRepository(), calendarRepository: storage.createCalendarRepository(),
+      planner: new NotificationPlannerFactory(storage).createTourResultPlanner(), dispatcher: this.#createDispatcher(), logger: this.logger });
+  }
 
   #createDispatcher() {
     const limit = Number(process.env.NOTIFICATION_RATE_LIMIT_PER_SECOND || 20);

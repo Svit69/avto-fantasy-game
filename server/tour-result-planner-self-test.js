@@ -1,0 +1,40 @@
+import assert from "node:assert/strict";
+import { TourResultNotificationPlanner } from "./TourResultNotificationPlanner.js";
+import { TourResultSnapshotService } from "./TourResultSnapshotService.js";
+import { TourResultStateStore } from "./TourResultStateStore.js";
+import { RuntimeStateStore } from "./RuntimeStateStore.js";
+import { createOperationsTestWorkspace } from "./operations-test-workspace.js";
+import { createTourResultTestScenario } from "./tour-result-test-scenario.js";
+const workspace = await createOperationsTestWorkspace();
+const enabled = process.env.TOUR_RESULTS_NOTIFICATIONS_ENABLED; delete process.env.TOUR_RESULTS_NOTIFICATIONS_ENABLED;
+try {
+  const scenario = createTourResultTestScenario(); const { end, tour, users, calendar, database } = scenario;
+  const stateStore = new TourResultStateStore(new RuntimeStateStore(workspace.directory));
+  await stateStore.readActivationTime(end - 1);
+  const service = new TourResultSnapshotService({ ...scenario.repositories, stateStore, settleMs: 0 });
+  const planner = new TourResultNotificationPlanner({ service, adminIds: ["99", "99", "100", "", "invalid"] });
+  assert.deepEqual(await planner.createNotificationJobs(calendar, users, end - 1), []);
+  const jobs = await planner.createNotificationJobs(calendar, users, end);
+  const winners = jobs.filter((job) => job.key.endsWith(":winner"));
+  assert.deepEqual(winners.map((job) => job.userId), ["1", "2"], "All shared first-place users must receive congratulations");
+  assert(winners.every((job) => job.text.includes("разделили") && !job.text.includes(users[0].phone)));
+  const reports = jobs.filter((job) => job.key.includes(":admin:top3:"));
+  assert.deepEqual(reports.map((job) => job.userId), ["99", "100"]);
+  assert(reports.every((job) => job.text.includes(users[0].phone) && job.text.includes(users[2].email) && !job.text.includes(users[3].email)));
+  assert(jobs.every((job) => job.verifyTelegramResult && job.parseMode === "HTML"));
+  const withoutFreshLoginLink = (entries) => entries.map(({ replyMarkup, ...job }) => job);
+  assert.deepEqual(withoutFreshLoginLink(await planner.createNotificationJobs(calendar, users, end + 100000)), withoutFreshLoginLink(jobs));
+  database.matches = [];
+  planner.service = { stateStore: { readActivationTime: async () => end - 1 }, readFinalResult: async () => ({ phase: "awaiting_data", missing: calendar.matches }) };
+  assert.deepEqual(await planner.createNotificationJobs(calendar, users, end + 1000), []);
+  const waiting = await planner.createNotificationJobs(calendar, users, end + 21600000);
+  assert(waiting.every((job) => job.key.includes(":admin:pending:")) && waiting.length === 2);
+  planner.service = { stateStore: { readActivationTime: async () => end + 1 }, readFinalResult: () => { throw Error("historical tour must not be read"); } };
+  assert.deepEqual(await planner.createNotificationJobs(calendar, users, end + 1000), []);
+  process.env.TOUR_RESULTS_NOTIFICATIONS_ENABLED = "false";
+  assert.deepEqual(await planner.createNotificationJobs(calendar, users, end + 1000), []);
+} finally {
+  if (enabled === undefined) delete process.env.TOUR_RESULTS_NOTIFICATIONS_ENABLED; else process.env.TOUR_RESULTS_NOTIFICATIONS_ENABLED = enabled;
+  await workspace.close();
+}
+console.log("Tour results winner/admin targeting, tie handling and no historical blast self-test passed");

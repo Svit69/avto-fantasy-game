@@ -1,0 +1,30 @@
+import assert from "node:assert/strict";
+import { TourResultSnapshotService } from "./TourResultSnapshotService.js";
+import { TourResultStateStore } from "./TourResultStateStore.js";
+import { RuntimeStateStore } from "./RuntimeStateStore.js";
+import { createOperationsTestWorkspace } from "./operations-test-workspace.js";
+import { createTourResultTestScenario } from "./tour-result-test-scenario.js";
+const workspace = await createOperationsTestWorkspace();
+try {
+  const scenario = createTourResultTestScenario(); const { tour, calendar, users, end, database } = scenario;
+  const stateStore = new TourResultStateStore(new RuntimeStateStore(workspace.directory));
+  const service = new TourResultSnapshotService({ ...scenario.repositories, stateStore, settleMs: 1000 });
+  assert.equal((await service.readFinalResult(tour, calendar, users, end - 1)).phase, "awaiting_data");
+  assert.equal((await service.readFinalResult(tour, calendar, users, end)).phase, "settling");
+  assert.equal((await service.readFinalResult(tour, calendar, users, end + 500)).phase, "settling");
+  database.playerStats[0].fantasyPoints = 50;
+  assert.equal((await service.readFinalResult(tour, calendar, users, end + 1000)).phase, "settling", "Changed scores must restart the stability interval");
+  database.matches[0].status = "live";
+  assert.equal((await service.readFinalResult(tour, calendar, users, end + 2000)).phase, "awaiting_data");
+  database.matches[0].status = "finished";
+  assert.equal((await service.readFinalResult(tour, calendar, users, end + 3000)).phase, "settling", "Missing data must reset the timer");
+  const final = await service.readFinalResult(tour, calendar, users, end + 4000);
+  assert.equal(final.phase, "final");
+  assert.deepEqual(final.leaders.map(({ userId, points, place }) => [userId, points, place]), [["1", 40, 1], ["2", 20, 2], ["3", 5, 3]]);
+  assert.equal(final.leaders[0].phone, users[0].phone);
+  database.playerStats[0].fantasyPoints = -1000;
+  assert.deepEqual(await new TourResultSnapshotService({ ...scenario.repositories, stateStore }).readFinalResult(tour, calendar, users, end + 999999), final, "Retry and restart must use the same frozen results");
+  const activation = await stateStore.readActivationTime(end);
+  assert.equal(await new TourResultStateStore(new RuntimeStateStore(workspace.directory)).readActivationTime(end + 10000), activation);
+} finally { await workspace.close(); }
+console.log("Tour results readiness, stable scoring and frozen snapshot self-test passed");

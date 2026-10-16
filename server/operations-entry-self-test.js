@@ -10,7 +10,7 @@ const reservation = net.createServer(); reservation.listen(0, "127.0.0.1"); awai
 const port = reservation.address().port; await new Promise((resolve) => reservation.close(resolve));
 const child = spawn(process.execPath, ["server/server.js"], { windowsHide: true, stdio: ["ignore", "pipe", "pipe"], env: { ...process.env,
   HOST: "127.0.0.1", PORT: String(port), STORAGE_DRIVER: "json", TELEGRAM_BOT_TOKEN: "capacity-entry-test", TELEGRAM_ADMIN_IDS: "0",
-  TELEGRAM_WEBHOOK_SECRET: "hook-test", OPERATIONS_MONITOR_TOKEN: "ops-test", OPERATIONS_MONITOR_ENABLED: "false", PLAYER_VIDEO_NOTIFICATIONS_ENABLED: "false", RUNTIME_STATE_DIRECTORY: workspace.directory } });
+  TELEGRAM_WEBHOOK_SECRET: "hook-test", OPERATIONS_MONITOR_TOKEN: "ops-test", OPERATIONS_MONITOR_ENABLED: "false", PLAYER_VIDEO_NOTIFICATIONS_ENABLED: "false", TOUR_RESULTS_NOTIFICATIONS_ENABLED: "false", RUNTIME_STATE_DIRECTORY: workspace.directory } });
 let output = ""; child.stdout.on("data", (data) => { output += data; }); child.stderr.on("data", (data) => { output += data; });
 try {
   const origin = `http://127.0.0.1:${port}`; let ready = false;

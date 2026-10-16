@@ -2,6 +2,7 @@ export class UserEntity {
   constructor(data) {
     this.id = String(data.id);
     this.name = data.name || "Менеджер";
+    this.username = data.username || "";
     this.phone = data.phone || "";
     this.email = data.email || "";
     this.avatar = data.avatar || "";
@@ -14,6 +15,7 @@ export class UserEntity {
     return new UserEntity({
       id: this.id,
       name: mergedName,
+      username: typeof profile.username === "string" ? profile.username : this.username,
       phone: profile.phone || this.phone,
       email: profile.email || this.email,
       avatar: profile.avatar || this.avatar,
@@ -23,8 +25,8 @@ export class UserEntity {
   }
 
   toJSON() {
-    const { id, name, phone, email, avatar, created_at, status } = this;
-    return { id, name, phone, email, avatar, created_at, status };
+    const { id, name, username, phone, email, avatar, created_at, status } = this;
+    return { id, name, username, phone, email, avatar, created_at, status };
   }
 
   #shouldReplaceStoredName(name) {

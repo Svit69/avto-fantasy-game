@@ -7,6 +7,7 @@ import { TourAvailabilityMessageFactory } from "./TourAvailabilityMessageFactory
 import { TourAvailabilityNotificationPlanner } from "./TourAvailabilityNotificationPlanner.js";
 import { WebLoginTokenService } from "./WebLoginTokenService.js";
 import { PlayerVideoNotificationPlanner } from "./PlayerVideoNotificationPlanner.js";
+import { TourResultNotificationPlanner } from "./TourResultNotificationPlanner.js";
 
 export class NotificationPlannerFactory {
   constructor(storage) { this.storage = storage; }
@@ -17,11 +18,16 @@ export class NotificationPlannerFactory {
     return new CompositeNotificationPlanner([
       new DraftNotificationPlanner(rosterRepository, new DraftNotificationMessageFactory(), windowMs),
       this.#createTourAvailabilityPlanner(windowMs),
+      this.createTourResultPlanner(),
       new PlayerVideoNotificationPlanner({ rosterRepository, playerCatalogRepository: this.storage.createPlayerCatalogRepository() }),
       new DailyPlayerPointsNotificationPlanner({ rosterRepository, windowMs,
         matchDataRepository: this.storage.createMatchDataRepository(),
         playerCatalogRepository: this.storage.createPlayerCatalogRepository() }),
     ]);
+  }
+  createTourResultPlanner() {
+    return new TourResultNotificationPlanner({ rosterRepository: this.storage.createRosterRepository(),
+      playerCatalogRepository: this.storage.createPlayerCatalogRepository(), matchDataRepository: this.storage.createMatchDataRepository() });
   }
 
   #createTourAvailabilityPlanner(windowMs) {

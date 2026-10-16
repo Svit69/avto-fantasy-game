@@ -1,0 +1,15 @@
+import assert from "node:assert/strict";
+import { TourResultReadinessPolicy } from "./TourResultReadinessPolicy.js";
+import { createTourResultTestScenario } from "./tour-result-test-scenario.js";
+const { tour, calendar, database, end } = createTourResultTestScenario();
+const policy = new TourResultReadinessPolicy();
+assert.equal(policy.evaluateReadiness(tour, calendar, database, end).complete, true);
+assert.equal(policy.evaluateReadiness(tour, calendar, database, end - 1).complete, false);
+assert.equal(policy.evaluateReadiness(tour, { matches: [] }, database, end).complete, false);
+const missing = { matches: database.matches.slice(1), playerStats: database.playerStats };
+assert.deepEqual(policy.evaluateReadiness(tour, calendar, missing, end).missing.map((match) => match.id), ["a"]);
+assert.equal(policy.evaluateReadiness(tour, calendar, { ...database, playerStats: [] }, end).complete, false);
+assert.equal(policy.evaluateReadiness(tour, { matches: calendar.matches.map((match) => ({ ...match, startsAt: new Date(end + 1).toISOString() })) }, database, end).complete, false);
+assert.equal(policy.evaluateReadiness(tour, { matches: calendar.matches.map((match) => match.id === "a" ? { ...match, status: "cancelled" } : match) }, missing, end).complete, true);
+assert.equal(policy.evaluateReadiness({ ...tour, endsAt: "invalid" }, calendar, database, end).complete, false);
+console.log("Tour results completion and missing final protocol self-test passed");
