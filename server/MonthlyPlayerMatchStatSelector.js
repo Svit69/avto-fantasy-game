@@ -1,4 +1,6 @@
 import { ImportedMatchCalendarMatcher } from "./ImportedMatchCalendarMatcher.js";
+import { ImportedMatchPriorityPolicy } from "./ImportedMatchPriorityPolicy.js";
+import { ImportedMatchAuthoritySelector } from "./ImportedMatchAuthoritySelector.js";
 
 export class MonthlyPlayerMatchStatSelector {
   constructor(calendarMatcher = new ImportedMatchCalendarMatcher()) {
@@ -7,7 +9,8 @@ export class MonthlyPlayerMatchStatSelector {
 
   selectPlayerMatchStats({ playerId, month, calendar, matchDatabase }) {
     const calendarMatches = this.#findMonthCalendarMatches(month, calendar);
-    const matchesById = new Map((matchDatabase.matches || []).map((match) => [match.id, match]));
+    const imports = new ImportedMatchAuthoritySelector().selectAuthoritativeImports(matchDatabase.matches || [], calendarMatches);
+    const matchesById = new Map(imports.map((match) => [match.id, match]));
     return [...this.#selectLatestStats(playerId, matchDatabase.playerStats || [], matchesById, calendarMatches).values()];
   }
 
@@ -28,10 +31,7 @@ export class MonthlyPlayerMatchStatSelector {
 
   #isNewerImport(candidate, current) {
     if (!current) return true;
-    return this.#readImportTime(candidate) >= this.#readImportTime(current);
+    return new ImportedMatchPriorityPolicy().compare(candidate, current) >= 0;
   }
 
-  #readImportTime(match) {
-    return Date.parse(match.updatedAt || match.lastEventAt || match.createdAt || 0) || 0;
-  }
 }

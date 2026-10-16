@@ -7,6 +7,7 @@ import { PostgresDatabase } from "./PostgresDatabase.js";
 import { SharedSecretVerifier } from "./SharedSecretVerifier.js";
 import { DatabaseReadinessProbe } from "./DatabaseReadinessProbe.js";
 import { OperationalSettings } from "./OperationalSettings.js";
+import { KhlWorkerMonitor } from "./KhlWorkerMonitor.js";
 
 export class ServerOperationsContext {
   constructor({ rootDirectory, logger, botClient, metrics = new ApiWorkMetrics() }) {
@@ -22,10 +23,11 @@ export class ServerOperationsContext {
       try {
         const resources = await this.sampler.readSample(); const api = this.metrics.readSnapshot();
         const worker = await this.store.readState("vhl-heartbeat.json").catch((error) => { this.logger.warn("vhl_heartbeat_read_failed", { errorMessage: error.message }); return null; });
+        const khlWorker = await this.store.readState("khl-heartbeat.json").catch(() => null);
         const database = await this.databaseProbe.checkReadiness(); resources.databaseReady = database.ok;
         resources.poolWaiting = PostgresDatabase.readPoolStatus()?.waiting || 0;
-        this.snapshot = { resources, api, worker, database, pool: PostgresDatabase.readPoolStatus() };
-        await this.alerts.dispatchAlerts(new OperationalAlertPolicy().evaluateConditions(resources, api, worker, Date.now() - this.startedAt));
+        this.snapshot = { resources, api, worker, khlWorker, database, pool: PostgresDatabase.readPoolStatus() };
+        await this.alerts.dispatchAlerts([...new OperationalAlertPolicy().evaluateConditions(resources, api, worker, Date.now() - this.startedAt), ...new KhlWorkerMonitor().evaluateConditions(khlWorker)]);
       } catch (error) { this.logger.warn("operations_monitor_failed", { errorMessage: error.message }); }
       if (this.sampler) { this.timer = setTimeout(tick, 15000); this.timer.unref(); }
     };

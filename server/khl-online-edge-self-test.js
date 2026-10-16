@@ -1,0 +1,36 @@
+import assert from "node:assert/strict";
+import { fixture, createProvider } from "./khl-online-test-context.js";
+import { KhlOnlineScoreParser } from "./KhlOnlineScoreParser.js";
+import { KhlOnlineGoalieParser } from "./KhlOnlineGoalieParser.js";
+
+const parser = new KhlOnlineScoreParser();
+assert.deepEqual(parser.parseScore({ score: "2:2", ots: "Б", winner: "A" }, "finished"), { homeGoals: 3, awayGoals: 2, decidedBy: "shootout" });
+assert.deepEqual(parser.parseScore({ score: "3:2", ots: "Б", winner: "A" }, "finished"), { homeGoals: 3, awayGoals: 2, decidedBy: "shootout" });
+assert.deepEqual(parser.parseScore({ score: "2:2", ots: "Б", winner: "B" }, "finished"), { homeGoals: 2, awayGoals: 3, decidedBy: "shootout" });
+assert.throws(() => parser.parseScore({ score: "2:2", ots: "Б" }, "finished"), /winner_missing/);
+assert.throws(() => parser.parseScore({ score: "4:1", ots: "ОТ" }, "finished"), /score_invalid/);
+assert.throws(() => parser.parseScore({ score: "2:1", ots: "UNKNOWN" }, "finished"), /unknown_decision/);
+const away = structuredClone(fixture);
+away.teams = { home: fixture.teams.visitor, visitor: fixture.teams.home };
+away.players.B = away.players.A; delete away.players.A;
+away.info.data.score = "0:4";
+away.info.data.teama = 34; away.info.data.teamb = 190;
+away.tab_stats.playerstats.B = away.tab_stats.playerstats.A; delete away.tab_stats.playerstats.A;
+const swapSide = (side) => side === "A" ? "B" : "A";
+for (const period of away.tab_stats.teamstats) for (const team of period.data) team.team = swapSide(team.team);
+for (const period of away.tab_events) for (const event of period.events) event.teamAB = swapSide(event.teamAB);
+for (const events of Object.values(away.tab_playbyplay.gameLegend)) for (const event of events) event.teamAB = swapSide(event.teamAB);
+const provider = createProvider(away, undefined, { ...fixture, khlGameId: "902107", startsAt: "2026-10-06", homeTeam: "Авангард", awayTeam: "Автомобилист" });
+await provider.getMatch(); assert.equal(provider.rows.find((row) => row.name === "Галкин Владимир").saves, 22);
+const shootout = structuredClone(fixture); shootout.info.data.ots = "Б";
+shootout.tab_playbyplay.gameLegend[5] = [{ type: "goal", teamAB: "B", time: 3900, jn: 1 }];
+assert.equal(new KhlOnlineGoalieParser().parseRows(shootout, "A")[0].goalsAgainst, 0);
+const goalieActions = structuredClone(fixture);
+goalieActions.tab_events.push({ events: [{ type: "go", team: "A", rbm: "0", scorer: "10", assist1: "1", assist2: "" },
+  { type: "go", team: "A", rbm: "3", scorer: "1", assist1: "", assist2: "" }, { type: "pn", team: "A", jn: "1", pim: "2" }] });
+const goalie = new KhlOnlineGoalieParser().parseRows(goalieActions, "A")[0];
+assert.equal(goalie.assists, 1); assert.equal(goalie.goals, 0); assert.equal(goalie.penalties, 1);
+const incomplete = structuredClone(fixture);
+const events = incomplete.tab_playbyplay.gameLegend[1]; events.splice(events.findIndex((event) => event.teamAB === "B"), 1);
+assert.throws(() => new KhlOnlineGoalieParser().parseRows(incomplete, "A"), /events_incomplete/);
+console.log("KHL online away team, shootout winning goal and goalie shootout exclusion self-test passed");

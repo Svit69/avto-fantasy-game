@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-
+import { ImportedMatchGameSelector } from "./ImportedMatchGameSelector.js";
+import { KhlMatchCollectionQuery } from "./KhlMatchCollectionQuery.js";
 export class KhlMatchDataRepository {
   constructor(filePath) { this.filePath = filePath; }
 
@@ -31,15 +32,10 @@ export class KhlMatchDataRepository {
     await this.saveDatabase(database);
   }
 
-  async findMatchByGameId(gameId) { return (await this.readDatabase()).matches.find((match) => String(match.gameId) === String(gameId)) || null; }
-  async listEventsByGameId(gameId) { return this.#findMatchChildren(gameId, "events"); }
-  async listStatsByGameId(gameId) { return this.#findMatchChildren(gameId, "playerStats"); }
-  async listPointEntriesByGameId(gameId) { return this.#findMatchChildren(gameId, "pointEntries"); }
-
-  async #findMatchChildren(gameId, key) {
-    const database = await this.readDatabase(); const match = database.matches.find((item) => String(item.gameId) === String(gameId));
-    return match ? database[key].filter((item) => item.matchId === match.id) : [];
-  }
+  async findMatchByGameId(gameId) { return new ImportedMatchGameSelector().selectMatchByGameId((await this.readDatabase()).matches, gameId); }
+  async listEventsByGameId(gameId) { return new KhlMatchCollectionQuery(this).findMatchChildren(gameId, "events"); }
+  async listStatsByGameId(gameId) { return new KhlMatchCollectionQuery(this).findMatchChildren(gameId, "playerStats"); }
+  async listPointEntriesByGameId(gameId) { return new KhlMatchCollectionQuery(this).findMatchChildren(gameId, "pointEntries"); }
 
   #replaceByMatch(currentItems, nextItems, matchId) {
     return [...currentItems.filter((item) => item.matchId !== matchId), ...nextItems];

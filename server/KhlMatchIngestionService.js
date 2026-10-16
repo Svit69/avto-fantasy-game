@@ -4,6 +4,7 @@ import { KhlFantasyPointValuePolicy } from "./KhlFantasyPointValuePolicy.js";
 import { KhlMatchCollectionDeduplicator } from "./KhlMatchCollectionDeduplicator.js";
 import { KhlPlayerResolver } from "./KhlPlayerResolver.js";
 import { KhlPlayerStatsAggregator } from "./KhlPlayerStatsAggregator.js";
+import { KhlOnlineImportGuard } from "./KhlOnlineImportGuard.js";
 
 export class KhlMatchIngestionService {
   constructor({ dataProvider, repository, playerCatalogRepository, scopePolicy, normalizer = new KhlEventNormalizer(), mapper = new KhlFantasyEventMapper(), pointValuePolicy = new KhlFantasyPointValuePolicy(), aggregator = new KhlPlayerStatsAggregator(), deduplicator = new KhlMatchCollectionDeduplicator() }) {
@@ -14,6 +15,8 @@ export class KhlMatchIngestionService {
     const sourceMatch = await this.dataProvider.getMatch(tournamentId, gameId);
     const match = this.#createMatchRecord(sourceMatch, tournamentId, gameId);
     if (!this.scopePolicy.canProcessMatch(match)) return { ok: false, reason: "match_out_of_scope", match };
+    const protectedImport = await new KhlOnlineImportGuard().findProtectedImport(this.repository, match);
+    if (protectedImport) return { ok: false, reason: "manual_protocol_priority", match: protectedImport };
     const [players, rawEvents] = await Promise.all([this.playerCatalogRepository.listPlayers(), this.dataProvider.getPlayByPlay(tournamentId, gameId)]);
     const events = this.normalizer.normalizeRawEvents(match, rawEvents);
     const pointEntries = this.#createPointEntries(match, events, new KhlPlayerResolver(players));
@@ -34,6 +37,6 @@ export class KhlMatchIngestionService {
   }
 
   #createMatchRecord(match, tournamentId, gameId) {
-    return { id: `${tournamentId}-${gameId}`, tournamentId: String(tournamentId), gameId: String(gameId), homeTeamId: String(match.homeTeamId || ""), awayTeamId: String(match.awayTeamId || ""), homeTeam: match.homeTeam || "", awayTeam: match.awayTeam || "", opponentTeam: match.opponentTeam || "", arena: match.arena || "", league: match.league || "КХЛ", score: match.score || null, status: match.status || "scheduled", scheduledAt: match.scheduledAt || null, createdAt: match.createdAt || new Date().toISOString() };
+    return { id: `${tournamentId}-${gameId}`, sourceType: match.sourceType || "protocol", tournamentId: String(tournamentId), gameId: String(gameId), homeTeamId: String(match.homeTeamId || ""), awayTeamId: String(match.awayTeamId || ""), homeTeam: match.homeTeam || "", awayTeam: match.awayTeam || "", opponentTeam: match.opponentTeam || "", arena: match.arena || "", league: match.league || "КХЛ", score: match.score || null, status: match.status || "scheduled", scheduledAt: match.scheduledAt || null, createdAt: match.createdAt || new Date().toISOString() };
   }
 }

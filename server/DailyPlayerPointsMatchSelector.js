@@ -1,4 +1,6 @@
 import { ImportedMatchCalendarMatcher } from "./ImportedMatchCalendarMatcher.js";
+import { ImportedMatchPriorityPolicy } from "./ImportedMatchPriorityPolicy.js";
+import { ImportedMatchAuthoritySelector } from "./ImportedMatchAuthoritySelector.js";
 
 export class DailyPlayerPointsMatchSelector {
   constructor(calendarMatcher = new ImportedMatchCalendarMatcher()) { this.calendarMatcher = calendarMatcher; }
@@ -10,10 +12,11 @@ export class DailyPlayerPointsMatchSelector {
   }
 
   #createMatchSummary(calendarMatch, toursById, matchDatabase) {
-    const imports = (matchDatabase.matches || []).filter((match) =>
+    const authoritative = new ImportedMatchAuthoritySelector().selectAuthoritativeImports(matchDatabase.matches || [], [calendarMatch]);
+    const imports = authoritative.filter((match) =>
       this.calendarMatcher.findCalendarMatch(match, [calendarMatch]));
     const stats = this.#selectLatestPlayerStats(imports, matchDatabase.playerStats || []);
-    const match = [...imports].sort((first, second) => this.#readImportTime(second) - this.#readImportTime(first))[0];
+    const match = [...imports].sort((first, second) => new ImportedMatchPriorityPolicy().compare(second, first))[0];
     return match && stats.length ? { match, calendarMatch, tour: toursById.get(calendarMatch.tourId), stats } : null;
   }
 
@@ -21,10 +24,9 @@ export class DailyPlayerPointsMatchSelector {
     const importsById = new Map(imports.map((match) => [match.id, match]));
     return [...playerStats.filter((stat) => importsById.has(stat.matchId)).reduce((selected, stat) => {
       const current = selected.get(stat.playerId); const match = importsById.get(stat.matchId);
-      return !current || this.#readImportTime(match) >= this.#readImportTime(current.match)
+      return !current || new ImportedMatchPriorityPolicy().compare(match, current.match) >= 0
         ? selected.set(stat.playerId, { stat, match }) : selected;
     }, new Map()).values()].map(({ stat }) => stat);
   }
 
-  #readImportTime(match) { return Date.parse(match?.updatedAt || match?.lastEventAt || match?.createdAt || 0) || 0; }
 }

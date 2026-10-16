@@ -1,4 +1,5 @@
 import { ImportedMatchCalendarMatcher } from "./ImportedMatchCalendarMatcher.js";
+import { ImportedMatchPriorityPolicy } from "./ImportedMatchPriorityPolicy.js";
 
 export class MonthlyImportedMatchSelector {
   constructor(matchMatcher = new ImportedMatchCalendarMatcher()) {
@@ -26,10 +27,7 @@ export class MonthlyImportedMatchSelector {
 
   #isNewerImport(candidate, current) {
     if (!current) return true;
-    return this.#readImportTime(candidate) >= this.#readImportTime(current);
+    return new ImportedMatchPriorityPolicy().compare(candidate, current) >= 0;
   }
 
-  #readImportTime(match) {
-    return Date.parse(match.updatedAt || match.lastEventAt || match.createdAt || 0) || 0;
-  }
 }

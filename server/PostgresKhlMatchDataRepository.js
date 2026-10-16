@@ -1,5 +1,7 @@
 import { KhlMatchDataJsonNormalizer } from "./KhlMatchDataJsonNormalizer.js";
 import { PostgresKhlCollectionStore } from "./PostgresKhlCollectionStore.js";
+import { ImportedMatchGameSelector } from "./ImportedMatchGameSelector.js";
+import { KhlMatchCollectionQuery } from "./KhlMatchCollectionQuery.js";
 
 export class PostgresKhlMatchDataRepository {
   constructor(database, normalizer = new KhlMatchDataJsonNormalizer()) {
@@ -19,15 +21,10 @@ export class PostgresKhlMatchDataRepository {
   async saveDatabase(database) { await this.store.replaceDatabase(this.#normalize(database)); }
   async upsertMatch(match) { await this.store.upsertMatch(match); return match; }
   async replaceMatchCollections(matchId, collections) { await this.store.replaceMatchCollections(matchId, collections); }
-  async findMatchByGameId(gameId) { return (await this.readDatabase()).matches.find((match) => String(match.gameId) === String(gameId)) || null; }
-  async listEventsByGameId(gameId) { return this.#findChildren(gameId, "events"); }
-  async listStatsByGameId(gameId) { return this.#findChildren(gameId, "playerStats"); }
-  async listPointEntriesByGameId(gameId) { return this.#findChildren(gameId, "pointEntries"); }
-
-  async #findChildren(gameId, key) {
-    const database = await this.readDatabase(); const match = database.matches.find((item) => String(item.gameId) === String(gameId));
-    return match ? database[key].filter((item) => item.matchId === match.id) : [];
-  }
+  async findMatchByGameId(gameId) { return new ImportedMatchGameSelector().selectMatchByGameId((await this.readDatabase()).matches, gameId); }
+  async listEventsByGameId(gameId) { return new KhlMatchCollectionQuery(this).findMatchChildren(gameId, "events"); }
+  async listStatsByGameId(gameId) { return new KhlMatchCollectionQuery(this).findMatchChildren(gameId, "playerStats"); }
+  async listPointEntriesByGameId(gameId) { return new KhlMatchCollectionQuery(this).findMatchChildren(gameId, "pointEntries"); }
 
   #normalize(database) { return this.normalizer.normalizeDatabase(database); }
 }
