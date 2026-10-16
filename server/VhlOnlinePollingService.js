@@ -1,5 +1,5 @@
 import { VhlOnlineDataProvider } from "./VhlOnlineDataProvider.js";
-import { VhlReportDataProvider } from "./VhlReportDataProvider.js";
+import { VhlFinalDataProvider } from "./VhlFinalDataProvider.js";
 
 export class VhlOnlinePollingService {
   constructor({ calendarRepository, khlServiceFactory, selector, logger, adminNotifier = null }) {
@@ -13,7 +13,8 @@ export class VhlOnlinePollingService {
     for (const match of matches) {
       try { results.push(await this.#ingestMatch(match)); }
       catch (error) {
-        this.logger.warn("vhl_online_match_skipped", { matchId: match.id, onlineGameId: match.onlineGameId, errorMessage: error.message });
+        this.logger.warn("vhl_online_match_skipped", { matchId: match.id, onlineGameId: match.onlineGameId, errorMessage: error.message,
+          sourceIdentity: error.sourceMatch ? { homeTeam: error.sourceMatch.homeTeam, awayTeam: error.sourceMatch.awayTeam, scheduledAt: error.sourceMatch.scheduledAt } : undefined });
         if (error.message === "vhl_match_identity_mismatch") await this.adminNotifier?.notifyProtocolMismatch(match, error.sourceMatch);
         if (["vhl_online_game_not_found", "vhl_online_http_404"].includes(error.message)) await this.adminNotifier?.notifyProtocolUnavailable(match);
         results.push({ ok: false, reason: error.message, matchId: match.id });
@@ -38,10 +39,6 @@ export class VhlOnlinePollingService {
   #createDataProvider(match, players) {
     const identity = { tournamentId: match.tourId, scheduledAt: match.startsAt, expectedMatch: match };
     if (match.isLivePollingWindow) return new VhlOnlineDataProvider({ onlineGameId: match.onlineGameId, players, identity });
-    return new VhlReportDataProvider({ source: this.#createReportSource(match.onlineGameId), players, identity });
-  }
-
-  #createReportSource(onlineGameId) {
-    return { type: "report", gameId: onlineGameId, url: `https://vhlru.ru/report/1430/?idgame=${onlineGameId}` };
+    return new VhlFinalDataProvider({ onlineGameId: match.onlineGameId, players, identity, logger: this.logger });
   }
 }

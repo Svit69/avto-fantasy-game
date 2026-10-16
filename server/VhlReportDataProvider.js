@@ -15,6 +15,7 @@ export class VhlReportDataProvider {
     const html = await this.#loadHtml();
     if (!this.match) {
       const sourceMatch = this.matchParser.parseMatch(html, { gameId: this.source.gameId });
+      if (!sourceMatch.homeTeam || !sourceMatch.awayTeam || !sourceMatch.scheduledAt) throw new Error("vhl_report_match_not_found");
       this.identityGuard.validate(sourceMatch, this.identity.expectedMatch);
       const { expectedMatch, ...identity } = this.identity;
       this.match = { ...sourceMatch, ...identity, league: "ВХЛ" };

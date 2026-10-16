@@ -44,3 +44,4 @@ try {
   assert.deepEqual(notifications, ["mismatch", "unavailable", "unavailable"]);
 } finally { VhlOnlineDataProvider.prototype.getMatch = originalGetMatch; }
 console.log("VHL match identity self-test passed");
+await import("./vhl-final-fallback-self-test.js");
