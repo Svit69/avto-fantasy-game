@@ -1,1 +1,1 @@
-for (const file of ["queue", "body", "monitor", "worker", "client", "fetch-context", "catalog-pool", "market-season", "market-query", "market-coordinator", "http", "integration", "probe", "configuration", "entry"]) await import(`./operations-${file}-self-test.js`);
+for (const file of ["queue", "body", "monitor", "worker", "vhl-alert", "client", "fetch-context", "catalog-pool", "market-season", "market-query", "market-coordinator", "http", "integration", "probe", "configuration", "entry"]) await import(`./operations-${file}-self-test.js`);

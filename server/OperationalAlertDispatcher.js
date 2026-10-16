@@ -10,7 +10,7 @@ export class OperationalAlertDispatcher {
         if (!state.sent) { this.#states.delete(condition.key); continue; }
         state.recoveredSince ??= now;
         if (now - state.recoveredSince < 60000 || now < (state.recoveryRetry || 0)) continue;
-        if (await this.#deliver(`Восстановление avto-fantasy: ${condition.key}. Показатель вернулся в норму.`)) this.#states.delete(condition.key);
+        if (await this.#deliver(`Восстановление avto-fantasy: ${condition.recoveryText || `${condition.key}. Показатель вернулся в норму.`}`)) this.#states.delete(condition.key);
         else state.recoveryRetry = now + 60000;
         continue;
       }

@@ -1,4 +1,5 @@
 import { OperationalSettings as Settings } from "./OperationalSettings.js";
+import { VhlWorkerAlertCondition } from "./VhlWorkerAlertCondition.js";
 
 export class OperationalAlertPolicy {
   evaluateConditions(sample, api, worker, uptimeMs) {
@@ -16,7 +17,7 @@ export class OperationalAlertPolicy {
       { key: "database", active: sample.databaseReady === false, holdMs: 30000, text: "PostgreSQL недоступен. Сохранение составов может не работать." },
       { key: "database_pool", active: sample.poolWaiting > 2, holdMs: 120000, text: "Запросы длительно ожидают соединения с PostgreSQL." },
       { key: "vhl_stale", active: process.env.MONITOR_VHL_ENABLED !== "false" && uptimeMs > workerLimit && (!worker?.completedAt || sample.time - worker.completedAt > workerLimit), holdMs: 30000, text: "Опрос ВХЛ давно не завершался. Проверьте фоновый процесс." },
-      { key: "vhl_errors", active: (worker?.failedMatches || 0) > 0 || Boolean(worker?.failedAt), holdMs: 120000, text: "ВХЛ: есть ошибки сбора данных. Проверьте логи воркера." },
+      new VhlWorkerAlertCondition().createCondition(worker),
     ];
   }
 }
