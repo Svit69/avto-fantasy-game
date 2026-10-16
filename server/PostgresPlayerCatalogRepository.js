@@ -21,6 +21,7 @@ export class PostgresPlayerCatalogRepository {
   async updatePlayerPrice(playerId, price) { return this.#updatePlayer(playerId, (player) => ({ ...player, price })); }
   async updatePlayerTeam(playerId, team) { return this.#updatePlayer(playerId, (player) => this.#createTransferredPlayer(player, team)); }
   async markPlayerLeftGame(playerId) { return this.#updatePlayer(playerId, (player) => ({ ...player, status: "left_game" })); }
+  async updatePlayerVideoNote(playerId, videoNote) { return this.#updatePlayer(playerId, (player) => ({ ...player, videoNote })); }
 
   async #updatePlayer(playerId, updatePlayer) {
     const player = await this.findPlayerById(playerId);

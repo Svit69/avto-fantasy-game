@@ -1,0 +1,34 @@
+import assert from "node:assert/strict";
+import { PlayerVideoNotificationPlanner } from "./PlayerVideoNotificationPlanner.js";
+import { PlayerVideoNoteSelector } from "./PlayerVideoNoteSelector.js";
+const deadline = Date.parse("2026-11-04T13:30:00Z");
+const tour = { id: "november", month: "Ноябрь", deadlineAt: new Date(deadline).toISOString() };
+const players = Array.from({ length: 6 }, (_, index) => ({ id: String(index), status: "active",
+  videoNote: { fileId: `file-${index}`, uploadedAt: "2026-10-16T00:00:00Z" } }));
+const roster = { userId: "1", month: "Ноябрь", slots: players.map((player) => ({ playerId: player.id })), updated_at: "2026-11-01" };
+let catalogReads = 0;
+let rosters = [roster];
+const planner = new PlayerVideoNotificationPlanner({ rosterRepository: { listRosters: async () => rosters },
+  playerCatalogRepository: { listPlayers: async () => { catalogReads++; return players; } } });
+const users = [{ id: "1", status: "active" }, { id: "2", status: "blocked" }, { id: "3", status: "active" }];
+assert.deepEqual(await planner.createNotificationJobs({ tours: [tour] }, users, deadline - 1), []);
+assert.equal(catalogReads, 0, "Do not read players before deadline");
+const jobs = await planner.createNotificationJobs({ tours: [tour] }, users, deadline);
+assert.equal(jobs.length, 1, "Several recorded players must produce one video job per user");
+assert.equal(jobs[0].userId, "1");
+assert.equal((await planner.createNotificationJobs({ tours: [{ ...tour, deadlineAt: new Date(deadline + 1000).toISOString() }] }, users, deadline + 1000))[0].key, jobs[0].key, "Changing a deadline must not reset the per-tour receipt");
+assert.equal(jobs[0].videoNote, players.find((player) => player.id === jobs[0].playerId).videoNote.fileId);
+assert.deepEqual(await planner.createNotificationJobs({ tours: [tour] }, users, deadline + 1000), jobs);
+assert.deepEqual(await planner.createNotificationJobs({ tours: [tour] }, users, deadline + 86400001), []);
+rosters = [{ ...roster, status: "draft" }]; assert.deepEqual(await planner.createNotificationJobs({ tours: [tour] }, users, deadline), []);
+rosters = [{ ...roster, slots: roster.slots.slice(0, 5) }];
+assert.deepEqual(await planner.createNotificationJobs({ tours: [tour] }, users, deadline), []);
+rosters = [{ ...roster, updated_at: new Date(deadline + 1).toISOString() }];
+assert.deepEqual(await planner.createNotificationJobs({ tours: [tour] }, users, deadline), []);
+const selector = new PlayerVideoNoteSelector();
+assert.equal(selector.selectPlayer(roster, players.map((player) => ({ ...player, status: "left_game" })), tour.id, "1"), null);
+assert.equal(selector.selectPlayer(roster, players.map((player) => ({ ...player, videoNote: null })), tour.id, "1"), null);
+assert.equal(selector.selectPlayer(roster, players.map((player) => ({ ...player, videoNote: { ...player.videoNote, uploadedAt: new Date(deadline + 1).toISOString() } })), tour.id, "1", deadline), null);
+assert.equal(selector.selectPlayer({ ...roster, slots: Array(6).fill({ playerId: "0" }) }, players, tour.id, "1"), null);
+assert(selector.selectPlayer(roster, players, tour.id, "1", Infinity), "Admin preview can bypass deadline");
+console.log("Player video deadline selection and one-per-roster self-test passed");

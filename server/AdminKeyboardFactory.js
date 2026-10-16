@@ -2,6 +2,7 @@ export class AdminKeyboardFactory {
   createMenuKeyboard() {
     return [[{ text: "Зарегистрированные пользователи", callback_data: "admin:users" }],
       [{ text: "База хоккеистов", callback_data: "admin:players:0" }],
+      [{ text: "Кружки хоккеистов", callback_data: "admin:video_list:0" }],
       [{ text: "Помощник стоимости", callback_data: "admin:price_review:0" }],
       [{ text: "Составы по турам", callback_data: "admin:rosters" }],
       [{ text: "ВХЛ online id", callback_data: "admin:vhl_online" }],
@@ -13,12 +14,10 @@ export class AdminKeyboardFactory {
       [{ text: "МХЛ", callback_data: "admin:protocol_league:МХЛ" }],
       [{ text: "В меню", callback_data: "admin:menu" }]];
   }
-
   createProtocolWaitingKeyboard() {
     return [[{ text: "Отменить загрузку", callback_data: "admin:cancel" }],
       [{ text: "В меню", callback_data: "admin:menu" }]];
   }
-
   createPlayersKeyboard(players, page, pageSize) {
     const offset = page * pageSize;
     const playerRows = players.slice(offset, offset + pageSize).map((player) => [
@@ -29,6 +28,7 @@ export class AdminKeyboardFactory {
 
   createPlayerKeyboard(playerId) {
     return [[{ text: "Изменить цену", callback_data: `admin:price:${playerId}` }],
+      [{ text: "Кружок игрока", callback_data: `admin:video_player:${playerId}` }],
       [{ text: "Изменить команду", callback_data: `admin:team:${playerId}` }],
       [{ text: "Игрок покинул игру", callback_data: `admin:leave:${playerId}` }],
       [{ text: "К списку хоккеистов", callback_data: "admin:players:0" }]];

@@ -6,6 +6,7 @@ export class AdminConversationStateStore {
   waitForPrice(chatId, playerId) {
     this.states.set(String(chatId), { type: "price", playerId });
   }
+  waitForPlayerVideoNote(chatId, playerId) { this.states.set(String(chatId), { type: "player_video_note", playerId }); }
 
   waitForTeam(chatId, playerId) {
     this.states.set(String(chatId), { type: "team", playerId });

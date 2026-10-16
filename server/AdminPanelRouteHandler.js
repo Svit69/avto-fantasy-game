@@ -1,12 +1,15 @@
+import { AdminRosterReportController } from "./AdminRosterReportController.js";
 export class AdminPanelRouteHandler {
   constructor(dependencies) { Object.assign(this, dependencies); }
   async executeRoute(source) {
+    this.stateStore?.clearState(source.chatId);
     const route = source.route;
     if (route.type === "menu") return this.pendingActionController.renderMenuAndClearState(source.chatId);
     if (route.type === "cancel") return this.pendingActionController.cancelPendingAction(source.chatId);
     if (route.type === "users") return this.view.renderUsers(source.chatId, await this.userRepository.listUsers());
-    if (route.type === "rosters") return this.#renderRosterReport(source.chatId, route.playerId, Number(route.value || 0));
-    if (route.type === "players") return this.view.renderPlayers(source.chatId, await this.playerCatalogRepository.listPlayers(), route.page || 0);
+    if (route.type === "rosters") return new AdminRosterReportController(this).renderReport(source.chatId, route.playerId, Number(route.value || 0));
+    if (["players", "player_team", "player_group"].includes(route.type)) return this.playerDirectoryController.executeRoute(source);
+    if (route.type.startsWith("video_")) return this.playerVideoController.executeRoute(source);
     if (route.type === "player") return this.view.renderPlayer(source.chatId, await this.playerCatalogRepository.findPlayerById(route.playerId));
     if (route.type === "price") return this.#requestPriceInput(source.chatId, route.playerId);
     if (route.type.startsWith("price_review")) return this.priceReviewController.executeRoute(source);
@@ -21,15 +24,11 @@ export class AdminPanelRouteHandler {
   }
   renderAccessDenied(chatId) { return this.view.renderAccessDenied(chatId); }
   async handlePendingInput(source) {
+    if (source.pending.type === "player_video_note") return this.playerVideoController.handlePendingInput(source);
     if (source.pending.type === "price") return this.mutationService.updatePlayerPrice(source.chatId, source.pending.playerId, Number(source.text));
     if (source.pending.type === "team") return this.mutationService.updatePlayerTeam(source.chatId, source.pending.playerId, source.text.trim());
     if (source.pending.type === "protocol") return this.protocolImportService.importProtocolDocument(source);
     return source.pending.type === "vhl_online_protocol" ? this.vhlOnlineRouteHandler.handlePendingInput(source) : null;
-  }
-  async #renderRosterReport(chatId, month, page = 0) {
-    if (!month) return this.rosterView.renderMonthPrompt(chatId);
-    const [rosters, users, players] = await Promise.all([this.rosterRepository.listRosters(), this.userRepository.listUsers(), this.playerCatalogRepository.listPlayers()]);
-    return this.rosterView.renderMonthlyRosters(chatId, { month, page, rosters, users, players });
   }
   async #requestPriceInput(chatId, playerId) {
     const player = await this.playerCatalogRepository.findPlayerById(playerId);

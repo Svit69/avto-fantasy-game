@@ -1,4 +1,7 @@
 import { AdminAccessPolicy } from "./AdminAccessPolicy.js";
+import { AdminPlayerDirectoryController } from "./AdminPlayerDirectoryController.js";
+import { AdminPlayerVideoController } from "./AdminPlayerVideoController.js";
+import { AdminPlayerVideoTestController } from "./AdminPlayerVideoTestController.js";
 import { AdminPriceReviewController } from "./AdminPriceReviewController.js";
 import { AdminPanelRouteHandler } from "./AdminPanelRouteHandler.js";
 import { AdminPlayerMutationService } from "./AdminPlayerMutationService.js";
@@ -20,13 +23,15 @@ export class TelegramAdminPanelFactory {
     const context = new AdminViewContextFactory().createViewContext();
     const mutationService = this.#createMutationService(context.view, botClient, userRepository, rosterRepository, playerCatalogRepository);
     const routeHandler = new AdminPanelRouteHandler({ ...context, userRepository, playerCatalogRepository, rosterRepository, mutationService,
+      playerDirectoryController: new AdminPlayerDirectoryController(playerCatalogRepository),
+      playerVideoController: new AdminPlayerVideoController({ playerCatalogRepository, stateStore: context.stateStore,
+        testController: new AdminPlayerVideoTestController({ playerCatalogRepository, calendarRepository, rosterRepository }) }),
       priceReviewController: new AdminPriceReviewController({ stateStore: context.stateStore, playerCatalogRepository, calendarRepository,
         matchDataRepository: new KhlServiceFactory(this.rootDirectory).createRepository() }),
       protocolImportService: this.#createProtocolImportService(botClient, context, calendarRepository), vhlOnlineRouteHandler: this.#createVhlRouteHandler(context, calendarRepository) });
     return new TelegramAdminPanelController({ accessPolicy: new AdminAccessPolicy((process.env.TELEGRAM_ADMIN_IDS || "").split(",")),
       routeParser: new AdminRouteParser(), routeHandler, stateStore: context.stateStore, botClient, logger: this.logger });
   }
-
   #createMutationService(view, botClient, userRepository, rosterRepository, playerCatalogRepository) {
     const notifications = new ServerNotificationFactory(this.rootDirectory, botClient, this.logger).createRosterChangeNotificationService(userRepository, rosterRepository);
     return new AdminPlayerMutationService({ view, playerCatalogRepository, rosterChangeNotifications: notifications });

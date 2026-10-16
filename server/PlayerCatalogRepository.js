@@ -22,6 +22,7 @@ export class PlayerCatalogRepository {
   async updatePlayerTeam(playerId, team) { return this.#updatePlayer(playerId, (player) => this.#createTransferredPlayer(player, team)); }
 
   async markPlayerLeftGame(playerId) { return this.#updatePlayer(playerId, (player) => ({ ...player, status: "left_game" })); }
+  async updatePlayerVideoNote(playerId, videoNote) { return this.#updatePlayer(playerId, (player) => ({ ...player, videoNote })); }
 
   #createTransferredPlayer(player, team) {
     return this.teamHistoryService.createPlayerWithTransferredTeam(player, team, this.teamBrandResolver.resolveTeamAssets(team));
@@ -33,7 +34,6 @@ export class PlayerCatalogRepository {
     await this.#writePlayers(nextPlayers);
     return nextPlayers.find((player) => player.id === playerId) || null;
   }
-
   async #readStoredPlayers() {
     try {
       const payload = JSON.parse(await fs.readFile(this.filePath, "utf8"));

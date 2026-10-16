@@ -6,6 +6,7 @@ import { DraftNotificationPlanner } from "./DraftNotificationPlanner.js";
 import { TourAvailabilityMessageFactory } from "./TourAvailabilityMessageFactory.js";
 import { TourAvailabilityNotificationPlanner } from "./TourAvailabilityNotificationPlanner.js";
 import { WebLoginTokenService } from "./WebLoginTokenService.js";
+import { PlayerVideoNotificationPlanner } from "./PlayerVideoNotificationPlanner.js";
 
 export class NotificationPlannerFactory {
   constructor(storage) { this.storage = storage; }
@@ -16,6 +17,7 @@ export class NotificationPlannerFactory {
     return new CompositeNotificationPlanner([
       new DraftNotificationPlanner(rosterRepository, new DraftNotificationMessageFactory(), windowMs),
       this.#createTourAvailabilityPlanner(windowMs),
+      new PlayerVideoNotificationPlanner({ rosterRepository, playerCatalogRepository: this.storage.createPlayerCatalogRepository() }),
       new DailyPlayerPointsNotificationPlanner({ rosterRepository, windowMs,
         matchDataRepository: this.storage.createMatchDataRepository(),
         playerCatalogRepository: this.storage.createPlayerCatalogRepository() }),

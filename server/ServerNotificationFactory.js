@@ -7,6 +7,7 @@ import { NotificationSentRepository } from "./NotificationSentRepository.js";
 import { NotificationRateLimiter } from "./NotificationRateLimiter.js";
 import { RosterChangeNotificationService } from "./RosterChangeNotificationService.js";
 import { StorageDriverFactory } from "./StorageDriverFactory.js";
+import { PlayerVideoNotificationPlanner } from "./PlayerVideoNotificationPlanner.js";
 
 export class ServerNotificationFactory {
   constructor(rootDirectory, botClient, logger) { Object.assign(this, { rootDirectory, botClient, logger }); }
@@ -20,6 +21,12 @@ export class ServerNotificationFactory {
 
   createRosterChangeNotificationService(userRepository, rosterRepository) {
     return new RosterChangeNotificationService({ userRepository, rosterRepository, dispatcher: this.#createDispatcher(), messageFactory: new DraftNotificationMessageFactory() });
+  }
+  createPlayerVideoNotificationWorker() {
+    const storage = this.#createStorageFactory();
+    return new DraftNotificationWorker({ userRepository: storage.createUserRepository(), calendarRepository: storage.createCalendarRepository(),
+      planner: new PlayerVideoNotificationPlanner({ rosterRepository: storage.createRosterRepository(), playerCatalogRepository: storage.createPlayerCatalogRepository() }),
+      dispatcher: this.#createDispatcher(), logger: this.logger });
   }
 
   #createDispatcher() {
