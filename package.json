@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node server/server.js",
-    "check": "node --check api/index.js && node --check src/main.js && node --check server/server.js && node --check server/notification-worker.js && node --check server/khl-worker.js && node --check server/khl-import.js && node --check server/khl-replay.js && node --check server/khl-import-pdf.js && node --check server/vhl-import-online.js && node --check server/vhl-poll-online.js && node --check server/player-stats-audit.js && node --check server/khl-poll-online.js && node --check server/khl-preview-online.js && node server/khl-online-self-test.js && node server/khl-self-test.js && node server/vhl-protocol-validation-self-test.js && node server/vhl-match-identity-self-test.js && node server/vhl-admin-navigation-self-test.js && node server/player-price-review-self-test.js && node server/operations-self-test.js && node server/player-video-self-test.js && node server/tour-result-self-test.js",
+    "check": "node --check api/index.js && node --check src/main.js && node --check server/server.js && node --check server/notification-worker.js && node --check server/khl-worker.js && node --check server/khl-import.js && node --check server/khl-replay.js && node --check server/khl-import-pdf.js && node --check server/vhl-import-online.js && node --check server/vhl-poll-online.js && node --check server/player-stats-audit.js && node --check server/khl-poll-online.js && node --check server/khl-preview-online.js && node --check server/mhl-poll-online.js && node --check server/mhl-preview-online.js && node server/mhl-online-self-test.js && node server/khl-online-self-test.js && node server/khl-self-test.js && node server/vhl-protocol-validation-self-test.js && node server/vhl-match-identity-self-test.js && node server/vhl-admin-navigation-self-test.js && node server/player-price-review-self-test.js && node server/operations-self-test.js && node server/player-video-self-test.js && node server/tour-result-self-test.js",
     "test:videos": "node server/player-video-self-test.js",
     "test:results": "node server/tour-result-self-test.js",
     "test:operations": "node server/operations-self-test.js",
@@ -14,6 +14,9 @@
     "khl:ingest": "node server/khl-worker.js",
     "khl:poll": "node server/khl-poll-online.js",
     "khl:preview": "node server/khl-preview-online.js",
+    "mhl:poll": "node server/mhl-poll-online.js",
+    "mhl:preview": "node server/mhl-preview-online.js",
+    "test:mhl-online": "node server/mhl-online-self-test.js",
     "test:khl-online": "node server/khl-online-self-test.js",
     "khl:import": "node server/khl-import.js",
     "khl:replay": "node server/khl-replay.js",
@@ -28,6 +31,8 @@
     "assets:webp": "node scripts/convert-assets-to-webp.js"
   },
   "dependencies": {
+    "acorn": "8.15.0",
+    "cheerio": "1.0.0",
     "pdf-parse": "^1.1.1",
     "pg": "^8.23.0",
     "proper-lockfile": "4.1.2",

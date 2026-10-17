@@ -1,6 +1,11 @@
 module.exports = {
   apps: [
     {
+      name: "avto-mhl-online-poll", cwd: __dirname, script: "server/mhl-poll-online.js",
+      instances: 1, exec_mode: "fork", min_uptime: "30s", exp_backoff_restart_delay: 1000,
+      max_restarts: 10, env: { NODE_ENV: "production", PG_POOL_MAX: 2 },
+    },
+    {
       name: "avto-khl-online-poll", cwd: __dirname, script: "server/khl-poll-online.js",
       instances: 1, exec_mode: "fork", min_uptime: "30s", exp_backoff_restart_delay: 1000,
       max_restarts: 10, env: { NODE_ENV: "production", PG_POOL_MAX: 2 },

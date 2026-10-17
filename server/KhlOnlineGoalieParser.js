@@ -1,6 +1,7 @@
 import { KhlOnlineGoalieEventStats } from "./KhlOnlineGoalieEventStats.js";
 
 export class KhlOnlineGoalieParser {
+  constructor(teamName = "Автомобилист") { this.teamName = teamName; }
   parseRows(game, side) {
     const keepers = Object.values(game.players?.[side] || {}).filter((player) => player.pos === "в" && Number(player.ig) === 1);
     if (!keepers.length) throw new Error("khl_online_goalie_missing");
@@ -9,7 +10,7 @@ export class KhlOnlineGoalieParser {
       .filter((event) => event.type === "gc" && event.teamAB === side).sort((a, b) => a.time_sec - b.time_sec || a.id - b.id);
     let current = changes.length ? Number(changes[0].prevGk) : keepers.length === 1 ? Number(keepers[0].jn) : NaN;
     if (!Number.isFinite(current)) throw new Error("khl_online_goalie_ambiguous");
-    const rows = new Map(keepers.map((player) => [Number(player.jn), { team: "Автомобилист", number: player.jn,
+    const rows = new Map(keepers.map((player) => [Number(player.jn), { team: this.teamName, number: player.jn,
       name: player.name, khlPlayerId: String(player.id), appearances: 1, saves: 0, goalsAgainst: 0 }]));
     const opponent = side === "A" ? "B" : "A";
     const shootout = /^(?:Б|ПБ|SO)$/iu.test(String(game.info?.data?.ots || ""));

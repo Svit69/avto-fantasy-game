@@ -1,20 +1,22 @@
 import { KhlMirrorCaptureDecoder } from "./KhlMirrorCaptureDecoder.js";
 
 export class KhlMirrorDataSource {
-  constructor(fetcher = (...args) => fetch(...args), timeoutMs = 300000) { Object.assign(this, { fetcher, timeoutMs }); }
+  constructor(fetcher = (...args) => fetch(...args), timeoutMs = 300000, options = {}) {
+    Object.assign(this, { fetcher, timeoutMs, endpoint: "capture", createDecoder: () => new KhlMirrorCaptureDecoder(), ...options });
+  }
   async loadGame(gameId) {
     if (!/^[1-9]\d{0,9}$/.test(String(gameId))) throw new Error("khl_invalid_game_id");
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.timeoutMs);
     let reader;
     try {
-      const response = await this.fetcher(`https://avto-box.vercel.app/api/capture?id=${gameId}`, {
+      const response = await this.fetcher(`https://avto-box.vercel.app/api/${this.endpoint}?id=${gameId}`, {
         method: "POST", cache: "no-store", signal: controller.signal,
       });
       if (!response.ok) throw new Error(`khl_mirror_http_${response.status}`);
       reader = response.body.getReader();
       const decoder = new TextDecoder("utf-8", { fatal: true });
-      const capture = new KhlMirrorCaptureDecoder();
+      const capture = this.createDecoder();
       let pending = ""; let received = 0;
       while (true) {
         const { value, done } = await reader.read();
