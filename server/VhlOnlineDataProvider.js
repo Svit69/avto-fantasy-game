@@ -6,6 +6,7 @@ import { VhlOnlineStatsRowParser } from "./VhlOnlineStatsRowParser.js";
 import { VhlOnlineTeamTabResolver } from "./VhlOnlineTeamTabResolver.js";
 import { VhlOnlineUrlResolver } from "./VhlOnlineUrlResolver.js";
 import { VhlMatchIdentityGuard } from "./VhlMatchIdentityGuard.js";
+import { VhlTeamNameNormalizer } from "./VhlTeamNameNormalizer.js";
 
 export class VhlOnlineDataProvider {
   constructor({ onlineGameId, players, identity = {} }) {
@@ -19,7 +20,7 @@ export class VhlOnlineDataProvider {
       const sourceMatch = this.matchParser.parseMatch(html, { gameId: this.onlineGameId });
       this.identityGuard.validate(sourceMatch, this.identity.expectedMatch);
       const { expectedMatch, ...identity } = this.identity;
-      this.match = { ...sourceMatch, ...identity, league: "ВХЛ" };
+      this.match = new VhlTeamNameNormalizer().normalizeMatchTeams({ ...sourceMatch, ...identity, league: "ВХЛ" }, expectedMatch);
     }
     return this.match;
   }

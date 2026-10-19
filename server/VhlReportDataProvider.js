@@ -4,6 +4,7 @@ import { VhlOnlineHtmlDataSource } from "./VhlOnlineHtmlDataSource.js";
 import { VhlReportMatchDetailsParser } from "./VhlReportMatchDetailsParser.js";
 import { VhlReportStatsParser } from "./VhlReportStatsParser.js";
 import { VhlMatchIdentityGuard } from "./VhlMatchIdentityGuard.js";
+import { VhlTeamNameNormalizer } from "./VhlTeamNameNormalizer.js";
 
 export class VhlReportDataProvider {
   constructor({ source, players, identity = {} }) {
@@ -18,7 +19,7 @@ export class VhlReportDataProvider {
       if (!sourceMatch.homeTeam || !sourceMatch.awayTeam || !sourceMatch.scheduledAt) throw new Error("vhl_report_match_not_found");
       this.identityGuard.validate(sourceMatch, this.identity.expectedMatch);
       const { expectedMatch, ...identity } = this.identity;
-      this.match = { ...sourceMatch, ...identity, league: "ВХЛ" };
+      this.match = new VhlTeamNameNormalizer().normalizeMatchTeams({ ...sourceMatch, ...identity, league: "ВХЛ" }, expectedMatch);
     }
     return this.match;
   }

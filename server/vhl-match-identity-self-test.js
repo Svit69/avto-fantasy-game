@@ -45,3 +45,4 @@ try {
 } finally { VhlOnlineDataProvider.prototype.getMatch = originalGetMatch; }
 console.log("VHL match identity self-test passed");
 await import("./vhl-final-fallback-self-test.js");
+await import("./vhl-team-name-self-test.js");
