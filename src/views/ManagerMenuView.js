@@ -9,11 +9,11 @@ export class ManagerMenuView {
         </header>
         <section>
           <span>Имя менеджера</span>
-          <strong>${profile.managerName || "Менеджер"}</strong>
+          <strong data-manager-name>${profile.managerName || "Менеджер"}</strong>
         </section>
         <section>
           <span>Место в текущем туре:</span>
-          <strong>${profile.monthlyPlace || "—"}</strong>
+          <strong data-manager-place aria-live="polite">${profile.monthlyPlace || "—"}</strong>
         </section>
         <section class="manager-menu-help">
           <button type="button" data-open-scoring-guide>Как начисляются ФО</button>

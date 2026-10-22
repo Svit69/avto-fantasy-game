@@ -2,10 +2,11 @@ import { TelegramManagerProfileService } from "../services/TelegramManagerProfil
 import { ManagerMenuView } from "../views/ManagerMenuView.js";
 
 export class ManagerMenuController {
-  constructor(rootElement, getSelectedMonth = () => "Сентябрь") {
+  #requestVersion = 0;
+  constructor(rootElement, getSelectedMonth = () => "Сентябрь", profileService = new TelegramManagerProfileService()) {
     this.rootElement = rootElement;
     this.getSelectedMonth = getSelectedMonth;
-    this.profileService = new TelegramManagerProfileService();
+    this.profileService = profileService;
     this.menuView = new ManagerMenuView();
   }
 
@@ -20,10 +21,19 @@ export class ManagerMenuController {
 
   async #openManagerMenu() {
     const root = this.rootElement.querySelector("[data-manager-menu-root]");
-    root.innerHTML = this.menuView.render(await this.profileService.loadManagerProfile(this.getSelectedMonth()));
+    const version = ++this.#requestVersion; const month = this.getSelectedMonth();
+    root.innerHTML = this.menuView.render(this.profileService.loadCachedProfile());
+    try {
+      const profile = await this.profileService.loadManagerProfile(month);
+      if (version !== this.#requestVersion || month !== this.getSelectedMonth()) return;
+      const name = root.querySelector("[data-manager-name]"); const place = root.querySelector("[data-manager-place]");
+      if (name) name.textContent = profile.managerName || "Менеджер";
+      if (place) place.textContent = profile.monthlyPlace || "—";
+    } catch { /* Cached profile remains available while the connection is unavailable. */ }
   }
 
   #closeManagerMenu() {
+    this.#requestVersion += 1;
     this.rootElement.querySelector("[data-manager-menu-root]").innerHTML = "";
   }
 }

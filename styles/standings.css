@@ -21,5 +21,7 @@
 .standings-empty { display: grid; gap: 8px; padding: 42px 24px 56px; text-align: center; }
 .standings-empty b { font-size: 22px; text-transform: uppercase; }
 .standings-empty span { color: rgba(253, 255, 255, 0.66); }
+.standings-pagination { display: grid; padding: 0 12px 22px; }
+.standings-pagination button { min-height: 44px; padding: 10px 16px; border: 1px solid rgba(253,255,255,0.2); border-radius: 4px; background: #840F0E; color: #fff; font: inherit; cursor: pointer; }
 @keyframes standingsFade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes standingsRise { from { transform: translateY(28px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }

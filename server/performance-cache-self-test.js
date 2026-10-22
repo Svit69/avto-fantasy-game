@@ -1,0 +1,22 @@
+import assert from "node:assert/strict";
+import { RevisionedReportCache } from "./RevisionedReportCache.js";
+
+let revision = 1; let time = 0; let calls = 0;
+const cache = new RevisionedReportCache({ revision: { async readRevision() { return revision; } }, clock: () => time, ttlMs: 10, maximum: 2 });
+const load = () => cache.loadReport("month", async () => ++calls);
+assert.deepEqual(await Promise.all(Array.from({ length: 50 }, load)), Array(50).fill(1));
+assert.equal(await load(), 1);
+time = 11; assert.equal(await load(), 2);
+revision += 1; assert.equal(await load(), 3);
+await assert.rejects(cache.loadReport("failure", () => { throw new Error("test"); }));
+assert.equal(await cache.loadReport("failure", () => "recovered"), "recovered");
+await cache.loadReport("third", () => 1);
+assert.equal(await load(), 4);
+let resolveOld;
+const old = cache.loadReport("pending", () => new Promise((resolve) => { resolveOld = resolve; }));
+await new Promise((resolve) => setImmediate(resolve));
+revision += 1;
+assert.equal(await cache.loadReport("pending", () => "new"), "new");
+resolveOld("old"); assert.equal(await old, "old");
+assert.equal(await cache.loadReport("pending", () => "wrong"), "new");
+console.log("Performance cache collapse, expiry, revision and failure self-test passed");

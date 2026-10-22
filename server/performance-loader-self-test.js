@@ -1,0 +1,22 @@
+import assert from "node:assert/strict";
+import { StandingsModalLoader } from "../src/controllers/StandingsModalLoader.js";
+
+const root = { innerHTML: "", querySelector() { return null; } };
+let resolve; let loaded; let fail = false;
+const api = { loadMonthlyStandings() { if (fail) return Promise.reject(new Error("offline")); return new Promise((done) => { resolve = done; }); } };
+const loader = new StandingsModalLoader(api, { renderLoading: () => "loading", renderError: () => "error" }, () => root, (value) => { loaded = value; });
+const first = loader.loadMonth("test"); assert.equal(root.innerHTML, "loading");
+loader.cancel(); root.innerHTML = ""; resolve({ entries: [] }); await first;
+assert.equal(root.innerHTML, ""); assert.equal(loaded, undefined);
+fail = true; await loader.loadMonth("test"); assert.equal(root.innerHTML, "error"); fail = false;
+const retry = loader.loadMonth("test"); resolve({ entries: [{ userId: "1" }], nextOffset: 1, version: "v1", month: "test" }); await retry;
+const more = loader.loadNextPage(loaded);
+resolve({ entries: [{ userId: "1" }, { userId: "2" }], offset: 1, nextOffset: null }); await more;
+assert.deepEqual(loaded.entries.map((entry) => entry.userId), ["1", "2"]);
+const reset = loader.loadNextPage({ ...loaded, nextOffset: 2 });
+resolve({ entries: [{ userId: "3" }], offset: 0 }); await reset;
+assert.deepEqual(loaded.entries.map((entry) => entry.userId), ["3"]);
+const abandoned = loader.loadNextPage({ ...loaded, nextOffset: 1 });
+loader.cancel(); resolve({ entries: [{ userId: "stale" }], offset: 1 }); await abandoned;
+assert.deepEqual(loaded.entries.map((entry) => entry.userId), ["3"]);
+console.log("Performance modal loading, retry, cancellation and pagination self-test passed");

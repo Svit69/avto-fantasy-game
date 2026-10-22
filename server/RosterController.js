@@ -1,3 +1,4 @@
+import { ApplicationDataRevision } from "./ApplicationDataRevision.js";
 export class RosterController {
   constructor({ bodyParser, jsonResponder, profileResolver, rosterRepository, priceLocker, deadlineGuard }) {
     Object.assign(this, { bodyParser, jsonResponder, profileResolver, rosterRepository, priceLocker, deadlineGuard });
@@ -26,6 +27,7 @@ export class RosterController {
     const currentRoster = await this.rosterRepository.findRosterByUserAndMonth(profile.id, month);
     const slots = await this.priceLocker.lockRosterSlotPrices(payload.slots || [], currentRoster);
     const roster = await this.rosterRepository.saveRoster(profile.id, month, slots);
+    await new ApplicationDataRevision().invalidateReports();
     return this.jsonResponder.sendJson(response, 200, { ok: true, roster });
   }
 }

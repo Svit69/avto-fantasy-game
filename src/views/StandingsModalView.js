@@ -1,4 +1,10 @@
 export class StandingsModalView {
+  renderLoading(month) { return this.#renderStatus(month, '<span role="status">Загрузка таблицы…</span>'); }
+  renderError(month) { return this.#renderStatus(month, '<b role="alert">Не удалось загрузить таблицу</b><button type="button" data-retry-standings>Повторить</button>'); }
+  #renderStatus(month, content) {
+    return `<div class="standings-scrim" data-close-standings></div><section class="standings-modal" role="dialog" aria-modal="true" aria-label="Таблица менеджеров">
+      <header><button type="button" data-close-standings aria-label="Закрыть">×</button><span>${month}</span><h2>Таблица</h2></header><div class="standings-empty">${content}</div></section>`;
+  }
   render(standings) {
     return `<div class="standings-scrim" data-close-standings></div>
       <section class="standings-modal" role="dialog" aria-modal="true" aria-label="Таблица менеджеров">
@@ -12,7 +18,8 @@ export class StandingsModalView {
     const leaderIds = new Set(standings.leaders.map((entry) => entry.userId));
     const remainingEntries = standings.entries.filter((entry) => !leaderIds.has(entry.userId));
     return `<div class="standings-leaders">${standings.leaders.map((entry) => this.#renderCompactEntry(entry, standings.currentUser)).join("")}</div>
-      ${this.#renderRemainingEntries(remainingEntries, standings.currentUser)}`;
+      ${this.#renderRemainingEntries(remainingEntries, standings.currentUser)}
+      ${standings.nextOffset != null ? '<div class="standings-pagination"><button type="button" data-more-standings>Показать ещё</button></div>' : ""}`;
   }
 
   #renderRemainingEntries(entries, currentUser) {
