@@ -1,7 +1,7 @@
 export class StandingsCalculator {
   createMonthlyStandings(rosters, users, playerPoints, month, currentUserId) {
     const activeUsers = new Map(users.filter((user) => user.status !== "blocked").map((user) => [user.id, user]));
-    const entries = rosters.filter((roster) => roster.month === month && activeUsers.has(roster.userId))
+    const entries = rosters.filter((roster) => roster.month === month && roster.status !== "editing" && activeUsers.has(roster.userId))
       .map((roster) => this.#createStandingEntry(roster, activeUsers.get(roster.userId), playerPoints));
     const rankedEntries = this.#assignPlaces(entries.sort(this.#compareStandingEntries));
     return { month, leaders: rankedEntries.slice(0, 5), currentUser: rankedEntries.find((entry) => entry.userId === String(currentUserId)) || null, entries: rankedEntries };

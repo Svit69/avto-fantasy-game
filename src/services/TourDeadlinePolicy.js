@@ -8,6 +8,7 @@ export class TourDeadlinePolicy {
     const state = this.resolveTourAccessState(calendar, month);
     if (!state.isOpen || state.isLocked) return ROSTER_MODES.locked;
     if (!savedRoster) return ROSTER_MODES.draft;
+    if (savedRoster.status === "editing") return ROSTER_MODES.editing;
     return ROSTER_MODES.confirmed;
   }
 

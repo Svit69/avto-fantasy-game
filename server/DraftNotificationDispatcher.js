@@ -20,6 +20,7 @@ export class DraftNotificationDispatcher {
     if (await this.sentRepository.hasNotificationBeenSent(job.userId, job.key)) { metrics.skipped += 1; return; }
     metrics.attempted += 1;
     await this.rateLimiter.waitForNextDeliverySlot();
+    if (job.isPending && !await job.isPending()) { metrics.skipped += 1; return; }
     if (job.videoNote) { metrics[await this.videoDelivery.deliver(job)] += 1; return; }
     if (await this.#dispatchNotificationJob(job)) metrics.sent += 1; else metrics.failed += 1;
   }

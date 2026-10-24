@@ -19,7 +19,10 @@ export class RosterSubmissionApiClient {
       method: "POST", headers: this.headerFactory.createJsonHeaders(), body,
     });
 
-    if (!response.ok) throw Object.assign(new Error("roster_submit_failed"), { statusCode: response.status, retryAfter: Number(response.headers.get("Retry-After")) || 5 });
+    if (!response.ok) {
+      const details = await response.json().catch(() => ({}));
+      throw Object.assign(new Error(details.error || "roster_submit_failed"), { statusCode: response.status, retryAfter: Number(response.headers.get("Retry-After")) || 5 });
+    }
     return response.json();
   }
 }

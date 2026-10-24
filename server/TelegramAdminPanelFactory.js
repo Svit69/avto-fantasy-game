@@ -15,13 +15,12 @@ import { TelegramAdminPanelController } from "./TelegramAdminPanelController.js"
 import { VhlOnlineAdminView } from "./VhlOnlineAdminView.js";
 import { VhlOnlineMatchCatalog } from "./VhlOnlineMatchCatalog.js";
 import { VhlOnlineProtocolRegistrationService } from "./VhlOnlineProtocolRegistrationService.js";
-
+import { FutureRosterPriceService } from "./FutureRosterPriceService.js";
 export class TelegramAdminPanelFactory {
   constructor({ rootDirectory, logger }) { Object.assign(this, { rootDirectory, logger }); }
-
   createAdminPanel({ botClient, userRepository, playerCatalogRepository, rosterRepository, calendarRepository }) {
     const context = new AdminViewContextFactory().createViewContext();
-    const mutationService = this.#createMutationService(context.view, botClient, userRepository, rosterRepository, playerCatalogRepository);
+    const mutationService = this.#createMutationService(context.view, botClient, userRepository, rosterRepository, playerCatalogRepository, calendarRepository);
     const routeHandler = new AdminPanelRouteHandler({ ...context, userRepository, playerCatalogRepository, rosterRepository, mutationService,
       playerDirectoryController: new AdminPlayerDirectoryController(playerCatalogRepository),
       playerVideoController: new AdminPlayerVideoController({ playerCatalogRepository, stateStore: context.stateStore,
@@ -32,9 +31,10 @@ export class TelegramAdminPanelFactory {
     return new TelegramAdminPanelController({ accessPolicy: new AdminAccessPolicy((process.env.TELEGRAM_ADMIN_IDS || "").split(",")),
       routeParser: new AdminRouteParser(), routeHandler, stateStore: context.stateStore, botClient, logger: this.logger });
   }
-  #createMutationService(view, botClient, userRepository, rosterRepository, playerCatalogRepository) {
+  #createMutationService(view, botClient, userRepository, rosterRepository, playerCatalogRepository, calendarRepository) {
     const notifications = new ServerNotificationFactory(this.rootDirectory, botClient, this.logger).createRosterChangeNotificationService(userRepository, rosterRepository);
-    return new AdminPlayerMutationService({ view, playerCatalogRepository, rosterChangeNotifications: notifications });
+    return new AdminPlayerMutationService({ view, playerCatalogRepository, rosterChangeNotifications: notifications,
+      rosterPriceService: new FutureRosterPriceService({ rosterRepository, playerCatalogRepository, calendarRepository }) });
   }
 
   #createProtocolImportService(botClient, context, calendarRepository) {

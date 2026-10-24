@@ -7,9 +7,11 @@ export class InitialTourSelectionService {
     if (!monthSelect) return null;
     const calendar = await this.calendarApiClient.loadFantasyCalendar();
     const states = this.tourSchedulePolicy.buildTourAccessStates(calendar, now);
+    const requestedMonth = new URLSearchParams(globalThis.window?.location?.search || "").get("roster_month");
+    const requestedTour = states.find((tour) => tour.month === requestedMonth && tour.isOpen && !tour.isLocked);
     const activeTour = states.find((tour) => this.#isTourActive(tour, now));
     const activeRoster = activeTour ? await this.#loadSavedRoster(activeTour.month) : null;
-    const target = this.#resolveTargetTour(states, activeTour, activeRoster, now);
+    const target = requestedTour || this.#resolveTargetTour(states, activeTour, activeRoster, now);
     if (target && [...monthSelect.options].some((option) => option.value === target.month)) monthSelect.value = target.month;
     return target;
   }
@@ -29,7 +31,7 @@ export class InitialTourSelectionService {
   }
 
   #isRosterComplete(roster) {
-    return roster?.slots?.length === 6 && roster.slots.every((slot) => Boolean(slot.playerId));
+    return roster?.status !== "editing" && roster?.slots?.length === 6 && roster.slots.every((slot) => Boolean(slot.playerId));
   }
 
   async #loadSavedRoster(month) {

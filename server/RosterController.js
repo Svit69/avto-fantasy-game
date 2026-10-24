@@ -1,4 +1,6 @@
 import { ApplicationDataRevision } from "./ApplicationDataRevision.js";
+import { RosterPriceSubmissionPolicy } from "./RosterPriceSubmissionPolicy.js";
+import { RosterPricingCoordinator } from "./RosterPricingCoordinator.js";
 export class RosterController {
   constructor({ bodyParser, jsonResponder, profileResolver, rosterRepository, priceLocker, deadlineGuard }) {
     Object.assign(this, { bodyParser, jsonResponder, profileResolver, rosterRepository, priceLocker, deadlineGuard });
@@ -23,11 +25,13 @@ export class RosterController {
     const profile = await this.profileResolver.resolveProfile(request, payload);
     if (!profile) return this.jsonResponder.sendJson(response, 401, { error: "invalid_init_data" });
     const month = payload.month || "Сентябрь";
-    if (!await this.deadlineGuard.canModifyRoster(month)) return this.jsonResponder.sendJson(response, 423, { error: "tour_started" });
-    const currentRoster = await this.rosterRepository.findRosterByUserAndMonth(profile.id, month);
-    const slots = await this.priceLocker.lockRosterSlotPrices(payload.slots || [], currentRoster);
-    const roster = await this.rosterRepository.saveRoster(profile.id, month, slots);
-    await new ApplicationDataRevision().invalidateReports();
-    return this.jsonResponder.sendJson(response, 200, { ok: true, roster });
+    return new RosterPricingCoordinator().runExclusive(async () => {
+      if (!await this.deadlineGuard.canModifyRoster(month)) return this.jsonResponder.sendJson(response, 423, { error: "tour_started" });
+      const slots = await this.priceLocker.lockRosterSlotPrices(payload.slots || []);
+      new RosterPriceSubmissionPolicy().validatePrices(slots, payload.slots || []);
+      const roster = await this.rosterRepository.saveRoster(profile.id, month, slots);
+      await new ApplicationDataRevision().invalidateReports();
+      return this.jsonResponder.sendJson(response, 200, { ok: true, roster });
+    });
   }
 }

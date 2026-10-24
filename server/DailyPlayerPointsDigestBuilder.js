@@ -23,7 +23,7 @@ export class DailyPlayerPointsDigestBuilder {
   }
 
   #findRoster(rosters, user, month) {
-    return rosters.find((roster) => roster.userId === String(user.id) && roster.month === month);
+    return rosters.find((roster) => roster.userId === String(user.id) && roster.month === month && roster.status !== "editing");
   }
 
   #findRowMatches(rows) {
