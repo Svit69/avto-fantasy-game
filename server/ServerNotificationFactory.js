@@ -12,11 +12,11 @@ import { RosterPriceWorkerFactory } from "./RosterPriceWorkerFactory.js";
 export class ServerNotificationFactory {
   constructor(rootDirectory, botClient, logger) { Object.assign(this, { rootDirectory, botClient, logger }); }
 
-  createDraftNotificationWorker() {
+  createDraftNotificationWorker(remindersOnly = false) {
     const storage = this.#createStorageFactory(); const userRepository = storage.createUserRepository();
     const calendarRepository = storage.createCalendarRepository();
     return new DraftNotificationWorker({ userRepository, calendarRepository,
-      planner: new NotificationPlannerFactory(storage).createPlanner(), dispatcher: this.#createDispatcher(), logger: this.logger });
+      planner: remindersOnly ? new NotificationPlannerFactory(storage).createReminderPlanner() : new NotificationPlannerFactory(storage).createPlanner(), dispatcher: this.#createDispatcher(), logger: this.logger });
   }
 
   createRosterChangeNotificationService(userRepository, rosterRepository) {

@@ -19,6 +19,11 @@ try {
   assert.equal((await postgres.replaceRosterIfUnchanged(original, next, Date.now() + 60000)).status, "editing");
   assert.match(query, /r\.payload=c\.expected/); assert.match(query, /clock_timestamp\(\)/);
   assert.equal(JSON.parse(params[0])[0].expected.status, "confirmed");
+  assert.equal((await postgres.saveRosterBeforeDeadline(1, "next", fixture.slots, Date.now() + 60000)).status, "editing");
+  assert.match(query, /where clock_timestamp\(\) < \$4/);
+  assert.equal(params[0], "1"); assert.equal(params[1], "next");
+  const rejected = new PostgresRosterRepository({ async query() { return { rows: [] }; } });
+  assert.equal(await rejected.saveRosterBeforeDeadline(1, "next", [], Date.now() - 1), null);
   await fs.writeFile(repo.filePath, "invalid", "utf8");
   await assert.rejects(repo.saveRoster(99, "next", []));
   assert.equal(await fs.readFile(repo.filePath, "utf8"), "invalid");

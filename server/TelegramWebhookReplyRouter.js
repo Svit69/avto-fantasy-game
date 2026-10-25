@@ -1,10 +1,12 @@
 import { TelegramBotMessageClassifier } from "./TelegramBotMessageClassifier.js";
 
 export class TelegramWebhookReplyRouter {
-  constructor({ botClient, userMapper, userRepository, logger, summarizer, replyFactory, adminPanel, supportController, miniAppReplyService, messageClassifier = new TelegramBotMessageClassifier() }) {
-    Object.assign(this, { botClient, userMapper, userRepository, logger, summarizer, replyFactory, adminPanel, supportController, miniAppReplyService, messageClassifier });
+  constructor({ botClient, userMapper, userRepository, logger, summarizer, replyFactory, adminPanel, supportController, miniAppReplyService, autoRosterController, messageClassifier = new TelegramBotMessageClassifier() }) {
+    Object.assign(this, { botClient, userMapper, userRepository, logger, summarizer, replyFactory, adminPanel, supportController, miniAppReplyService, autoRosterController, messageClassifier });
   }
   async createReply(update) {
+    const autoReply = await this.autoRosterController?.createReply(update);
+    if (autoReply) return autoReply;
     const supportReply = await this.supportController?.createReply(update);
     if (supportReply) return supportReply;
     const adminReply = await this.adminPanel.createReply(update);

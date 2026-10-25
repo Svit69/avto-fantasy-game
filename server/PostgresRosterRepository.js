@@ -14,6 +14,13 @@ export class PostgresRosterRepository {
     const result = await this.database.query("select payload from rosters where user_id=$1 and month=$2", [String(userId), month]);
     return result.rows[0] ? this.mapper.toPayload(result.rows[0]) : null;
   }
+  async saveRosterBeforeDeadline(userId, month, slots, deadlineTime) {
+    const roster = { userId: String(userId), month, status: "confirmed", slots, updated_at: new Date().toISOString() };
+    const result = await this.database.query(`insert into rosters (user_id, month, payload) select $1,$2,$3::jsonb where clock_timestamp() < $4::timestamptz
+      on conflict (user_id, month) do update set payload=excluded.payload where clock_timestamp() < $4::timestamptz returning payload`,
+    [String(userId), month, this.mapper.toJson(roster), new Date(deadlineTime).toISOString()]);
+    return result.rows[0] ? this.mapper.toPayload(result.rows[0]) : null;
+  }
 
   async listRosters() {
     const result = await this.database.query("select payload from rosters order by month, user_id");

@@ -29,6 +29,9 @@ export class NotificationPlannerFactory {
     return new TourResultNotificationPlanner({ rosterRepository: this.storage.createRosterRepository(),
       playerCatalogRepository: this.storage.createPlayerCatalogRepository(), matchDataRepository: this.storage.createMatchDataRepository() });
   }
+  createReminderPlanner() {
+    return new DraftNotificationPlanner(this.storage.createRosterRepository(), new DraftNotificationMessageFactory(), Number(process.env.NOTIFICATION_WINDOW_MS || 3900000));
+  }
 
   #createTourAvailabilityPlanner(windowMs) {
     return new TourAvailabilityNotificationPlanner({ windowMs,

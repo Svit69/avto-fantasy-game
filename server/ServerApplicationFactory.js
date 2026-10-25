@@ -14,6 +14,7 @@ import { TelegramAdminPanelFactory } from "./TelegramAdminPanelFactory.js";
 import { TelegramFallbackLinkView } from "./TelegramFallbackLinkView.js"; import { TelegramRequestProfileResolver } from "./TelegramRequestProfileResolver.js"; import { TelegramSupportController } from "./TelegramSupportController.js"; import { WebLoginTokenService } from "./WebLoginTokenService.js";
 import { TelegramMiniAppReplyService } from "./TelegramMiniAppReplyService.js";
 import { ProtectedHttpApplication } from "./ProtectedHttpApplication.js";
+import { AutoRosterBotFactory } from "./AutoRosterBotFactory.js";
 export class ServerApplicationFactory {
   constructor(rootDirectory, logger) { Object.assign(this, { rootDirectory, logger }); }
   createApplication() { const base = this.#createBaseDependencies(); const storage = this.#createStorageDependencies(base); return new ProtectedHttpApplication(new HttpApplication(this.#createControllers(base, storage)), { rootDirectory: this.rootDirectory, logger: this.logger, botClient: base.botClient }); }
@@ -33,7 +34,8 @@ export class ServerApplicationFactory {
   } #createControllers(base, storage) {
     return { jsonResponder: base.jsonResponder, logger: this.logger, staticFileServer: new StaticFileServer(this.rootDirectory),
       requestLogger: new HttpRequestLogger(this.logger), authController: new TelegramAuthController({ ...base, ...storage }),
-      webhookController: new TelegramWebhookController({ ...base, ...storage, logger: this.logger, summarizer: new TelegramUpdateSummarizer(), replyFactory: new TelegramWebhookReplyFactory() }),
+      webhookController: new TelegramWebhookController({ ...base, ...storage, logger: this.logger, summarizer: new TelegramUpdateSummarizer(), replyFactory: new TelegramWebhookReplyFactory(),
+        autoRosterController: new AutoRosterBotFactory().createController({ ...base, ...storage, logger: this.logger }) }),
       webhookInstaller: new TelegramWebhookInstaller({ jsonResponder: base.jsonResponder, botClient: base.botClient, webhookUrl: process.env.TELEGRAM_WEBHOOK_URL, logger: this.logger }),
       webhookInfo: new TelegramWebhookInfoController({ jsonResponder: base.jsonResponder, botClient: base.botClient }), botInfo: new TelegramBotInfoController({ jsonResponder: base.jsonResponder, botClient: base.botClient }), khlMatchDataController: new KhlMatchDataController({ jsonResponder: base.jsonResponder, repository: storage.khlMatchDataRepository }), khlManualImportController: new KhlManualImportController({ bodyParser: base.bodyParser, jsonResponder: base.jsonResponder, serviceFactory: storage.khlServiceFactory }),
       healthController: new HealthController({ jsonResponder: base.jsonResponder, botClient: base.botClient, webhookUrl: process.env.TELEGRAM_WEBHOOK_URL }), calendarController: new FantasyCalendarController({ jsonResponder: base.jsonResponder, calendarRepository: storage.calendarRepository, opponentTeamRepository: storage.opponentTeamRepository }),
