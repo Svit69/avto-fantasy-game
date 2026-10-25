@@ -1,9 +1,10 @@
 # Telegram Roster Autofill
 
-Missing-roster reminders at 24 hours and 1 hour before a tour now include
+Only missing-roster reminders at 24 hours before a tour include
 "Автозаполнение состава" and a link to select players manually.
-The same action is available in the bot's registered-user keyboard and /autofill.
-Existing users can refresh their keyboard by sending /start.
+The persistent bot keyboard and 1-hour reminders do not include autofill.
+Existing users can refresh their keyboard by sending /start. Pressing an old
+keyboard button or sending /autofill refreshes the menu without saving a roster.
 
 Autofill requires an explicit click for each tour. It is NOT an opt-in to future
 unattended participation. The click selects and saves a complete roster; an

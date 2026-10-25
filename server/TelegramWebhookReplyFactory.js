@@ -29,7 +29,6 @@ export class TelegramWebhookReplyFactory {
   #createMainKeyboard(appUrl, includeContactRequest) {
     const rows = includeContactRequest ? [[{ text: "Поделиться номером", request_contact: true }]] : [];
     return [...rows, [{ text: "Открыть приложение", web_app: { url: appUrl } }, { text: "Как считаются очки" }],
-      ...(!includeContactRequest ? [[{ text: "Автозаполнение состава" }]] : []),
       [{ text: "Обратная связь" }, { text: "Не открывается приложение" }]];
   }
 

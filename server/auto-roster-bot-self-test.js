@@ -18,9 +18,15 @@ try {
   assert.equal(await controller.createReply({ message: { text: "hello" } }), null);
   const invalid = structuredClone(callback); invalid.callback_query.data = "roster_auto:expired";
   assert.match((await controller.createReply(invalid)).text, /нет открытого тура/);
-  const blocked = { message: { text: "Автозаполнение состава", from: { id: 3 }, chat: { id: 3, type: "private" } } };
+  const blocked = structuredClone(callback); blocked.callback_query.from.id = 3; blocked.callback_query.message.chat.id = 3;
   assert.match((await controller.createReply(blocked)).text, /зарегистрируйтесь/);
   const keyboard = new TelegramWebhookReplyFactory().createMiniAppMessage(1, "https://example.com").reply_markup.keyboard.flat();
-  assert.ok(keyboard.some((button) => button.text === "Автозаполнение состава"));
+  assert.ok(!keyboard.some((button) => button.text === "Автозаполнение состава"));
+  for (const text of ["Автозаполнение состава", "/autofill"]) {
+    const legacy = await controller.createReply({ message: { text, from: { id: 2 }, chat: { id: 2, type: "private" } } });
+    assert.match(legacy.text, /Меню обновлено/);
+    assert.ok(!legacy.reply_markup.keyboard.flat().some((button) => button.text === "Автозаполнение состава"));
+    assert.equal(await fixture.rosterRepository.findRosterByUserAndMonth(2, "next"), null);
+  }
 } finally { await fixture.close(); }
 console.log("Autofill private callbacks, ownership, registration, keyboard and saved reply self-test passed");

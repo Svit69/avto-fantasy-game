@@ -14,6 +14,10 @@ try {
   assert.ok(!reminders.some((job) => job.userId === "1" || job.userId === "3"));
   assert.equal(reminders[0].replyMarkup.inline_keyboard[0][0].callback_data, "roster_auto:next");
   assert.match(reminders[0].text, /Ранее выбранные игроки/);
+  const hourly = await planner.createNotificationJobs(fixture.calendar, fixture.users, fixture.now + 23 * 3600000);
+  const hourlyReminders = hourly.filter((job) => job.key.startsWith("deadline:next:1:"));
+  assert.ok(hourlyReminders.length > 0);
+  assert.ok(hourlyReminders.every((job) => !job.replyMarkup && !job.text.includes("Автозаполнение")));
   const afterDeadline = await planner.createNotificationJobs(fixture.calendar, fixture.users, fixture.now + 86400000);
   assert.ok(!afterDeadline.some((job) => job.key.startsWith("deadline:next:")));
   let runs = 0; let released = false;
