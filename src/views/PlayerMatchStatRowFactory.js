@@ -1,9 +1,10 @@
 import { RussianCountFormatter } from "../formatters/RussianCountFormatter.js";
 import { FantasyEventPresentationCatalog } from "../models/FantasyEventPresentationCatalog.js";
+import { GoalkeeperFantasyScoringRulebook } from "../scoring/GoalkeeperFantasyScoringRulebook.js";
 
 export class PlayerMatchStatRowFactory {
-  constructor(formatter = new RussianCountFormatter(), catalog = new FantasyEventPresentationCatalog()) {
-    Object.assign(this, { formatter, catalog });
+  constructor(formatter = new RussianCountFormatter(), catalog = new FantasyEventPresentationCatalog(), goalkeeperRules = new GoalkeeperFantasyScoringRulebook()) {
+    Object.assign(this, { formatter, catalog, goalkeeperRules });
   }
 
   createRows(player, stats) {
@@ -18,8 +19,8 @@ export class PlayerMatchStatRowFactory {
   }
 
   #createGoalkeeperRows(stats) {
-    return [this.#createRow("saves", stats.saves, 3), this.#createRow("goalsAgainst", stats.goalsAgainst, -15),
-      this.#createRow("penalties", stats.penalties, -10)].filter(Boolean);
+    return Object.entries(this.goalkeeperRules.rules)
+      .map(([key, pointValue]) => this.#createRow(key, stats[key], pointValue)).filter(Boolean);
   }
 
   #createRow(key, count, pointValue) {
