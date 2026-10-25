@@ -1,0 +1,34 @@
+import assert from "node:assert/strict";
+import { PriceRangeFilterView } from "../src/views/PriceRangeFilterView.js";
+import { FilterSheetView } from "../src/views/FilterSheetView.js";
+import { PlayerSelectionState } from "../src/models/PlayerSelectionState.js";
+import { PriceRangeFilterController } from "../src/controllers/PriceRangeFilterController.js";
+
+const view = new PriceRangeFilterView();
+const html = view.render({ maxPrice: 15 }, { min: 5, max: 30 });
+assert.match(html, /--price-progress: 40%/);
+assert.match(html, /aria-label="Максимальная цена игрока"/);
+assert.match(html, /data-price-filter-output/); assert.match(html, /data-price-step="-1"/);
+assert.match(view.render({ maxPrice: 1 }, { min: 5, max: 30 }), /value="5"/);
+assert.match(view.render({ maxPrice: 99 }, { min: 5, max: 30 }), /value="30"/);
+const empty = view.render({}, { min: 0, max: 0 });
+assert.match(empty, /disabled data-price-filter-range/); assert.ok(!empty.includes("NaN"));
+const sheet = new FilterSheetView();
+assert.match(sheet.render("price", {}, [], { min: 5, max: 30 }), /Показать игроков/);
+assert.ok(!sheet.render("team", { team: "Все" }, ["Автомобилист"]).includes("price-filter-actions"));
+const listeners = {}; const state = new PlayerSelectionState(); let renders = 0;
+const output = {}; const label = {}; const buttons = {};
+const shell = { querySelector(selector) { if (selector === "[data-price-filter-output]") return output; return buttons[selector] ||= {}; } };
+const input = { value: "15", min: "5", max: "30", matches: () => true, closest: () => shell,
+  style: { setProperty(key, value) { this[key] = value; } }, setAttribute(key, value) { this[key] = value; } };
+const root = { addEventListener(type, fn) { listeners[type] = fn; }, querySelector() { return label; } };
+new PriceRangeFilterController({ rootElement: root, state, onChange: () => { renders++; } }).connect();
+listeners.input({ target: input });
+assert.equal(state.filters.maxPrice, 15); assert.equal(output.value, "до 15к");
+assert.equal(input.style["--price-progress"], "40%"); assert.equal(label.textContent, "до 15к");
+input.value = "30"; listeners.input({ target: input });
+assert.equal(buttons['[data-price-step="1"]'].disabled, true);
+assert.equal(buttons["[data-reset-price]"].disabled, true);
+input.value = "5"; listeners.input({ target: input });
+assert.equal(buttons['[data-price-step="-1"]'].disabled, true); assert.equal(renders, 3);
+console.log("Price filter view bounds, empty range, accessibility and live market state self-test passed");

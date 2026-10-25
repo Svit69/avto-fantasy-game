@@ -5,7 +5,7 @@ export class PlayerSelectionDrawerView {
     const { teamRoster, players, filters, activeFilter, shouldAnimate } = context;
     const availablePlayers = this.#selectAvailablePlayers(players);
     const priceRange = this.#selectPriceRange(availablePlayers);
-    const effectiveFilters = { ...filters, maxPrice: Math.min(filters.maxPrice ?? priceRange.max, priceRange.max) };
+    const effectiveFilters = { ...filters, maxPrice: Math.max(priceRange.min, Math.min(filters.maxPrice ?? priceRange.max, priceRange.max)) };
     const filled = teamRoster.calculateFilledPlayersCount();
     const total = teamRoster.calculateTotalSlotsCount();
     return `

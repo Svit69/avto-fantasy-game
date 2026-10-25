@@ -6,9 +6,10 @@ export class FilterSheetView {
     if (!kind) return "";
     return `
       <div class="filter-scrim" data-close-filter></div>
-      <section class="filter-sheet">
-        <header><h3>${this.#formatTitle(kind)}</h3><button type="button" data-close-filter>Применить</button></header>
+      <section class="filter-sheet ${kind === "price" ? "filter-sheet--price" : ""}" role="dialog" aria-modal="true" aria-label="${this.#formatTitle(kind)}">
+        <header><h3>${this.#formatTitle(kind)}</h3><button type="button" data-close-filter ${kind === "price" ? 'aria-label="Закрыть фильтр цены"' : ""}>${kind === "price" ? "×" : "Применить"}</button></header>
         <div class="filter-options">${this.#renderOptions(kind, filters, teams, priceRange)}</div>
+        ${kind === "price" ? '<footer class="price-filter-actions"><button type="button" data-close-filter>Показать игроков</button></footer>' : ""}
       </section>
     `;
   }

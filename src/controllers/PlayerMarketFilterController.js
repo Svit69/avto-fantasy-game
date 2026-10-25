@@ -1,3 +1,4 @@
+import { PriceRangeFilterController } from "./PriceRangeFilterController.js";
 export class PlayerMarketFilterController {
   constructor({ rootElement, state, players, teamRoster, tableView, scrollSynchronizer }) {
     Object.assign(this, { rootElement, state, players, teamRoster, tableView, scrollSynchronizer });
@@ -12,17 +13,7 @@ export class PlayerMarketFilterController {
       filters.sortField = field;
       this.renderFilteredMarket();
     });
-    this.rootElement.addEventListener("input", (event) => {
-      const input = event.target;
-      if (!input.matches("[data-price-filter-range]")) return;
-      this.state.applyFilter("price", input.value);
-      const range = Number(input.max) - Number(input.min);
-      input.style.setProperty("--price-progress", `${range > 0 ? (input.value - input.min) / range * 100 : 100}%`);
-      input.previousElementSibling.querySelector("output").value = `до ${input.value}к`;
-      const label = this.rootElement.querySelector('[data-open-filter="price"] b');
-      if (label) label.textContent = `до ${input.value}к`;
-      this.renderFilteredMarket();
-    });
+    new PriceRangeFilterController({ rootElement: this.rootElement, state: this.state, onChange: () => this.renderFilteredMarket() }).connect();
     this.rootElement.addEventListener("player-market-stats-updated", () => this.renderFilteredMarket());
   }
   renderFilteredMarket() {
