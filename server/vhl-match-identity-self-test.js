@@ -46,3 +46,4 @@ try {
 console.log("VHL match identity self-test passed");
 await import("./vhl-final-fallback-self-test.js");
 await import("./vhl-team-name-self-test.js");
+await import("./vhl-team-alias-self-test.js");

@@ -1,7 +1,9 @@
 export class VhlTeamNameNormalizer {
+  #aliases = new Map([["сокол кр", "Сокол"], ["сокол кр.", "Сокол"]]);
   normalizeTeamName(value) {
     const name = this.#unwrapQuotes(String(value || "").normalize("NFC").replace(/\s+/g, " ").trim());
-    return this.#unwrapQuotes(name.replace(/^хк(?:\s+|(?=[«"“]))/iu, ""));
+    const normalized = this.#unwrapQuotes(name.replace(/^хк(?:\s+|(?=[«"“]))/iu, ""));
+    return this.#aliases.get(normalized.toLowerCase()) || normalized;
   }
   createComparisonKey(value) { return this.normalizeTeamName(value).toLowerCase().replace(/ё/g, "е"); }
   normalizeMatchTeams(match, expectedMatch = null) {
