@@ -27,6 +27,10 @@ export class FooterView {
   }
 
   #createActionState(teamRoster, isComplete) {
+    const access = teamRoster.getTourAccessState();
+    if (access?.isLoading) return { text: "ЗАГРУЖАЕМ СОСТАВ", className: "", data: "", disabled: "disabled" };
+    if (access?.loadingError) return { text: "ПОВТОРИТЬ ЗАГРУЗКУ", className: "", data: "data-retry-roster-load", disabled: "" };
+    if (access && !access.isOpen) return { text: "ТУР ПОКА НЕДОСТУПЕН", className: "", data: "", disabled: "disabled" };
     if (teamRoster.isLocked()) return { text: "ТАБЛИЦА", className: "is-table-action", data: "data-open-standings", disabled: "" };
     if (teamRoster.isConfirmed()) return { text: "РЕДАКТИРОВАТЬ СОСТАВ", className: "is-edit-action", data: "data-edit-roster", disabled: "" };
     if (!isComplete) return { text: "ИСКАТЬ ИГРОКОВ", className: "is-search-action", data: "data-open-player-panel", disabled: "" };

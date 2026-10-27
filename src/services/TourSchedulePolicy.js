@@ -1,7 +1,9 @@
 export class TourSchedulePolicy {
   buildTourAccessStates(calendar, now = Date.now()) {
     const tours = this.#sortToursByDeadline(calendar.tours);
-    return tours.map((tour, index) => this.#createTourAccessState(tour, tours[index - 1], now));
+    const valid = Number.isFinite(now) && tours.every((tour) => Number.isFinite(Date.parse(tour.deadlineAt || tour.startsAt)));
+    return tours.map((tour, index) => valid ? this.#createTourAccessState(tour, tours[index - 1], now)
+      : { ...tour, isOpen: false, isLocked: true, deadlineTime: NaN });
   }
 
   findTourAccessState(calendar, month, now = Date.now()) {
@@ -12,12 +14,12 @@ export class TourSchedulePolicy {
   #createTourAccessState(tour, previousTour, now) {
     const deadlineTime = Date.parse(tour.deadlineAt || tour.startsAt);
     const previousDeadlineTime = previousTour ? Date.parse(previousTour.deadlineAt || previousTour.startsAt) : null;
-    const isOpen = !previousDeadlineTime || previousDeadlineTime <= now;
+    const isOpen = Number.isFinite(deadlineTime) && (!previousTour || previousDeadlineTime <= now);
     return { ...tour, isOpen, isLocked: Number.isFinite(deadlineTime) && deadlineTime <= now, deadlineTime };
   }
 
   #sortToursByDeadline(tours) {
-    return [...tours].sort((first, second) => {
+    return [...(Array.isArray(tours) ? tours : [])].sort((first, second) => {
       return Date.parse(first.deadlineAt || first.startsAt) - Date.parse(second.deadlineAt || second.startsAt);
     });
   }

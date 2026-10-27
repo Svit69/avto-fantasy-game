@@ -1,4 +1,5 @@
 import { RosterAssetPreloader } from "./RosterAssetPreloader.js";
+import { RosterMonthTransitionController } from "../controllers/RosterMonthTransitionController.js";
 
 export class RosterPersistenceCoordinator {
   constructor(rosterFactory, rosterApiClient, calendarApiClient, deadlinePolicy, rosterAssetPreloader = new RosterAssetPreloader()) {
@@ -10,11 +11,8 @@ export class RosterPersistenceCoordinator {
   }
 
   connectMonthRosterLoading(rootElement, players, teamRoster, rosterDomRenderer, getSelectedMonth) {
-    rootElement.querySelector(".month-select")?.addEventListener("change", async () => {
-      const nextRoster = await this.#createRosterFromPersistence(players, getSelectedMonth());
-      teamRoster.replaceRosterState(nextRoster);
-      rosterDomRenderer.renderRosterSections();
-    });
+    new RosterMonthTransitionController({ rootElement, teamRoster, rosterFactory: this.rosterFactory, rosterDomRenderer, getSelectedMonth,
+      loadRoster: (month) => this.#createRosterFromPersistence(players, month) }).connect();
   }
 
   async #createRosterFromPersistence(players, month) {
@@ -22,9 +20,11 @@ export class RosterPersistenceCoordinator {
       this.rosterApiClient.loadSavedRoster(month), this.calendarApiClient.loadFantasyCalendar(),
     ]);
     const mode = this.deadlinePolicy.resolveRosterMode(savedRoster, calendar, month);
-    const roster = this.rosterFactory.createRosterFromSavedRoster(players, savedRoster, mode);
-    roster.setTourAccessState(this.deadlinePolicy.resolveTourAccessState(calendar, month));
+    let roster = this.rosterFactory.createRosterFromSavedRoster(players, savedRoster, mode);
     await this.rosterAssetPreloader.preloadRosterVisualAssets(roster);
+    const currentMode = this.deadlinePolicy.resolveRosterMode(savedRoster, calendar, month);
+    if (currentMode !== mode) roster = this.rosterFactory.createRosterFromSavedRoster(players, savedRoster, currentMode);
+    roster.setTourAccessState(this.deadlinePolicy.resolveTourAccessState(calendar, month));
     return roster;
   }
 }

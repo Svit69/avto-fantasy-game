@@ -9,8 +9,10 @@ export class RosterSubmissionApiClient {
       headers: this.headerFactory.createAuthorizationHeaders(),
     });
 
-    if (!response.ok) return null;
-    return (await response.json()).roster || null;
+    if (!response.ok) throw Object.assign(new Error("roster_load_failed"), { statusCode: response.status });
+    const payload = await response.json();
+    if (!payload || !Object.hasOwn(payload, "roster") || (payload.roster !== null && (payload.roster?.month !== month || !Array.isArray(payload.roster?.slots)))) throw new Error("invalid_roster_payload");
+    return payload.roster;
   }
 
   async submitConfirmedRoster(slots, month) {

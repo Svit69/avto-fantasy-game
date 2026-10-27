@@ -7,6 +7,7 @@ export class InitialTourSelectionService {
     if (!monthSelect) return null;
     const calendar = await this.calendarApiClient.loadFantasyCalendar();
     const states = this.tourSchedulePolicy.buildTourAccessStates(calendar, now);
+    if (!states.some((state) => state.isOpen)) throw new Error("calendar_has_no_available_tours");
     const requestedMonth = new URLSearchParams(globalThis.window?.location?.search || "").get("roster_month");
     const requestedTour = states.find((tour) => tour.month === requestedMonth && tour.isOpen && !tour.isLocked);
     const activeTour = states.find((tour) => this.#isTourActive(tour, now));
@@ -35,6 +36,6 @@ export class InitialTourSelectionService {
   }
 
   async #loadSavedRoster(month) {
-    try { return await this.rosterApiClient.loadSavedRoster(month); } catch { return null; }
+    return this.rosterApiClient.loadSavedRoster(month);
   }
 }

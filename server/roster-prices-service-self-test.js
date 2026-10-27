@@ -17,9 +17,11 @@ try {
   fixture.players[0].price = 5;
   await service.reconcileOpenRosters(fixture.calendar);
   assert.equal((await fixture.rosterRepository.findRosterByUserAndMonth(1, "next")).status, "editing");
-  const order = []; const coordinator = new RosterPricingCoordinator();
-  await Promise.all([coordinator.runExclusive(async () => { order.push(1); await new Promise((resolve) => setTimeout(resolve, 20)); await new RosterPricingCoordinator().runExclusive(() => order.push(2)); }),
-    new RosterPricingCoordinator().runExclusive(() => order.push(3))]);
+  const order = []; const coordinator = new RosterPricingCoordinator(); let started;
+  const entered = new Promise((resolve) => { started = resolve; });
+  const first = coordinator.runExclusive(async () => { order.push(1); started(); await new Promise((resolve) => setTimeout(resolve, 20)); await new RosterPricingCoordinator().runExclusive(() => order.push(2)); });
+  await entered;
+  await Promise.all([first, new RosterPricingCoordinator().runExclusive(() => order.push(3))]);
   assert.deepEqual(order, [1, 2, 3]);
 } finally { await fixture.close(); }
 console.log("Roster repricing only open future tour, idempotence, recovery and serialized mutations self-test passed");

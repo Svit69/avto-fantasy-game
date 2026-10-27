@@ -27,9 +27,11 @@ export class PlayerTourPointsCoordinator {
 
   connectMonthTourPointsLoading(rootElement, players, rosterDomRenderer, getSelectedMonth) {
     rootElement.querySelector(".month-select")?.addEventListener("change", async () => {
-      await this.applyTourPoints(players, getSelectedMonth());
-      rosterDomRenderer.renderRosterSections();
-      rootElement.dispatchEvent(new Event("player-market-stats-updated"));
+      try {
+        await this.applyTourPoints(players, getSelectedMonth());
+        rosterDomRenderer.renderRosterSections();
+        rootElement.dispatchEvent(new Event("player-market-stats-updated"));
+      } catch { /* The roster loader displays a retry action when the calendar is unavailable. */ }
     });
   }
 

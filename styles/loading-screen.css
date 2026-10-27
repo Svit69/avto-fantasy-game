@@ -31,3 +31,6 @@
 .loading-progress { width: min(280px, 76vw); height: 8px; overflow: hidden; background: rgba(253, 255, 255, 0.12); }
 .loading-progress span { display: block; width: 0; height: 100%; background: linear-gradient(90deg, #840F0E, #E01822); transition: width 180ms ease; }
 .loading-screen strong { font: 900 24px/1 Arial, Helvetica, sans-serif; font-variant-numeric: tabular-nums; }
+.loading-screen .loading-error-message { max-width: 320px; text-align: center; text-transform: none; line-height: 1.4; }
+.loading-retry-button { min-height: 48px; max-width: 100%; padding: 12px 20px; border: 0; border-radius: 4px; background: var(--accent); color: #FDFFFF; font: inherit; font-weight: 700; cursor: pointer; }
+.loading-retry-button:focus-visible { outline: 2px solid #FDFFFF; outline-offset: 4px; }

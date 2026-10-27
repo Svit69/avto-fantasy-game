@@ -1,3 +1,4 @@
+import { ApplicationLoadErrorView } from "../views/ApplicationLoadErrorView.js";
 export class LoadingScreenController {
   constructor(rootElement) {
     Object.assign(this, { rootElement, progress: 0, timerId: null });
@@ -12,6 +13,13 @@ export class LoadingScreenController {
     window.clearInterval(this.timerId);
     this.#updateProgress(100);
     window.setTimeout(() => this.rootElement.querySelector("[data-loading-screen]")?.classList.add("is-hidden"), 180);
+  }
+  failLoadingProgress() {
+    window.clearInterval(this.timerId);
+    const screen = this.rootElement.querySelector("[data-loading-screen]");
+    if (!screen) return;
+    screen.classList.remove("is-hidden"); screen.innerHTML = new ApplicationLoadErrorView().render();
+    screen.querySelector("[data-retry-application]").onclick = () => window.location.reload();
   }
 
   #createStep() {

@@ -14,7 +14,7 @@ export class HeaderView {
             <img class="brand-logo" src="/assets/avto_logo.png"
               alt="Логотип Автомобилиста" data-logo />
           </div>
-          <select class="month-select" aria-label="Выбрать месяц">
+          <select class="month-select" aria-label="Выбрать месяц" disabled>
             ${this.#renderMonthOptions()}
           </select>
         </div>

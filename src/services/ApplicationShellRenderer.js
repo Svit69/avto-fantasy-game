@@ -12,6 +12,7 @@ export class ApplicationShellRenderer {
   }
 
   completeLoading() { this.loadingController?.completeLoadingProgress(); }
+  failLoading() { this.loadingController?.failLoadingProgress(); }
 
   #renderLogoFallback(logoElement) {
     logoElement.outerHTML = `<div class="brand-fallback" role="img" aria-label="Логотип Автомобилиста"></div>`;

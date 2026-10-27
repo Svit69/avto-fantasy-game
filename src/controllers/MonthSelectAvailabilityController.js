@@ -4,15 +4,20 @@ export class MonthSelectAvailabilityController {
   }
 
   async applyAvailableTourOptions() {
-    const calendar = await this.calendarApiClient.loadFantasyCalendar();
-    const accessStates = this.tourSchedulePolicy.buildTourAccessStates(calendar);
-    this.#syncMonthOptions(new Map(accessStates.map((state) => [state.month, state])));
+    const select = this.rootElement.querySelector(".month-select");
+    if (select) select.disabled = true;
+    try {
+      const calendar = await this.calendarApiClient.loadFantasyCalendar();
+      const states = this.tourSchedulePolicy.buildTourAccessStates(calendar);
+      this.#syncMonthOptions(new Map(states.map((state) => [state.month, state])));
+      if (select) select.disabled = !states.some((state) => state.isOpen);
+    } catch (error) { this.#syncMonthOptions(new Map()); throw error; }
   }
 
   #syncMonthOptions(accessStateByMonth) {
     this.rootElement.querySelectorAll(".month-select option").forEach((option) => {
       const state = accessStateByMonth.get(option.value || option.textContent);
-      option.disabled = Boolean(state && !state.isOpen);
+      option.disabled = !state?.isOpen;
       option.dataset.tourState = this.#resolveTourStateName(state);
     });
   }

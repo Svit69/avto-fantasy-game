@@ -12,7 +12,7 @@ export class PlayerLongPressController {
   #scheduleProfileOpening(event) {
     const source = event.target.closest("[data-player-profile]"); if (!source || event.target.closest("[data-remove-slot]")) return;
     this.pointerStart = { x: event.clientX, y: event.clientY };
-    this.longPressTimer = setTimeout(() => this.#openProfile(source.dataset.playerProfile), 420);
+    this.longPressTimer = setTimeout(() => { void this.#openProfile(source.dataset.playerProfile).catch(() => { this.shouldSuppressNextClick = false; this.#closeProfile(); }); }, 420);
   }
   #cancelWhenPointerMoves(event) {
     if (!this.pointerStart) return;

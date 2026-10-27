@@ -1,12 +1,20 @@
 import { CapacityAwareApiRequest } from "./CapacityAwareApiRequest.js";
+import { FantasyCalendarPayloadValidator } from "./FantasyCalendarPayloadValidator.js";
 export class FantasyCalendarApiClient {
   static cache = null;
   static ttlMs = 60 * 1000;
 
   async loadFantasyCalendar() {
     if (this.#hasFreshCache()) return FantasyCalendarApiClient.cache.promise;
-    FantasyCalendarApiClient.cache = { expiresAt: Date.now() + FantasyCalendarApiClient.ttlMs, promise: this.#fetchFantasyCalendar() };
-    return FantasyCalendarApiClient.cache.promise;
+    const entry = { expiresAt: Infinity };
+    FantasyCalendarApiClient.cache = entry;
+    entry.promise = this.#fetchFantasyCalendar().then((calendar) => {
+      entry.expiresAt = Date.now() + FantasyCalendarApiClient.ttlMs; return calendar;
+    }).catch((error) => {
+      if (FantasyCalendarApiClient.cache === entry) FantasyCalendarApiClient.cache = null;
+      throw error;
+    });
+    return entry.promise;
   }
 
   #hasFreshCache() {
@@ -14,26 +22,8 @@ export class FantasyCalendarApiClient {
   }
 
   async #fetchFantasyCalendar() {
-    try {
-      const response = await new CapacityAwareApiRequest().fetchResponse(`/api/calendar?stamp=${Date.now()}`, { cache: "no-store" });
-      if (!response.ok) return this.#createEmptyCalendar();
-      const payload = await response.json();
-      return this.#normalizeCalendarPayload(payload);
-    } catch {
-      FantasyCalendarApiClient.cache = null;
-      return this.#createEmptyCalendar();
-    }
-  }
-
-  #normalizeCalendarPayload(payload) {
-    return {
-      tours: Array.isArray(payload.tours) ? payload.tours : [],
-      matches: Array.isArray(payload.matches) ? payload.matches : [],
-      opponents: Array.isArray(payload.opponents) ? payload.opponents : [],
-    };
-  }
-
-  #createEmptyCalendar() {
-    return { tours: [], matches: [], opponents: [] };
+    const response = await new CapacityAwareApiRequest().fetchResponse(`/api/calendar?stamp=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) throw Object.assign(new Error("calendar_load_failed"), { statusCode: response.status });
+    return new FantasyCalendarPayloadValidator().validatePayload(await response.json());
   }
 }

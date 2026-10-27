@@ -8,7 +8,7 @@
     "check": "node --check api/index.js && node --check src/main.js && node --check server/server.js && node --check server/notification-worker.js && node --check server/khl-worker.js && node --check server/khl-import.js && node --check server/khl-replay.js && node --check server/khl-import-pdf.js && node --check server/vhl-import-online.js && node --check server/vhl-poll-online.js && node --check server/player-stats-audit.js && node --check server/khl-poll-online.js && node --check server/khl-preview-online.js && node --check server/mhl-poll-online.js && node --check server/mhl-preview-online.js && node server/mhl-online-self-test.js && node server/khl-online-self-test.js && node server/khl-self-test.js && node server/vhl-protocol-validation-self-test.js && node server/vhl-match-identity-self-test.js && node server/vhl-admin-navigation-self-test.js && node server/player-price-review-self-test.js && node server/operations-self-test.js && node server/player-video-self-test.js && node server/tour-result-self-test.js",
     "test:load": "node server/load-test.js",
     "test:performance": "node server/performance-self-test.js",
-    "postcheck": "npm run test:performance && npm run test:roster-prices && node server/goalkeeper-stat-display-self-test.js && npm run test:autofill && node server/price-filter-self-test.js",
+    "postcheck": "npm run test:performance && npm run test:roster-prices && node server/goalkeeper-stat-display-self-test.js && npm run test:autofill && node server/price-filter-self-test.js && node server/tour-loading-self-test.js",
     "test:autofill": "node server/auto-roster-self-test.js",
     "test:roster-prices": "node server/roster-prices-self-test.js",
     "test:videos": "node server/player-video-self-test.js",
