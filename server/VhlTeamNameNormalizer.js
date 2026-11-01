@@ -1,7 +1,8 @@
 export class VhlTeamNameNormalizer {
   #aliases = new Map([
     ["сокол кр", "Сокол"], ["сокол кр.", "Сокол"],
-    ["металлург нк", "Металлург Новокузнецк"], ["металлург нк.", "Металлург Новокузнецк"]
+    ["металлург нк", "Металлург Новокузнецк"], ["металлург нк.", "Металлург Новокузнецк"],
+    ["динамо спб", "Динамо Санкт-Петербург"]
   ]);
   normalizeTeamName(value) {
     const name = this.#unwrapQuotes(String(value || "").normalize("NFC").replace(/\s+/g, " ").trim());
