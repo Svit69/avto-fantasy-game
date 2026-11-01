@@ -13,11 +13,11 @@ for (const [onlineProtocolId, date, homeTeam, awayTeam, time] of VHL_NOVEMBER_PR
   const [match] = candidates;
   assert.equal(match.league, "ВХЛ"); assert.equal(match.featuredTeam, "Горняк-УГМК");
   guard.validate({ homeTeam, awayTeam, scheduledAt: `${date}T${time}:00+03:00` }, match);
-  assert.equal(match.startsAt, `${date}T${onlineProtocolId === "904374" ? "17:30" : time}:00+03:00`);
+  assert.equal(match.startsAt, `${date}T${time}:00+03:00`);
   const stored = { ...match, status: "upcoming", customField: "preserve" }; delete stored.onlineProtocolId;
   const [backfilled] = merger.mergeSeedAndStoredRecords([match], [stored]);
   assert.equal(backfilled.onlineProtocolId, onlineProtocolId); assert.equal(backfilled.customField, "preserve");
   const polled = new VhlOnlineActiveMatchSelector().findActiveMatches({ matches: [backfilled] }, Date.parse(match.startsAt));
   assert.equal(polled[0].onlineGameId, onlineProtocolId);
 }
-console.log("VHL November nine ID assignments, calendar identities, unchanged times and stored-record backfill self-test passed");
+console.log("VHL November nine ID assignments, calendar identities, validated times and stored-record backfill self-test passed");
