@@ -5,20 +5,20 @@ import { VhlOnlineGoalieStatsParser } from "./VhlOnlineGoalieStatsParser.js";
 import { VhlOnlineStatsRowParser } from "./VhlOnlineStatsRowParser.js";
 import { VhlOnlineTeamTabResolver } from "./VhlOnlineTeamTabResolver.js";
 import { VhlOnlineUrlResolver } from "./VhlOnlineUrlResolver.js";
-import { VhlMatchIdentityGuard } from "./VhlMatchIdentityGuard.js";
+import { VhlReviewedMatchIdentityGuard } from "./VhlReviewedMatchIdentityGuard.js";
 import { VhlTeamNameNormalizer } from "./VhlTeamNameNormalizer.js";
 
 export class VhlOnlineDataProvider {
   constructor({ onlineGameId, players, identity = {} }) {
     Object.assign(this, { onlineGameId, players, identity, urlResolver: new VhlOnlineUrlResolver(), htmlSource: new VhlOnlineHtmlDataSource(),
-      matchParser: new VhlOnlineMatchDetailsParser(), identityGuard: new VhlMatchIdentityGuard(), goalieParser: new VhlOnlineGoalieStatsParser(), tabResolver: new VhlOnlineTeamTabResolver(), rowParser: new VhlOnlineStatsRowParser() });
+      matchParser: new VhlOnlineMatchDetailsParser(), identityGuard: new VhlReviewedMatchIdentityGuard(), goalieParser: new VhlOnlineGoalieStatsParser(), tabResolver: new VhlOnlineTeamTabResolver(), rowParser: new VhlOnlineStatsRowParser() });
   }
 
   async getMatch() {
     const html = await this.#loadHtml();
     if (!this.match) {
       const sourceMatch = this.matchParser.parseMatch(html, { gameId: this.onlineGameId });
-      this.identityGuard.validate(sourceMatch, this.identity.expectedMatch);
+      await this.identityGuard.validate(sourceMatch, this.identity.expectedMatch);
       const { expectedMatch, ...identity } = this.identity;
       this.match = new VhlTeamNameNormalizer().normalizeMatchTeams({ ...sourceMatch, ...identity, league: "ВХЛ" }, expectedMatch);
     }

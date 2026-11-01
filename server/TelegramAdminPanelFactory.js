@@ -16,6 +16,7 @@ import { VhlOnlineAdminView } from "./VhlOnlineAdminView.js";
 import { VhlOnlineMatchCatalog } from "./VhlOnlineMatchCatalog.js";
 import { VhlOnlineProtocolRegistrationService } from "./VhlOnlineProtocolRegistrationService.js";
 import { FutureRosterPriceService } from "./FutureRosterPriceService.js";
+import { AdminVhlMatchReviewController } from "./AdminVhlMatchReviewController.js";
 export class TelegramAdminPanelFactory {
   constructor({ rootDirectory, logger }) { Object.assign(this, { rootDirectory, logger }); }
   createAdminPanel({ botClient, userRepository, playerCatalogRepository, rosterRepository, calendarRepository }) {
@@ -36,15 +37,13 @@ export class TelegramAdminPanelFactory {
     return new AdminPlayerMutationService({ view, playerCatalogRepository, rosterChangeNotifications: notifications,
       rosterPriceService: new FutureRosterPriceService({ rosterRepository, playerCatalogRepository, calendarRepository }) });
   }
-
   #createProtocolImportService(botClient, context, calendarRepository) {
     return new AdminProtocolImportService({ botClient, khlServiceFactory: new KhlServiceFactory(this.rootDirectory), protocolView: context.protocolView,
       logger: this.logger, stateStore: context.stateStore, calendarRepository });
   }
-
   #createVhlRouteHandler(context, calendarRepository) {
     const view = new VhlOnlineAdminView();
-    return new AdminVhlOnlineRouteHandler({ view, matchCatalog: new VhlOnlineMatchCatalog(calendarRepository),
+    return new AdminVhlOnlineRouteHandler({ view, matchCatalog: new VhlOnlineMatchCatalog(calendarRepository), reviewController: new AdminVhlMatchReviewController({ calendarRepository }),
       registrationService: new VhlOnlineProtocolRegistrationService({ calendarRepository, view }), stateStore: context.stateStore, fallbackView: context.view });
   }
 }

@@ -10,6 +10,8 @@ export class WorkerHeartbeat {
       const failures = results.filter((result) => result.ok === false);
       await this.store.writeState(this.fileName, { processing: false, completedAt: Date.now(), pid: process.pid,
         failedMatches: failures.length, checkedMatches: results.length,
+        awaitingReviewMatches: results.filter((result) => result.reviewStatus === "pending").length,
+        rejectedReviewMatches: results.filter((result) => result.reviewStatus === "rejected").length,
         consecutiveFailedCycles: failures.length ? Number(previous?.consecutiveFailedCycles || 0) + 1 : 0,
         lastFailures: failures.slice(0, 3).map(({ matchId, reason }) => ({ matchId, reason })) });
       return results;

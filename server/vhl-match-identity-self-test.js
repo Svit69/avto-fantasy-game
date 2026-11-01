@@ -3,7 +3,6 @@ import { VhlOnlineDataProvider } from "./VhlOnlineDataProvider.js";
 import { VhlReportDataProvider } from "./VhlReportDataProvider.js";
 import { VhlOnlinePollingService } from "./VhlOnlinePollingService.js";
 import { VhlOnlineCalendarMatchResolver } from "./VhlOnlineCalendarMatchResolver.js";
-
 const expectedMatch = { id: "game", homeTeam: "Горняк-УГМК", awayTeam: "Нефтяник", startsAt: "2026-10-04T11:00:00+03:00", onlineGameId: "904147", tourId: "tour", isLivePollingWindow: true };
 const identity = { tournamentId: "tour", scheduledAt: expectedMatch.startsAt, expectedMatch };
 assert.equal(new VhlOnlineCalendarMatchResolver().createProviderIdentity(expectedMatch, "904147").expectedMatch, expectedMatch);
@@ -48,3 +47,4 @@ await import("./vhl-final-fallback-self-test.js");
 await import("./vhl-team-name-self-test.js");
 await import("./vhl-team-alias-self-test.js");
 await import("./vhl-metallurg-alias-self-test.js");
+await import("./vhl-review-self-test.js");

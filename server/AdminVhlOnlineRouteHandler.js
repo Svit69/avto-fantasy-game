@@ -1,9 +1,10 @@
 export class AdminVhlOnlineRouteHandler {
-  constructor({ view, matchCatalog, registrationService, stateStore, fallbackView }) {
-    Object.assign(this, { view, matchCatalog, registrationService, stateStore, fallbackView });
+  constructor({ view, matchCatalog, registrationService, stateStore, fallbackView, reviewController }) {
+    Object.assign(this, { view, matchCatalog, registrationService, stateStore, fallbackView, reviewController });
   }
 
   async executeRoute(source) {
+    if (source.route.type === "vhl_online_review") return this.reviewController.executeRoute(source);
     if (source.route.type === "vhl_online") return this.view.renderMonthList(source.chatId, await this.matchCatalog.listManagedMonths());
     if (source.route.type === "vhl_online_month") return this.#showMonthMatches(source.chatId, source.route.playerId);
     if (source.route.type === "vhl_online_match") return this.#requestProtocolId(source.chatId, source.route.playerId);
