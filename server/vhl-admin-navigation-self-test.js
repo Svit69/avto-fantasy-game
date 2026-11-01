@@ -34,3 +34,5 @@ const prompt = await handler.executeRoute(createCallbackSource(`admin:vhl_online
 assert.equal(pendingMatchId, selectedMatch.id);
 assert(prompt.text.includes(selectedMatch.awayTeam));
 console.log("VHL admin navigation self-test passed");
+await import("./vhl-november-protocol-self-test.js");
+await import("./calendar-protocol-backfill-self-test.js");

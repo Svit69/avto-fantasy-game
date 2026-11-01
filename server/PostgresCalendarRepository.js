@@ -1,4 +1,5 @@
 import { PostgresSingleKeyJsonRepository } from "./PostgresSingleKeyJsonRepository.js";
+import { CalendarRecordMerger } from "./CalendarRecordMerger.js";
 
 export class PostgresCalendarRepository {
   constructor(database, seedTours, seedMatches) {
@@ -21,8 +22,6 @@ export class PostgresCalendarRepository {
   }
 
   #merge(seedRecords, storedRecords) {
-    const storedById = new Map(storedRecords.map((record) => [record.id, record]));
-    const seedIds = new Set(seedRecords.map((record) => record.id));
-    return [...seedRecords.map((record) => storedById.get(record.id) || record), ...storedRecords.filter((record) => !seedIds.has(record.id))];
+    return new CalendarRecordMerger().mergeSeedAndStoredRecords(seedRecords, storedRecords);
   }
 }

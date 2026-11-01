@@ -4,4 +4,13 @@ export const VHL_MATCH_PROTOCOL_IDS = {
   "match-2026-09-10-gornyak-chelmet": "904035",
   "match-2026-09-26-gornyak-khimik": "904106",
   "match-2026-10-04-gornyak-neftyanik": "904147",
+  "match-2026-11-06-gornyak-omskie-krylya": "904295",
+  "match-2026-11-08-gornyak-zauralye": "904307",
+  "match-2026-11-10-gornyak-rubin": "904314",
+  "match-2026-11-12-gornyak-yugra": "904322",
+  "match-2026-11-17-gornyak-buran": "904344",
+  "match-2026-11-19-gornyak-tambov": "904357",
+  "match-2026-11-21-gornyak-dizel": "904366",
+  "match-2026-11-23-gornyak-kristall": "904374",
+  "match-2026-11-29-gornyak-molot": "904403",
 };
