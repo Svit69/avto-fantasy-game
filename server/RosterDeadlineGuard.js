@@ -6,8 +6,12 @@ export class RosterDeadlineGuard {
   }
 
   async canModifyRoster(month) {
-    const calendar = await this.calendarRepository.listCalendar();
-    const state = this.tourSchedulePolicy.findTourAccessState(calendar, month);
+    const state = await this.findRosterAccessState(month);
     return state.isOpen && !state.isLocked;
+  }
+
+  async findRosterAccessState(month) {
+    const calendar = await this.calendarRepository.listCalendar();
+    return this.tourSchedulePolicy.findTourAccessState(calendar, month);
   }
 }

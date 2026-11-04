@@ -7,11 +7,13 @@ import { KhlOnlinePlayerMatcher } from "./KhlOnlinePlayerMatcher.js";
 import { KhlProtocolFantasyEventFactory } from "./KhlProtocolFantasyEventFactory.js";
 import { KhlOnlineStatisticsValidator } from "./KhlOnlineStatisticsValidator.js";
 import { OnlineHockeyLeagueConfiguration } from "./OnlineHockeyLeagueConfiguration.js";
+import { ObservedOnlineHockeyDataSource } from "./ObservedOnlineHockeyDataSource.js";
 
 export class KhlMirrorDataProvider extends KhlPayloadDataProvider {
   #loaded;
-  constructor({ gameId, players, expectedMatch = null, dataSource = new KhlMirrorDataSource(), configuration = OnlineHockeyLeagueConfiguration.khl() }) {
+  constructor({ gameId, players, expectedMatch = null, dataSource = new KhlMirrorDataSource(), configuration = OnlineHockeyLeagueConfiguration.khl(), scheduleObserver = null }) {
     super({}); Object.assign(this, { gameId, players, expectedMatch, dataSource, configuration, unmatchedPlayers: [] });
+    if (scheduleObserver && expectedMatch) this.dataSource = new ObservedOnlineHockeyDataSource(dataSource, expectedMatch, configuration, scheduleObserver);
   }
   async getMatch() { await this.#loadPayload(); return super.getMatch(); }
   async getPlayByPlay() { await this.#loadPayload(); return super.getPlayByPlay(); }

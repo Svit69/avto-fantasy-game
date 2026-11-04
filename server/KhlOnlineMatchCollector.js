@@ -3,8 +3,8 @@ import { KhlOnlineImportGuard } from "./KhlOnlineImportGuard.js";
 import { OnlineHockeyLeagueConfiguration } from "./OnlineHockeyLeagueConfiguration.js";
 
 export class KhlOnlineMatchCollector {
-  constructor({ factory, notifier, finalDelayMs = 1200000, providerFactory = (options) => new KhlMirrorDataProvider(options), clock = Date.now, configuration = OnlineHockeyLeagueConfiguration.khl() }) {
-    Object.assign(this, { factory, notifier, finalDelayMs, providerFactory, clock, configuration });
+  constructor({ factory, notifier, finalDelayMs = 1200000, providerFactory = (options) => new KhlMirrorDataProvider(options), clock = Date.now, configuration = OnlineHockeyLeagueConfiguration.khl(), scheduleObserver = null }) {
+    Object.assign(this, { factory, notifier, finalDelayMs, providerFactory, clock, configuration, scheduleObserver });
   }
   async collectMatch(calendarMatch, state, now) {
     await this.notifier?.notifyOnce(calendarMatch, "prepared");
@@ -14,10 +14,10 @@ export class KhlOnlineMatchCollector {
     });
     if (protectedMatch) return this.#completeProtected(calendarMatch, state, now, protectedMatch);
     const players = await this.factory.createPlayerCatalogRepository().listPlayers();
-    const provider = this.providerFactory({ gameId, players, expectedMatch: calendarMatch });
+    const provider = this.providerFactory({ gameId, players, expectedMatch: calendarMatch, scheduleObserver: this.scheduleObserver });
     const match = await provider.getMatch();
     now = Math.max(now, this.clock());
-    if (match.status === "scheduled") return { ok: true, state: { ...state, failures: 0 } };
+    if (match.status === "scheduled") return { ok: true, state: { ...state, failures: 0, sourceStatus: match.status } };
     await this.notifier?.notifyOnce(calendarMatch, "start", { match });
     const result = await this.factory.createIngestionService(provider).ingestMatch(calendarMatch.tourId, gameId);
     if (result.reason === "manual_protocol_priority") return this.#completeProtected(calendarMatch, state, now, result.match);

@@ -29,7 +29,10 @@ export class RosterController {
       if (!await this.deadlineGuard.canModifyRoster(month)) return this.jsonResponder.sendJson(response, 423, { error: "tour_started" });
       const slots = await this.priceLocker.lockRosterSlotPrices(payload.slots || []);
       new RosterPriceSubmissionPolicy().validatePrices(slots, payload.slots || []);
-      const roster = await this.rosterRepository.saveRoster(profile.id, month, slots);
+      const access = await this.deadlineGuard.findRosterAccessState(month);
+      if (!access.isOpen || access.isLocked) return this.jsonResponder.sendJson(response, 423, { error: "tour_started" });
+      const roster = await this.rosterRepository.saveRosterBeforeDeadline(profile.id, month, slots, access.deadlineTime);
+      if (!roster) return this.jsonResponder.sendJson(response, 423, { error: "tour_started" });
       await new ApplicationDataRevision().invalidateReports();
       return this.jsonResponder.sendJson(response, 200, { ok: true, roster });
     });

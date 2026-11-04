@@ -1,0 +1,10 @@
+{
+  "sourceUrl": "https://text.mhl.khl.ru/903310.html",
+  "game": {
+    "info": { "data": { "id": "903310", "date": "2026-11-04", "time": "11:00:00", "score": "10:5", "ots": "", "teama": "233", "teamb": "225" } },
+    "teams": { "home": { "name": "Стальные Лисы" }, "visitor": { "name": "МХК Авто" } },
+    "gameItem": { "status": 90, "statusvalue": "матч завершен" },
+    "players": { "A": { "31": { "id": "44951", "name": "Руцкий Максим", "ig": 1, "pos": "в", "jn": 31 } }, "B": { "20": { "id": "43300", "name": "Соколкин Сергей", "ig": 1, "pos": "в", "jn": 20 }, "31": { "id": "45935", "name": "Минаев Ефим", "ig": 1, "pos": "в", "jn": 31 } } }
+  },
+  "changes": "<div id='tab-game-playbyplay'><li data-type='goalkeeper'><span class='game-legend-item-info-time'>35:01</span><img class='game-legend-item-logo' src='//img.khl.ru/teams/ru/1440/225/90.png' title='Авто'><p>Авто. Вратарь в воротах</p></li><li data-type='goalkeeper'><span class='game-legend-item-info-time'>34:39</span><img class='game-legend-item-logo' src='//img.khl.ru/teams/ru/1440/225/90.png' title='Авто'><p>Авто. Замена вратаря на экстра-полевого игрока</p></li></div>"
+}

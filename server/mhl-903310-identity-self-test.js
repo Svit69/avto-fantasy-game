@@ -1,0 +1,22 @@
+import assert from "node:assert/strict";
+import fs from "node:fs/promises";
+import { load } from "cheerio";
+import { MhlOnlineGoalieChangeParser } from "./MhlOnlineGoalieChangeParser.js";
+import { KhlOnlineMatchParser } from "./KhlOnlineMatchParser.js";
+import { OnlineHockeyLeagueConfiguration } from "./OnlineHockeyLeagueConfiguration.js";
+import { CALENDAR_MATCHES, CALENDAR_TOURS } from "../src/data/calendarSeed.js";
+import { TourSchedulePolicy } from "../src/services/TourSchedulePolicy.js";
+
+const fixture = JSON.parse(await fs.readFile(new URL("./fixtures/mhl-903310-goalie-context.json", import.meta.url), "utf8"));
+assert.throws(() => new MhlOnlineGoalieChangeParser().parseChanges(load(fixture.changes), fixture.game), /goalie_change_ambiguous/);
+assert.throws(() => new MhlOnlineGoalieChangeParser().parseChanges(load("<div id='tab-game-playbyplay'></div>"), fixture.game), /goalie_change_ambiguous/);
+const expected = CALENDAR_MATCHES.find((match) => match.mhlGameId === "903310");
+assert.equal(expected.startsAt, "2026-11-04T11:00:00+03:00");
+const match = new KhlOnlineMatchParser(OnlineHockeyLeagueConfiguration.mhl()).parseMatch(fixture.game, expected);
+assert.equal(match.status, "finished"); assert.equal(match.scheduledAt, expected.startsAt);
+const calendar = { tours: CALENDAR_TOURS, matches: CALENDAR_MATCHES };
+const policy = new TourSchedulePolicy();
+assert.equal(policy.findTourAccessState(calendar, "Ноябрь", Date.parse(expected.startsAt) - 1).isLocked, false);
+assert.equal(policy.findTourAccessState(calendar, "Ноябрь", Date.parse(expected.startsAt)).isLocked, true);
+assert.equal(policy.findTourAccessState(calendar, "Ноябрь", Date.parse("2026-11-04T12:00:00+03:00")).isLocked, true);
+console.log("MHL real 903310 missing goalie identity, confirmed 11:00 MSK start and November deadline self-test passed");

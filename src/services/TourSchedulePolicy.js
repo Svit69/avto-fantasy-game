@@ -1,6 +1,8 @@
+import { TourEffectiveDeadlineResolver } from "./TourEffectiveDeadlineResolver.js";
+
 export class TourSchedulePolicy {
   buildTourAccessStates(calendar, now = Date.now()) {
-    const tours = this.#sortToursByDeadline(calendar.tours);
+    const tours = this.#sortToursByDeadline(new TourEffectiveDeadlineResolver().resolveTours(calendar));
     const valid = Number.isFinite(now) && tours.every((tour) => Number.isFinite(Date.parse(tour.deadlineAt || tour.startsAt)));
     return tours.map((tour, index) => valid ? this.#createTourAccessState(tour, tours[index - 1], now)
       : { ...tour, isOpen: false, isLocked: true, deadlineTime: NaN });

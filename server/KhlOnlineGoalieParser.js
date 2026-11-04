@@ -3,6 +3,7 @@ import { KhlOnlineGoalieEventStats } from "./KhlOnlineGoalieEventStats.js";
 export class KhlOnlineGoalieParser {
   constructor(teamName = "Автомобилист") { this.teamName = teamName; }
   parseRows(game, side) {
+    if (game.officialGoalieRows?.[side]) return new KhlOnlineGoalieEventStats().enrichRows(game, side, game.officialGoalieRows[side]);
     const keepers = Object.values(game.players?.[side] || {}).filter((player) => player.pos === "в" && Number(player.ig) === 1);
     if (!keepers.length) throw new Error("khl_online_goalie_missing");
     const roster = game.players[side];

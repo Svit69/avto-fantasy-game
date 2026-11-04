@@ -13,6 +13,7 @@ export class MhlOnlineGoalieChangeParser {
       const relevant = changes.filter((change) => change.side === side);
       const replacement = relevant.find((change) => /вместо/iu.test(change.text) && change.numbers.length === 2);
       let current = keepers.length === 1 ? keepers[0].jn : replacement?.numbers[1];
+      if (!Number.isFinite(current)) throw new Error("mhl_goalie_change_ambiguous");
       let previous = current;
       return relevant.map((change, index) => {
         let next;

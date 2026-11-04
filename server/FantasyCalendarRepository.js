@@ -2,10 +2,11 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { CalendarMatchOnlineProtocolUpdater } from "./CalendarMatchOnlineProtocolUpdater.js";
 import { CalendarRecordMerger } from "./CalendarRecordMerger.js";
+import { OnlineCalendarScheduleEnricher } from "./OnlineCalendarScheduleEnricher.js";
 
 export class FantasyCalendarRepository {
-  constructor(filePath, seedTours, seedMatches, merger = new CalendarRecordMerger(), protocolUpdater = new CalendarMatchOnlineProtocolUpdater()) {
-    Object.assign(this, { filePath, seedTours, seedMatches, merger, protocolUpdater });
+  constructor(filePath, seedTours, seedMatches, merger = new CalendarRecordMerger(), protocolUpdater = new CalendarMatchOnlineProtocolUpdater(), scheduleEnricher = new OnlineCalendarScheduleEnricher()) {
+    Object.assign(this, { filePath, seedTours, seedMatches, merger, protocolUpdater, scheduleEnricher });
   }
 
   async listCalendar() {
@@ -15,7 +16,7 @@ export class FantasyCalendarRepository {
       matches: this.merger.mergeSeedAndStoredRecords(this.seedMatches, storedCalendar.matches),
     };
     if (JSON.stringify(calendar) !== JSON.stringify(storedCalendar)) await this.#writeCalendar(calendar);
-    return calendar;
+    return this.scheduleEnricher.enrichCalendar(calendar);
   }
 
   async listTours() {
